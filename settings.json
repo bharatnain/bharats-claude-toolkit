@@ -1,0 +1,26 @@
+{
+  "$comment": "Bharat's Claude Code setup. MERGE this into your user-global ~/.claude/settings.json so it applies in every directory. extraKnownMarketplaces makes marketplaces installable; enabledPlugins turns them on everywhere. ecc + superpowers are registered but intentionally NOT enabled here — they are one '/plugin install' away (see README cheatsheet).",
+  "extraKnownMarketplaces": {
+    "bharats-claude-toolkit-dev": {
+      "source": { "source": "github", "repo": "bharatnain/bharats-claude-toolkit" }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill" }
+    },
+    "addy-web-quality-skills": {
+      "source": { "source": "github", "repo": "addyosmani/web-quality-skills" }
+    },
+    "ecc": {
+      "source": { "source": "github", "repo": "affaan-m/ecc" }
+    },
+    "superpowers-marketplace": {
+      "source": { "source": "github", "repo": "obra/superpowers-marketplace" }
+    }
+  },
+  "enabledPlugins": [
+    "bharats-claude-toolkit@bharats-claude-toolkit-dev",
+    "ui-ux-pro-max@ui-ux-pro-max-skill",
+    "web-quality-skills@addy-web-quality-skills",
+    "frontend-design@claude-plugins-official"
+  ]
+}

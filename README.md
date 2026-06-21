@@ -92,6 +92,11 @@ folder from `github.com/affaan-m/ecc/skills/<name>/` into this repo's `skills/`.
 
 **SEO** — `seo-audit`, `ai-seo`
 
+**Market & customer research** — `market-research` (TAM/SAM/SOM, competitive, diligence),
+`customer-research` (ICP/JTBD/VOC), `competitor-profiling`, `competitors`, `product-marketing`
+(positioning/ICP context spine). For general research, use the native `deep-research` +
+vendored `research-ops`.
+
 > **Not duplicated:** `code-review`, `security-review`, `deep-research`, `verify`, and `simplify`
 > ship natively with Claude Code — use those directly.
 

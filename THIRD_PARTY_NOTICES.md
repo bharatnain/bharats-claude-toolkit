@@ -18,7 +18,7 @@ Copyright (c) 2026 Affaan Mustafa
 
 - Skills: `agentic-engineering`, `article-writing`, `brand-voice`, `codebase-onboarding`,
   `content-engine`, `design-system`, `fastapi-patterns`, `make-interfaces-feel-better`,
-  `motion-foundations`, `motion-patterns`, `postgres-patterns`, `production-audit`,
+  `market-research`, `motion-foundations`, `motion-patterns`, `postgres-patterns`, `production-audit`,
   `python-patterns`, `python-testing`, `react-patterns`, `repo-scan`, `research-ops`,
   `tdd-workflow`, `verification-loop`
 - Agents: `architect`, `planner`, `code-architect`, `spec-miner`
@@ -26,7 +26,8 @@ Copyright (c) 2026 Affaan Mustafa
 ### Corey Haines marketing skills — https://github.com/coreyhaines31/marketingskills
 Copyright (c) 2025 Corey Haines
 
-- Skills: `copywriting`, `copy-editing`, `content-strategy`, `onboarding`, `seo-audit`, `ai-seo`
+- Skills: `copywriting`, `copy-editing`, `content-strategy`, `onboarding`, `seo-audit`, `ai-seo`,
+  `customer-research`, `competitor-profiling`, `competitors`, `product-marketing`
 
 ### UX Writing — https://github.com/content-designer/ux-writing-skill
 Copyright (c) 2026 Christopher Greer

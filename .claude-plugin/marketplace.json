@@ -1,0 +1,7 @@
+{
+  "name": "bharats-claude-toolkit-dev",
+  "owner": { "name": "Bharat" },
+  "plugins": [
+    { "name": "bharats-claude-toolkit", "source": "./", "description": "My personal Claude Code setup" }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "bharats-claude-toolkit",
+  "description": "My personal Claude Code setup: skills, settings, tooling",
+  "version": "0.1.0",
+  "author": { "name": "Bharat Nain" },
+  "repository": "https://github.com/bharatnain/bharats-claude-toolkit",
+  "license": "MIT"
+}

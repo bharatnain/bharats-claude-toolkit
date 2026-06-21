@@ -22,10 +22,14 @@ front is what sits in my *always-on* index vs. what stays *one command away*.
 - `frontend-design` — Anthropic (`claude-plugins-official`): production-grade UI taste
 - `ui-ux-pro-max` — design intelligence: 67 styles / 161 palettes / 57 font pairings
 - `web-quality-skills` — Addy Osmani: accessibility (WCAG 2.2), performance, Core Web Vitals, SEO
+- `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills: discovery, strategy, PRDs/OKRs/roadmaps
+- `agent-teams` / `agent-orchestration` — wshobson `claude-code-workflows`: multi-agent role/team setups (tech-lead, frontend, backend, ml-engineer)
 
 **On-demand (registered, install when needed)**
 - `ecc@ecc` — the full 271-skill ECC collection
 - `superpowers@superpowers-marketplace`, `elements-of-style@superpowers-marketplace` — obra
+- more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `backend-development`, `frontend-mobile-development`, `data-engineering`)
+- `beads` — agentic issue tracker (`bd` CLI + plugin); see **Agentic project management** below
 
 ---
 
@@ -45,12 +49,19 @@ registered and one command away.
 /plugin marketplace add addyosmani/web-quality-skills
 /plugin marketplace add affaan-m/ecc
 /plugin marketplace add obra/superpowers-marketplace
+/plugin marketplace add phuryn/pm-skills
+/plugin marketplace add wshobson/agents
 
 # enable the always-on tier
 /plugin install bharats-claude-toolkit@bharats-claude-toolkit-dev
 /plugin install ui-ux-pro-max@ui-ux-pro-max-skill
 /plugin install web-quality-skills@addy-web-quality-skills
 /plugin install frontend-design@claude-plugins-official
+/plugin install pm-product-discovery@pm-skills
+/plugin install pm-product-strategy@pm-skills
+/plugin install pm-execution@pm-skills
+/plugin install agent-teams@claude-code-workflows
+/plugin install agent-orchestration@claude-code-workflows
 ```
 
 ---
@@ -71,12 +82,33 @@ folder from `github.com/affaan-m/ecc/skills/<name>/` into this repo's `skills/`.
 
 ---
 
+## Agentic project management (beads)
+
+[beads](https://github.com/steveyegge/beads) (`bd`) is a graph issue-tracker built for AI
+agents — persistent, dependency-aware task memory across sessions. It's a **tool**, not a
+vendored skill (its license is unverified), so integrate it rather than copy it:
+
+```bash
+# 1) install the CLI
+curl -sSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
+# 2) in a project
+bd init
+# 3) enable its Claude Code plugin (slash commands + MCP) per the repo's docs/PLUGIN.md
+```
+Then agents use `bd ready` / `bd show <id>` / `bd update <id> --claim` / `bd close <id>` to
+track long-horizon work. For lighter needs, `pm-execution` (above) covers PRDs/roadmaps/sprints.
+
+---
+
 ## What's vendored in this plugin
 
 **Workflow & engineering** — `tdd-workflow`, `verification-loop`, `codebase-onboarding`,
 `repo-scan`, `production-audit`, `agentic-engineering`, `research-ops`
 
 **Architecture & planning (agents)** — `architect`, `planner`, `code-architect`, `spec-miner`
+
+**Building AI products** — `mcp-builder` (Anthropic), `eval-harness`, `cost-aware-llm-pipeline`,
+`context-budget`
 
 **Python & data** — `python-patterns`, `python-testing`, `fastapi-patterns`, `postgres-patterns`
 
@@ -96,6 +128,16 @@ folder from `github.com/affaan-m/ecc/skills/<name>/` into this repo's `skills/`.
 `customer-research` (ICP/JTBD/VOC), `competitor-profiling`, `competitors`, `product-marketing`
 (positioning/ICP context spine). For general research, use the native `deep-research` +
 vendored `research-ops`.
+
+**Go-to-market** — `launch`, `sales-enablement`, `pricing` (with `product-marketing` + `market-research` above)
+
+**Full-stack marketing** — `ads`, `ad-creative`, `emails`, `social`, `cro`, `analytics`, `referrals`,
+`public-relations`, `marketing-psychology`, `lead-magnets`, `prospecting`, `cold-email`, `revops`
+
+**Audio & video (creative)** — `ffmpeg-usage`, `video-editing`, `remotion-video-creation`,
+`fal-ai-media`. *External deps:* `ffmpeg` (all video), `node`+Remotion (`remotion-video-creation`),
+and a paid fal.ai `FAL_KEY` (`fal-ai-media`). No good Claude skill exists for streaming/codec
+*product* engineering (WebRTC/HLS) — use libraries like SRS/mediamtx directly.
 
 > **Not duplicated:** `code-review`, `security-review`, `deep-research`, `verify`, and `simplify`
 > ship natively with Claude Code — use those directly.

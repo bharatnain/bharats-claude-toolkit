@@ -17,17 +17,21 @@ The following vendored components are licensed under the MIT License.
 Copyright (c) 2026 Affaan Mustafa
 
 - Skills: `agentic-engineering`, `article-writing`, `brand-voice`, `codebase-onboarding`,
-  `content-engine`, `design-system`, `fastapi-patterns`, `make-interfaces-feel-better`,
-  `market-research`, `motion-foundations`, `motion-patterns`, `postgres-patterns`, `production-audit`,
-  `python-patterns`, `python-testing`, `react-patterns`, `repo-scan`, `research-ops`,
-  `tdd-workflow`, `verification-loop`
+  `content-engine`, `context-budget`, `cost-aware-llm-pipeline`, `design-system`, `eval-harness`,
+  `fal-ai-media`, `fastapi-patterns`, `make-interfaces-feel-better`, `market-research`,
+  `motion-foundations`, `motion-patterns`, `postgres-patterns`, `production-audit`,
+  `python-patterns`, `python-testing`, `react-patterns`, `remotion-video-creation`, `repo-scan`,
+  `research-ops`, `tdd-workflow`, `verification-loop`, `video-editing`
 - Agents: `architect`, `planner`, `code-architect`, `spec-miner`
 
 ### Corey Haines marketing skills — https://github.com/coreyhaines31/marketingskills
 Copyright (c) 2025 Corey Haines
 
 - Skills: `copywriting`, `copy-editing`, `content-strategy`, `onboarding`, `seo-audit`, `ai-seo`,
-  `customer-research`, `competitor-profiling`, `competitors`, `product-marketing`
+  `customer-research`, `competitor-profiling`, `competitors`, `product-marketing`,
+  `launch`, `sales-enablement`, `pricing`, `ads`, `ad-creative`, `emails`, `social`, `cro`,
+  `analytics`, `referrals`, `public-relations`, `marketing-psychology`, `lead-magnets`,
+  `prospecting`, `cold-email`, `revops`
 
 ### UX Writing — https://github.com/content-designer/ux-writing-skill
 Copyright (c) 2026 Christopher Greer
@@ -38,6 +42,11 @@ Copyright (c) 2026 Christopher Greer
 Copyright (c) Vercel, Inc.
 
 - Skill: `react-best-practices` (frontmatter name: `vercel-react-best-practices`)
+
+### FFmpeg skill — https://github.com/ychoi-kr/claude-ffmpeg-skill
+Copyright (c) the claude-ffmpeg-skill authors
+
+- Skill: `ffmpeg-usage`
 
 ### MIT License text
 
@@ -69,10 +78,10 @@ SOFTWARE.
 ## Apache-2.0-licensed components
 
 ### Anthropic skills — https://github.com/anthropics/skills
-- Skills: `theme-factory`, `brand-guidelines`
+- Skills: `theme-factory`, `brand-guidelines`, `mcp-builder`
 
 Each retains its original Apache License 2.0 in its own directory
-(`skills/theme-factory/LICENSE.txt`, `skills/brand-guidelines/LICENSE.txt`).
+(`skills/theme-factory/LICENSE.txt`, `skills/brand-guidelines/LICENSE.txt`, `skills/mcp-builder/LICENSE.txt`).
 Licensed under the Apache License, Version 2.0 — https://www.apache.org/licenses/LICENSE-2.0
 
 > Note: Anthropic's document skills (`docx`, `pdf`, `pptx`, `xlsx`) are source-available,
@@ -89,5 +98,8 @@ copied into this repo and stays auto-updated from source:
 - `frontend-design` — Anthropic, `claude-plugins-official`
 - `ui-ux-pro-max` — https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (MIT)
 - `web-quality-skills` — https://github.com/addyosmani/web-quality-skills (MIT)
+- `pm-skills` (`pm-product-discovery`, `pm-product-strategy`, `pm-execution`, …) — https://github.com/phuryn/pm-skills (MIT) — enabled
+- `claude-code-workflows` (`agent-teams`, `agent-orchestration`, `conductor`, role bundles) — https://github.com/wshobson/agents (MIT) — enabled
 - `ecc` — https://github.com/affaan-m/ecc (MIT) — registered, on-demand
 - `superpowers` / `elements-of-style` — https://github.com/obra/superpowers-marketplace (MIT) — registered, on-demand
+- `beads` (`bd`) — https://github.com/steveyegge/beads — agentic issue tracker; integrated as CLI + plugin/MCP (license unverified → integrated, not vendored)

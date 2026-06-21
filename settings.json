@@ -15,12 +15,23 @@
     },
     "superpowers-marketplace": {
       "source": { "source": "github", "repo": "obra/superpowers-marketplace" }
+    },
+    "pm-skills": {
+      "source": { "source": "github", "repo": "phuryn/pm-skills" }
+    },
+    "claude-code-workflows": {
+      "source": { "source": "github", "repo": "wshobson/agents" }
     }
   },
   "enabledPlugins": [
     "bharats-claude-toolkit@bharats-claude-toolkit-dev",
     "ui-ux-pro-max@ui-ux-pro-max-skill",
     "web-quality-skills@addy-web-quality-skills",
-    "frontend-design@claude-plugins-official"
+    "frontend-design@claude-plugins-official",
+    "pm-product-discovery@pm-skills",
+    "pm-product-strategy@pm-skills",
+    "pm-execution@pm-skills",
+    "agent-teams@claude-code-workflows",
+    "agent-orchestration@claude-code-workflows"
   ]
 }

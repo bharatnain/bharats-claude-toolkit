@@ -1,0 +1,33 @@
+{
+  "name": "active",
+  "description": "Default profile for an actively maintained codebase. Lint, typecheck, test, and build all block; tests run on changed files, build on the whole project. No-regression coverage, new test failures block. This profile reproduces the runner's built-in defaults — its absence changes nothing.",
+  "maturity": "active",
+  "checks": {
+    "lint": { "blocking": true, "scope": "changed" },
+    "typecheck": { "blocking": true, "scope": "changed" },
+    "test": { "blocking": true, "scope": "changed" },
+    "build": { "blocking": true, "scope": "all" }
+  },
+  "roles": {
+    "required": ["tech-lead", "code-reviewer"],
+    "optional": ["integrator", "test-engineer"]
+  },
+  "isolation": {
+    "worktree": false
+  },
+  "coverage": {
+    "mode": "no-regression",
+    "require_characterization_tests": false,
+    "min_delta_pct": 0
+  },
+  "regression": {
+    "full_suite_before_merge": false,
+    "block_on_new_failures": true
+  },
+  "surgical_diff": {
+    "enforce": false,
+    "max_changed_files": 0,
+    "max_changed_lines": 0,
+    "forbid_unrelated_reformat": false
+  }
+}

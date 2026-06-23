@@ -1,0 +1,33 @@
+{
+  "name": "greenfield",
+  "description": "Brand-new or tiny codebase. Keep the gate light: only typecheck and changed-file tests block. Lint and build are advisory. No worktree isolation, no surgical-diff caps, coverage targets only.",
+  "maturity": "greenfield",
+  "checks": {
+    "lint": { "blocking": false, "scope": "changed" },
+    "typecheck": { "blocking": true, "scope": "changed" },
+    "test": { "blocking": true, "scope": "changed" },
+    "build": { "blocking": false, "scope": "changed" }
+  },
+  "roles": {
+    "required": ["tech-lead"],
+    "optional": ["code-reviewer", "test-engineer"]
+  },
+  "isolation": {
+    "worktree": false
+  },
+  "coverage": {
+    "mode": "target",
+    "require_characterization_tests": false,
+    "min_delta_pct": 0
+  },
+  "regression": {
+    "full_suite_before_merge": false,
+    "block_on_new_failures": false
+  },
+  "surgical_diff": {
+    "enforce": false,
+    "max_changed_files": 0,
+    "max_changed_lines": 0,
+    "forbid_unrelated_reformat": false
+  }
+}

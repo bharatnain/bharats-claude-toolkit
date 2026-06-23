@@ -1,0 +1,26 @@
+name: validate-profiles
+on:
+  push:
+    paths:
+      - 'team-profiles/**'
+      - 'scripts/validate_profiles.py'
+      - 'scripts/team_profile_detect.py'
+      - '.github/workflows/validate-profiles.yml'
+  pull_request:
+    paths:
+      - 'team-profiles/**'
+      - 'scripts/validate_profiles.py'
+      - 'scripts/team_profile_detect.py'
+      - '.github/workflows/validate-profiles.yml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Validate profiles against draft-07 schema (stdlib only)
+        run: python scripts/validate_profiles.py --format=github
+      - name: Smoke-test the detector
+        run: python scripts/team_profile_detect.py --format json

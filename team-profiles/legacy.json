@@ -1,0 +1,33 @@
+{
+  "name": "legacy",
+  "description": "Mature, high-risk codebase. Lint is advisory but typecheck/test/build block; tests and build run on the whole project. Full suite runs before merge, characterization tests are required, work happens in an isolated worktree, and the diff is held to a surgical cap (<=12 files / <=400 lines, no unrelated reformatting).",
+  "maturity": "legacy",
+  "checks": {
+    "lint": { "blocking": false, "scope": "changed" },
+    "typecheck": { "blocking": true, "scope": "changed" },
+    "test": { "blocking": true, "scope": "all" },
+    "build": { "blocking": true, "scope": "all" }
+  },
+  "roles": {
+    "required": ["tech-lead", "code-reviewer", "integrator", "test-engineer"],
+    "optional": []
+  },
+  "isolation": {
+    "worktree": true
+  },
+  "coverage": {
+    "mode": "characterization",
+    "require_characterization_tests": true,
+    "min_delta_pct": 0
+  },
+  "regression": {
+    "full_suite_before_merge": true,
+    "block_on_new_failures": true
+  },
+  "surgical_diff": {
+    "enforce": true,
+    "max_changed_files": 12,
+    "max_changed_lines": 400,
+    "forbid_unrelated_reformat": true
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/bharatnain/bharats-claude-toolkit/team-profiles/profile.schema.json",
+  "title": "Team Profile",
+  "description": "A team maturity profile consumed by the F1 gate runner (checks[*].blocking/scope) and orchestration (roles/isolation/surgical_diff/coverage/regression).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "description",
+    "maturity",
+    "checks",
+    "roles",
+    "isolation",
+    "coverage",
+    "regression",
+    "surgical_diff"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "maturity": {
+      "type": "string",
+      "enum": ["greenfield", "active", "legacy"]
+    },
+    "checks": {
+      "type": "object",
+      "description": "Map of check-name -> check config. Legacy-extra keys permitted on each check object.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["blocking", "scope"],
+        "properties": {
+          "blocking": {
+            "type": "boolean"
+          },
+          "scope": {
+            "type": "string",
+            "enum": ["changed", "all", "touched"]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "optional"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "isolation": {
+      "type": "object",
+      "required": ["worktree"],
+      "properties": {
+        "worktree": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "require_characterization_tests", "min_delta_pct"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["target", "no-regression", "characterization"]
+        },
+        "require_characterization_tests": {
+          "type": "boolean"
+        },
+        "min_delta_pct": {
+          "type": "number"
+        }
+      }
+    },
+    "regression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["full_suite_before_merge", "block_on_new_failures"],
+      "properties": {
+        "full_suite_before_merge": {
+          "type": "boolean"
+        },
+        "block_on_new_failures": {
+          "type": "boolean"
+        }
+      }
+    },
+    "surgical_diff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enforce",
+        "max_changed_files",
+        "max_changed_lines",
+        "forbid_unrelated_reformat"
+      ],
+      "properties": {
+        "enforce": {
+          "type": "boolean"
+        },
+        "max_changed_files": {
+          "type": "integer"
+        },
+        "max_changed_lines": {
+          "type": "integer"
+        },
+        "forbid_unrelated_reformat": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

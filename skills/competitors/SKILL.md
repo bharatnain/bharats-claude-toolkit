@@ -1,6 +1,6 @@
 ---
 name: competitors
-description: "When the user wants to create competitor comparison or alternative pages for SEO and sales enablement. Also use when the user mentions 'alternative page,' 'vs page,' 'competitor comparison,' 'comparison page,' '[Product] vs [Product],' '[Product] alternative,' 'competitive landing pages,' 'how do we compare to X,' 'battle card,' or 'competitor teardown.' Use this for any content that positions your product against competitors. Covers four formats: singular alternative, plural alternatives, you vs competitor, and competitor vs competitor. For sales-specific competitor docs, see sales-enablement."
+description: "Produces published competitor comparison and alternative PAGES (content output) to rank for competitive search terms and arm sales. Covers four page formats: singular alternative ('X alternative'), plural alternatives ('best X alternatives'), you vs competitor ('You vs X'), and competitor vs competitor ('A vs B'), plus the centralized competitor data file feeding them. Use when the user wants to write, draft, or build an 'alternative page,' 'vs page,' 'comparison page,' '[Product] vs [Product],' '[Product] alternative,' or 'competitive landing pages.' Not for researching a competitor from its URL into a structured profile document (use `competitor-profiling`). Not for running an ongoing competitive intelligence program with battlecards, win/loss analysis, or market-move tracking for CMO/CRO/CPO (use `competitive-intel`)."
 metadata:
   version: 2.0.0
 ---

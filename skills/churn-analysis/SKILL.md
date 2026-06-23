@@ -1,13 +1,6 @@
 ---
 name: churn-analysis
-description: >
-  Root cause analysis of a closed churn or contraction event — signal timeline
-  reconstruction, root cause categorization, lessons captured, and portfolio
-  pattern flagging. Surfaces whether the signals that led to this churn are
-  present in other active accounts and recommends pre-emptive actions. Use
-  within 30 days of a confirmed non-renewal or contraction to capture learning
-  before context decays. Distinct from risk-assessment (which acts before churn)
-  — this skill acts after the loss to extract structured intelligence.
+description: "Post-loss review of a SINGLE churned or contracted account: confirm the root cause, capture actionable lessons, reconstruct the warning-sign timeline (did the team notice and escalate in time), and SCAN the active book for other live accounts showing the same signals so you can act pre-emptively. Use when one account has been lost and you want lessons plus a portfolio risk scan — including the dual-intent 'figure out why we lost them AND check which other accounts are at risk' (this skill owns the cross-account scan). Not for deep formal RCA taxonomy/documentation, analyzing a COHORT/batch of losses, or win-back assessment — for those, use `churn-rca`."
 argument-hint: "[<account-name-or-ID>] [--deep | --quick | --portfolio-scan]"
 version: "1.0.0"
 deployment_target: plugin

@@ -1,16 +1,6 @@
 ---
 name: kickoff-prep
-description: >
-  Prepare for an onboarding kickoff — generates a customized customer-facing
-  agenda and an internal pre-kickoff checklist. Reads your kickoff format,
-  required attendees, onboarding model, and milestone targets from your
-  onboarding profile. Pulls account-specific context (segment, contract start
-  date, AE/CSM owner, known stakeholders) from connected CRM if available.
-  Produces two outputs: a shareable agenda draft calibrated to your onboarding
-  model and segment, and an internal preparation checklist covering pre-call
-  logistics, attendee confirmation, and materials readiness. Use --agenda for
-  the customer-facing agenda only, --checklist for the internal prep checklist
-  only, or the default --prep to generate both.
+description: "Use when a contract was just signed and the immediate next step is preparing for the account's first onboarding KICKOFF MEETING — produces the customer-facing kickoff agenda (calibrated to your onboarding model and segment) plus the internal pre-kickoff checklist (attendee confirmation, materials readiness, account context, M1 setup, post-call follow-up prep). The kickoff meeting comes before the onboarding plan exists, so 'we just signed — how do I onboard this customer?' and prepping the agenda's first-priorities/M1 setup for the kickoff call route here. Pulls account context from CRM if connected. Use --agenda, --checklist, or --prep (both). For CSMs getting ready to run the kickoff call. NOT for designing post-signup product activation, first-run UX, empty states, or aha-moment flows (use onboarding). NOT for authoring the customer's full onboarding PLAN document — the multi-milestone timeline, owners, cadence, success criteria (use onboarding-plan)."
 argument-hint: "[<account-name-or-ID>] [--prep | --agenda | --checklist]"
 version: "1.0.0"
 deployment_target: plugin

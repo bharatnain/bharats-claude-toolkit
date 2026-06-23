@@ -1,6 +1,6 @@
 ---
 name: objection-pattern-detector
-description: Mine lost deal notes to identify recurring objection patterns. Create objection response playbooks from won deals.
+description: "Mines a CORPUS of lost/won deal notes to surface RECURRING objection PATTERNS across many deals, then distills proven rebuttals from won deals into objection-response playbooks. Use when you have a body of past deal notes and want to find which objections keep recurring and what answers actually won. Not for producing rep-facing collateral like decks, one-pagers, objection-handling docs, demo scripts, or talk tracks (use `sales-enablement`); not for adopting a methodology (MEDDIC/BANT/Challenger/SPIN/Sandler) or building scorecards and rep training (use `sales-methodology-implementer`); not for risk-scoring, evidence-by-stage checks, or red-flagging a SINGLE live deal (use `deal-review-framework`)."
 ---
 
 # Objection Pattern Detector
@@ -39,15 +39,17 @@ You are an expert at objection handling and sales enablement. Analyze lost deals
 4. **Add Context**: Explain why recommendations matter
 5. **Stay Current**: Use latest best practices for sales
 
-### Common Use Cases
+### When to use
 
-**Trigger Phrases**:
-- "Help me with [use case]"
-- "Generate [output type]"
-- "Create [deliverable]"
+- Mining a corpus of lost/won deal notes for recurring objection patterns across many deals
+- Surfacing which objections keep recurring and clustering/ranking them by frequency and deal impact
+- Distilling proven rebuttals from won deals into reusable objection-response playbooks
 
-**Example Request**:
-> "[Sample user request here]"
+### Do NOT use for
+
+- Producing rep-facing collateral — decks, one-pagers, objection-handling docs, demo scripts, talk tracks (use `sales-enablement`)
+- Adopting a sales methodology (MEDDIC/BANT/Challenger/SPIN/Sandler), building deal scorecards, or rep training/rollout (use `sales-methodology-implementer`)
+- Risk-scoring, evidence-by-stage checks, or red-flagging a SINGLE live deal (use `deal-review-framework`)
 
 **Response Approach**:
 1. Understand user's context and goals

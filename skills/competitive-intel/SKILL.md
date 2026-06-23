@@ -1,6 +1,6 @@
 ---
 name: "competitive-intel"
-description: "Systematic competitor tracking that feeds CMO positioning, CRO battlecards, and CPO roadmap decisions. Use when analyzing competitors, building sales battlecards, tracking market moves, positioning against alternatives, or when user mentions competitive intelligence, competitive analysis, competitor research, battlecards, win/loss, or market positioning."
+description: "Stands up and runs an ONGOING competitive-intelligence PROGRAM — a recurring tracking system whose outputs feed C-suite decisions: tiered competitor maps, monthly/triggered/quarterly intel cadences, sales battlecards, win/loss analysis, feature-gap summaries, and 1-page leadership briefs routed to CMO/CRO/CPO/CEO. Use when establishing or running continuous competitor tracking, building or refreshing battlecards, running win/loss interviews, monitoring market moves, or distributing competitive intel across the org. Not for producing 'X vs Y' or 'X alternatives' comparison/landing PAGES for SEO and sales content (use `competitors`); not for one-off researching and profiling competitors from their URLs into structured profile documents (use `competitor-profiling`)."
 license: MIT
 metadata:
   version: 1.0.0

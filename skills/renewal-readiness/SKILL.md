@@ -1,13 +1,15 @@
 ---
 name: renewal-readiness
 description: >
-  Assess renewal readiness for an account — health, relationship, value delivery,
-  stakeholder coverage, and commercial risk — and produce a renewal action plan.
-  Use 90–180 days before renewal to identify and close gaps before the commercial
-  conversation begins. Produces an internal readiness brief, a renewal timeline,
-  and (optionally) a customer-facing renewal prep summary. Distinct from risk-flag:
-  this skill assesses the full renewal picture including Green accounts, not only
-  accounts in distress.
+  SINGLE-ACCOUNT renewal readiness 90–180 days pre-renewal — scores one account's
+  health, value delivered, stakeholder coverage, commercial readiness, and internal
+  alignment, then produces an action plan to close gaps before the commercial
+  conversation (plus optional renewal timeline and customer-facing prep summary).
+  Use when prepping one named account's upcoming renewal, including Green accounts.
+  Not for book-of-business weighted renewal forecasts, scenarios, or GRR/NRR vs
+  targets (use `renewal-forecast`); not for identifying or qualifying expansion
+  signals in an account (use `expansion-signal`); not for building the expansion
+  proposal or CSQL handoff package (use `expansion-business-case`).
 argument-hint: "[account name] [--brief | --timeline | --customer-summary]"
 version: "1.0.0"
 deployment_target: plugin

@@ -1,6 +1,6 @@
 ---
 name: churn-rca
-description: "Root cause analysis for individual customer churn events and cohort-level churn pattern analysis. Produces structured RCA with root cause taxonomy, contributing factors, timeline reconstruction, and remediation pathway. Scoped to full cancellation — contract contraction redirected to renewals:downgrade-analysis."
+description: "Formal root-cause analysis for churn — a single confirmed cancellation OR a COHORT/batch of them — classifying each loss against a structured root-cause taxonomy with contributing factors, a diagnostic timeline, a remediation pathway, and a win-back assessment, then writing a documented RCA artifact. Use when you need rigorous, documented diagnosis of why an account churned, or want to rank systemic drivers across many losses (cohort analysis). Not for the post-loss lessons/SLA retrospective or scanning the active book for other at-risk accounts — for single-loss lessons plus a portfolio risk scan, use `churn-analysis`."
 version: "1.0.0"
 author: todd@successhacker.co
 tags: [renewals, churn, rca, root-cause, customer-success]

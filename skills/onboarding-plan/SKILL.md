@@ -1,15 +1,19 @@
 ---
 name: onboarding-plan
 description: >
-  Generate, update, or summarize the customer-facing onboarding plan document.
-  The plan is the primary shared artifact between the CSM and the customer team
-  — it defines the milestone timeline, ownership at each stage, first priorities,
-  communication cadence, and success criteria placeholder. Reads onboarding model,
-  milestone framework, duration targets, and plan format from your onboarding profile.
-  Pulls contract start date, segment, and stakeholders from CRM if available. Use
-  --draft (default) to generate a complete plan after kickoff, --update to revise
-  the plan after a milestone completes or scope changes, or --summary to produce
-  an abbreviated current-status view for async stakeholder updates.
+  Author the B2B CSM customer-facing onboarding PLAN document — the multi-milestone
+  timeline with target dates anchored to contract start, per-stage ownership, the
+  M1-onward priorities, communication cadence, and a success-criteria placeholder.
+  Reads onboarding model, milestone framework, and plan format from your onboarding
+  profile; pulls contract start, segment, and stakeholders from CRM if available.
+  Use when generating the plan (--draft) once the kickoff meeting is done and you have
+  contract start, stakeholders, and confirmed priorities; revising after a milestone or
+  scope change (--update); or summarizing an account's plan status (--summary). The
+  kickoff meeting comes FIRST and precedes this document: for "we just signed, how do I
+  onboard this customer / what now" or prepping the kickoff agenda, priorities, or
+  pre-kickoff checklist, use `kickoff-prep`. Not for
+  product/PLG post-signup activation, first-run, aha-moment, or activation-rate work
+  (use `onboarding`).
 argument-hint: "[<account-name-or-ID>] [--draft | --update | --summary]"
 version: "1.0.0"
 deployment_target: plugin

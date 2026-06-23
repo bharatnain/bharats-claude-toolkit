@@ -1,6 +1,6 @@
 ---
 name: openfga
-description: OpenFGA authorization modeling best practices for defining types and relations, writing relationship tuples, deriving can_* permissions, applying type restrictions and usersets, and authoring .fga.yaml check/list_objects/list_users tests. Use when authoring, reviewing, or refactoring OpenFGA models, tuples, permissions, .fga files, .fga.yaml test files, or OpenFGA SDK integrations in JavaScript, TypeScript, Go, Python, Java, or .NET.
+description: "Build and test authorization IN OpenFGA specifically: author `.fga` models (types, relations, usersets, inheritance, type restrictions), write relationship tuples, derive `can_*` permissions, and validate with `.fga.yaml` check/list_objects/list_users assertions via `fga model test`. Use when the request mentions OpenFGA, `.fga`/`.fga.yaml`, the `fga` CLI, relationship tuples, or usersets, or implementing ownership/inheritance hierarchies (org->team->project->doc) in concrete OpenFGA models or SDKs. Not for deciding whether RBAC/ABAC/ReBAC fits or designing roles conceptually (use `security-rbac-design`); not for OPA Rego policy-as-code with `opa test`/`*_test.rego` (use `rego-skill`)."
 license: Apache-2.0
 metadata:
   author: openfga

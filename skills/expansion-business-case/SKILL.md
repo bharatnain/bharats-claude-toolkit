@@ -1,10 +1,15 @@
 ---
 name: expansion-business-case
 description: >
-  Generate a customer-facing expansion proposal (csm-led) or a CSQL Qualification
-  Package for Sales handoff (csql) based on account health, usage signals, and
-  expansion opportunity context. Applies 5 constraints, 5 expert checks, and 5
-  anti-pattern guards before output generation.
+  BUILD the expansion deliverable AFTER signals are already qualified: a
+  customer-facing expansion proposal (csm-led) or a CSQL Qualification Package for
+  Sales handoff (csql), with MEDDIC framing, outcome evidence, and constraint/
+  anti-pattern guards. Use when you have a qualified expansion opportunity and need
+  the proposal document or the AE handoff brief written. Not for identifying or
+  qualifying whether an account has expansion signals (use `expansion-signal`); not
+  for single-account renewal readiness 90-180d pre-renewal (use `renewal-readiness`);
+  not for book-of-business weighted renewal forecasting or GRR/NRR (use
+  `renewal-forecast`).
 argument-hint: "[--csm-led | --csql] [account name or ID]"
 version: "1.0.0"
 deployment_target: plugin

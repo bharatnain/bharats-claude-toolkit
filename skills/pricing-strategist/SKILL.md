@@ -1,6 +1,6 @@
 ---
 name: pricing-strategist
-description: "Use when designing or revisiting product pricing — selecting a pricing model (subscription seat-based, usage-based, value-based, freemium, or hybrid), running Van Westendorp Price Sensitivity Meter analysis on WTP survey data, or designing Good/Better/Best packaging tiers. Recommends a model and a price range with trade-offs, never a single number. For Commercial leads, Product Marketing, and CMOs at the pricing-design moment — not deal-by-deal discounting, not brand positioning."
+description: "Strategic pricing DECISION layer: selects the pricing model (subscription/seat, usage-based, value-based, freemium, hybrid) via scored trade-offs, runs Van Westendorp Price Sensitivity analysis on willingness-to-pay survey data, designs the Good/Better/Best tier architecture from scratch, and recommends a price RANGE (never a single number). Use when deciding WHAT to charge and HOW to structure it: 'which pricing model fits', 'seat vs usage vs value', 'analyze this WTP survey', 'how many tiers and what goes in each', 'what should I charge', or auditing a packaging anti-pattern. Not for building/refining the pricing page, freemium-vs-trial mechanics, or executing a price increase — for hands-on page and packaging tactics, use `pricing`."
 version: 2.8.0
 author: claude-code-skills
 license: MIT

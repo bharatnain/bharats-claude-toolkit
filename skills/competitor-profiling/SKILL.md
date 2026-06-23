@@ -1,6 +1,6 @@
 ---
 name: competitor-profiling
-description: "When the user wants to research, profile, or analyze competitors from their URLs. Also use when the user mentions 'competitor profile,' 'competitor research,' 'competitor analysis,' 'profile this competitor,' 'analyze competitor,' 'competitive intelligence,' 'competitor deep dive,' 'who are my competitors,' 'competitor landscape,' 'competitor dossier,' 'competitive audit,' or 'research these competitors.' Input is a list of competitor URLs. Output is structured competitor profile markdown files. For creating comparison/alternative pages from profiles, see competitors. For sales-specific battle cards, see sales-enablement."
+description: "One-off competitor RESEARCH from URLs — scrapes their sites (Firecrawl) plus SEO/backlink/keyword data (DataForSEO), saves raw data to disk, and synthesizes structured per-competitor profile markdown files with positioning, pricing, features, reviews, and a cross-competitor summary. Input is a list of competitor URLs; output is profile documents (competitor-profiles/). Use when given competitor URLs to research, profile, dossier, or do a competitor deep-dive into reusable structured files. Not for writing 'X vs Y' / 'X alternatives' comparison or alternative PAGES for SEO and sales (use `competitors`); not for running an ongoing competitive-intelligence PROGRAM — battlecards, win/loss, market-move tracking feeding CMO/CRO/CPO (use `competitive-intel`)."
 metadata:
   version: 2.0.0
 ---

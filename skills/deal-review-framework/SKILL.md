@@ -1,6 +1,6 @@
 ---
 name: deal-review-framework
-description: Structured deal assessment using MEDDIC, BANT. Risk scoring, required evidence by stage, red flag detection, coaching points.
+description: "Assess a SINGLE in-flight deal against MEDDIC/BANT — scores deal risk, checks the evidence required at the current stage, flags red flags (missing champion, no economic buyer, weak metrics), and gives the rep coaching points and next steps. Use when reviewing one specific opportunity to judge its health and what to do next. Not for producing sales collateral like decks, one-pagers, demo scripts, or objection-handling docs (use `sales-enablement`); not for adopting/rolling out a methodology org-wide with framework questions, scorecards, or rep training (use `sales-methodology-implementer`); not for mining many won/lost deal notes to find recurring objection patterns (use `objection-pattern-detector`)."
 ---
 
 # Deal Review Framework
@@ -9,6 +9,20 @@ Structured deal assessment using MEDDIC, BANT. Risk scoring, required evidence b
 ## Instructions
 
 You are an expert sales methodology coach. Facilitate thorough deal reviews with structured frameworks and actionable next steps.
+
+### When to use
+
+- Assessing a SINGLE in-flight deal/opportunity against MEDDIC or BANT
+- Scoring that deal's risk and overall health
+- Checking the evidence required at the deal's current stage
+- Detecting red flags such as a missing champion, no economic buyer, or weak metrics
+- Giving the rep coaching points and concrete next steps to advance or de-risk the deal
+
+### Do NOT use for
+
+- Producing sales collateral (decks, one-pagers, demo scripts, objection-handling docs, talk tracks) — use `sales-enablement`
+- Adopting or rolling out a methodology org-wide with framework questions, scorecards, or rep training — use `sales-methodology-implementer`
+- Mining many won/lost deal notes to find recurring objection patterns and build response playbooks — use `objection-pattern-detector`
 
 ### Output Format
 

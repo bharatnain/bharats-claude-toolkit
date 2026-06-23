@@ -1,13 +1,17 @@
 ---
 name: expansion-signal
 description: >
-  Identify and qualify expansion signals in a renewal account — seat growth,
-  usage expansion, product line upsell, and adjacent team opportunities. Maps
-  each signal to a qualification tier (early signal / pipeline-ready / qualified)
-  and recommends a TARO play for conversion. Use during pre-renewal research,
-  QBR prep, or after an adoption milestone to surface upsell and cross-sell leads.
-  Expansion leads are never included in GRR calculations and require a qualifying
-  economic buyer conversation before entering NRR pipeline.
+  Detect and qualify expansion signals in a SINGLE account — seat growth, usage
+  approaching limits, tier/feature upsell, cross-sell, and adjacent-team leads —
+  and assign each a qualification tier (early signal / pipeline-ready / qualified)
+  with a recommended TARO play. Use when researching one account for upsell or
+  cross-sell during pre-renewal prep, QBR prep, or after an adoption milestone,
+  and you need to know which signals are real and how qualified they are. Not for
+  full renewal-readiness assessment of an account 90–180d out (use
+  `renewal-readiness`); not for book-of-business weighted renewal forecasting,
+  cohorts, or GRR/NRR projections (use `renewal-forecast`); not for building the
+  expansion proposal or CSQL handoff package once signals are qualified (use
+  `expansion-business-case`).
 argument-hint: "[<account-name-or-ID>] [--deep | --quick | --catalog]"
 version: "1.0.0"
 deployment_target: plugin

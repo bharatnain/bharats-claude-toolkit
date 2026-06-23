@@ -1,6 +1,6 @@
 ---
 name: pricing
-description: "When the user wants help with pricing decisions, packaging, or monetization strategy. Also use when the user mentions 'pricing,' 'pricing tiers,' 'freemium,' 'free trial,' 'packaging,' 'price increase,' 'value metric,' 'Van Westendorp,' 'willingness to pay,' 'monetization,' 'how much should I charge,' 'my pricing is wrong,' 'pricing page,' 'annual vs monthly,' 'per seat pricing,' or 'should I offer a free plan.' Use this whenever someone is figuring out what to charge or how to structure their plans. For in-app upgrade screens, see paywalls. For offer construction (bonuses, guarantees, value framing, naming) on services/courses/coaching/high-ticket B2B, see offers."
+description: "Tactical, hands-on PLG/SaaS pricing & packaging toolkit: building and improving a pricing page, freemium vs free-trial mechanics, executing price increases (grandfathering, announcement timing), displaying a value metric, packaging/feature-gating tiers on the page, and pricing-page psychology (anchoring, charm pricing, decoy). Use when you want concrete guidance, templates, or best practices to BUILD or refine pricing: 'build my pricing page', 'freemium vs free trial', 'how to raise prices', 'annual vs monthly', 'where to place each feature', 'pricing best practices'. Not for DECIDING which pricing model fits, analyzing willingness-to-pay survey data, or getting a recommended price range — for model selection, Van Westendorp WTP analysis, and from-scratch tier-scheme design, use `pricing-strategist`."
 metadata:
   version: 2.0.1
 ---

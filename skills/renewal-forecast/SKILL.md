@@ -1,13 +1,15 @@
 ---
 name: renewal-forecast
 description: >
-  Build a weighted renewal forecast for your book of business with scenario
-  modeling (best / likely / worst), pipeline breakdown by stage, 90/60/30-day
-  cohort analysis, and GRR/NRR projections against your configured targets.
-  Pulls live CRM data when a connector is available; falls back to manual input.
-  Every forecast output is flagged for Finance/RevOps review before distribution.
-  Use --cohort to focus on a specific renewal window, --segment for a single
-  customer segment, or --account to add one account's renewal to the pipeline view.
+  Roll up the WHOLE BOOK OF BUSINESS into a weighted renewal forecast — best/likely/worst
+  scenario modeling, pipeline-by-stage, 90/60/30-day cohort analysis, and GRR/NRR
+  projections against your configured targets. Pulls live CRM data when a connector is
+  available; falls back to manual input; flags every output for Finance/RevOps review.
+  Use when you need an aggregate, defensible renewal number across many accounts (segment
+  rollups and adding one account to the pipeline view are in-scope). Not for single-account
+  pre-renewal readiness scoring or an account action plan (use `renewal-readiness`); not for
+  spotting or qualifying expansion signals in an account (use `expansion-signal`); not for
+  building the expansion proposal / CSQL handoff after signals qualify (use `expansion-business-case`).
 argument-hint: "[--full | --cohort 90|60|30 | --segment <name> | --account <name>]"
 version: "1.0.0"
 deployment_target: plugin

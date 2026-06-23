@@ -1,6 +1,6 @@
 ---
 name: sales-methodology-implementer
-description: Implement proven sales methodologies (MEDDIC, BANT, Sandler, Challenger, SPIN) across your team. Generate framework-specific questions, score deals, train reps, and enforce consistent qualification. Use when implementing or optimizing sales processes.
+description: "ADOPT one sales methodology (MEDDIC, BANT, Sandler, Challenger, SPIN) as a team-wide standard — pick the framework for the sales motion, generate tiered discovery questions with red/green flags, build the reusable 0-100 deal scorecard, and roll out adoption via rep training curriculum, call-prep checklist, manager coaching guide, 30/60/90 plan, and CRM field definitions. Use when standardizing qualification, choosing a methodology, or training/rolling out a framework across reps. Not for producing sales collateral like decks, one-pagers, demo scripts, or objection-handling talk tracks (use `sales-enablement`); not for risk-scoring or coaching a SINGLE live deal against MEDDIC/BANT (use `deal-review-framework`); not for mining lost/won deal notes for recurring objection patterns (use `objection-pattern-detector`)."
 ---
 
 # Sales Methodology Implementer

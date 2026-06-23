@@ -1,10 +1,6 @@
 ---
 name: rego-skill
-description: |
-  Generate, review, and test OPA Rego policies following security best practices.
-  Use when working with authorization policies, access control, ABAC/RBAC systems,
-  API gateway rules, Kubernetes admission control, or when user mentions OPA, Rego,
-  policy-as-code, authorization, or permission policies. Assumes OPA CLI is installed.
+description: "Write, test, and security-review OPA Rego policy-as-code: default-deny rule bodies, RBAC/ABAC authorization logic, Kubernetes admission control, and API-gateway authz, validated with `opa check`/`opa test` and graded against a security checklist. Use when the request carries an explicit OPA signal — mentions OPA, Rego, `.rego`, `opa test`/`*_test.rego`, or policy-as-code — to author, review, or test concrete `.rego` files. Assumes the OPA CLI is installed. Not for choosing the authorization model or designing roles conceptually (use `security-rbac-design`); not for implementing or testing OpenFGA relationship models with `.fga.yaml`/tuples (use `openfga`)."
 ---
 
 # Rego Policy Development

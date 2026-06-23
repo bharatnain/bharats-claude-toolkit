@@ -15,7 +15,7 @@ version: "1.0.0"
 deployment_target: plugin
 ---
 
-# /renewals:renewal-forecast [VALIDATED]
+# renewal-forecast [VALIDATED]
 
 Build a weighted renewal forecast calibrated to your book of business and targets.
 
@@ -29,16 +29,16 @@ Build a weighted renewal forecast calibrated to your book of business and target
 - You are running a segment-level forecast to compare a specific customer segment against book targets
 
 ## Do NOT use for
-- Individual account risk assessment — use `/renewals:risk-assessment` for per-account signal analysis and escalation routing
-- Expansion signal identification or NRR pipeline qualification — use `/renewals:expansion-signal`; unqualified expansion is never included in this forecast
-- Executive-level account summaries for stakeholder meetings — use `/renewals:executive-summary`
-- Price increase planning for accounts in the pipeline — use `/renewals:price-increase-prep`
-- Churn root cause analysis after a lost renewal — use `/renewals:churn-rca`
+- Individual account risk assessment — use `risk-assessment` for per-account signal analysis and escalation routing
+- Expansion signal identification or NRR pipeline qualification — use `expansion-signal`; unqualified expansion is never included in this forecast
+- Executive-level account summaries for stakeholder meetings — use `executive-summary`
+- Price increase planning for accounts in the pipeline — use `price-increase-prep`
+- Churn root cause analysis after a lost renewal — use `churn-rca`
 
 ## Typical Activation
-> `/renewals:renewal-forecast` — full book-of-business forecast with pipeline stages, cohort breakdown, scenario modeling, and GRR/NRR projection
-> `/renewals:renewal-forecast --cohort 30` — focused view of renewals within the 30-day decision window with escalation requirements
-> `/renewals:renewal-forecast --account Acme Corp` — add a single account to the pipeline view and check its GRR contribution
+> `renewal-forecast` — full book-of-business forecast with pipeline stages, cohort breakdown, scenario modeling, and GRR/NRR projection
+> `renewal-forecast --cohort 30` — focused view of renewals within the 30-day decision window with escalation requirements
+> `renewal-forecast --account Acme Corp` — add a single account to the pipeline view and check its GRR contribution
 
 ---
 
@@ -53,7 +53,7 @@ skill requires (GRR target, NRR target, total ARR, account count, renewal cycle,
 negotiation window), stop and say:
 
 > "Your renewals company profile isn't configured yet — or key forecast fields
-> are still placeholders. Run `/renewals:cold-start-interview` to set up your
+> are still placeholders. Run `cold-start-interview` to set up your
 > profile. The forecast skill needs your GRR/NRR targets, book ARR, renewal cycle,
 > and negotiation window to produce a meaningful output."
 
@@ -186,7 +186,7 @@ Map all open renewals into five stages:
 > Note: default weights above are starting points. If your configured methodology
 > specifies different forecast weights, apply those instead.
 
-If accounts have been escalated via `/renewals:risk-assessment`, import the risk
+If accounts have been escalated via `risk-assessment`, import the risk
 tier from that output to inform stage placement.
 
 ---
@@ -300,7 +300,7 @@ For any account in the "At risk" stage, surface in a named list:
 | [name] | $[ARR] | [date] | [1-2 signals] | [Y / N] | [CSM / AE / Head of CS] |
 
 For each at-risk account where no escalation is recorded:
-> "⚠️ [Account] is at risk with no escalation owner named. Run `/renewals:risk-assessment`
+> "⚠️ [Account] is at risk with no escalation owner named. Run `risk-assessment`
 > for a full signal review and escalation routing."
 
 ---
@@ -423,11 +423,11 @@ discount that requires escalation per the configured approval chain.
 
 Suggested follow-on actions based on forecast results:
 
-- At-risk accounts in 30-day cohort: `/renewals:risk-assessment`
-- Negotiation prep for verbal commitment accounts approaching signature: `/renewals:negotiation-prep`
-- Price increase accounts in the pipeline: `/renewals:price-increase-prep`
-- Strategic account renewal summaries for leadership: `/renewals:executive-summary`
-- Expansion signals in the pipeline: `/renewals:expansion-signal`
+- At-risk accounts in 30-day cohort: `risk-assessment`
+- Negotiation prep for verbal commitment accounts approaching signature: `negotiation-prep`
+- Price increase accounts in the pipeline: `price-increase-prep`
+- Strategic account renewal summaries for leadership: `executive-summary`
+- Expansion signals in the pipeline: `expansion-signal`
 
 ---
 

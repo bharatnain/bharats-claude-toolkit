@@ -23,14 +23,14 @@ deployment_target: plugin
 
 ## Do NOT Use For
 - Real-time health score calculation — this skill interprets signals, it does not compute scores
-- Replacing call-prep — use /csm:call-prep after health review for the full pre-call brief
-- Generating the escalation memo — use /csm:escalation-memo once risk is confirmed
+- Replacing call-prep — use call-prep after health review for the full pre-call brief
+- Generating the escalation memo — use escalation-memo once risk is confirmed
 - Portfolio reporting for leadership — this skill is CSM-facing, not exec-facing
-- Producing the structured risk memo or determining escalation routing once health review confirms an at-risk classification — use /csm:risk-flag
+- Producing the structured risk memo or determining escalation routing once health review confirms an at-risk classification — use risk-flag
 
 ## Typical Activation
-"/csm:health-score-review Acme Corp"
-"/csm:health-score-review --triage"
+"health-score-review Acme Corp"
+"health-score-review --triage"
 "What's the health status of [account]?"
 "Run a portfolio triage"
 "Flag any at-risk accounts in my book"
@@ -48,7 +48,7 @@ Read `~/.claude/plugins/config/claude-for-customer-success/csm/CLAUDE.md` and
 `~/.claude/plugins/config/claude-for-customer-success/company-profile.md`.
 
 If either is missing or contains `[PLACEHOLDER]` markers, stop and prompt for
-`/csm:cold-start-interview`.
+`cold-start-interview`.
 
 Critical configuration to load:
 - Health model components and weights (e.g., usage 40%, engagement 20%, support 20%, NPS 20%)
@@ -250,7 +250,7 @@ Calibrate to the risk classification and configured CS motion.
 **Red account:**
 1. [Specific action with timeline] — e.g., "Escalate to [route from matrix] within [SLA]"
 2. [Specific outreach action] — e.g., "Request executive sponsor check-in within 48h"
-3. [Recovery action] — e.g., "Run risk-flag to prepare structured memo: `/csm:risk-flag [account]`"
+3. [Recovery action] — e.g., "Run risk-flag to prepare structured memo: `risk-flag [account]`"
 
 **Yellow account:**
 1. [Specific monitoring action] — e.g., "Proactive check-in call within 7 days focused on [specific signal]"
@@ -346,10 +346,10 @@ classifications are confidential.
 
 ## After the review
 
-- Red account: "Want a structured risk memo? `/csm:risk-flag [account]`"
-- Approaching renewal + Yellow/Red: "Run renewal readiness: `/csm:renewal-readiness [account]`"
-- Executive sponsor signal: "Check stakeholder map: `/csm:stakeholder-map [account] --sponsor-risk`"
-- Portfolio triage complete: "Want deep reviews on the top 3 Red accounts? Name them and I'll run `/csm:health-score-review --deep` on each."
+- Red account: "Want a structured risk memo? `risk-flag [account]`"
+- Approaching renewal + Yellow/Red: "Run renewal readiness: `renewal-readiness [account]`"
+- Executive sponsor signal: "Check stakeholder map: `stakeholder-map [account] --sponsor-risk`"
+- Portfolio triage complete: "Want deep reviews on the top 3 Red accounts? Name them and I'll run `health-score-review --deep` on each."
 
 ---
 
@@ -373,5 +373,5 @@ The following reference files govern this skill's detailed behavior. They are lo
 ## Trust & Verification
 - Health classifications (Green/Yellow/Red/Critical/Unknown) must align with configured health model thresholds
 - Health scores and risk classifications are internal — must not appear in any customer-visible output
-- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for /csm:cold-start-interview
+- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for cold-start-interview
 - Reviewer note must flag data freshness and any signals that require CSM judgment before acting

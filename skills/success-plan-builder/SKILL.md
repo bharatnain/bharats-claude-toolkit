@@ -22,18 +22,18 @@ deployment_target: plugin
 - Executive sponsor has changed and the plan needs to be refreshed for the new stakeholder
 - The organization does not use the OCV (Outcome-to-Customer Value) system, or the OCV canvas format is not applicable to this account or engagement
 
-**Upstream dependency:** Before building a success plan for a new engagement, define the 3–5 success criteria that form the plan's foundation using the Onboarding plugin's success-criteria skill (if the `onboarding` plugin is installed, run `/onboarding:success-criteria`).
+**Upstream dependency:** Before building a success plan for a new engagement, define the 3–5 success criteria that form the plan's foundation using the Onboarding plugin's success-criteria skill (if the `onboarding` plugin is installed, run `success-criteria`).
 
 ## Do NOT Use For
-- The structured success plan canvas format — use /csm:success-plan-canvas for OCV-aligned canvas output
-- Progress tracking against an existing canvas — use /csm:success-plan-progress-review
-- QBR deck construction — use /csm:qbr-builder
-- Value statements for renewal — use /csm:value-statement
+- The structured success plan canvas format — use success-plan-canvas for OCV-aligned canvas output
+- Progress tracking against an existing canvas — use success-plan-progress-review
+- QBR deck construction — use qbr-builder
+- Value statements for renewal — use value-statement
 
 ## Typical Activation
-"/csm:success-plan-builder Acme Corp"
-"/csm:success-plan-builder Acme Corp --update"
-"/csm:success-plan-builder Acme Corp --review"
+"success-plan-builder Acme Corp"
+"success-plan-builder Acme Corp --update"
+"success-plan-builder Acme Corp --review"
 "Build a success plan for [account]" (free-form narrative, no OCV canvas required)
 "Update the success plan for [customer]"
 
@@ -51,7 +51,7 @@ Read `~/.claude/plugins/config/claude-for-customer-success/csm/CLAUDE.md` and
 `~/.claude/plugins/config/claude-for-customer-success/company-profile.md`.
 
 If either is missing or contains `[PLACEHOLDER]` markers, stop and prompt for
-`/csm:cold-start-interview`.
+`cold-start-interview`.
 
 Note from config:
 - Success criteria model (account-specific vs. standard template)
@@ -359,10 +359,10 @@ profile must be traceable in the success criteria. If it's absent, flag it.
 ## After the plan
 
 - "Plan drafted. Want to walk through the success criteria with the customer?
-  I can prepare talking points. `/csm:call-prep [account] kickoff`"
-- "Want to set a milestone review reminder? Run `/csm:renewal-readiness [account]`
+  I can prepare talking points. `call-prep [account] kickoff`"
+- "Want to set a milestone review reminder? Run `renewal-readiness [account]`
   when you reach M5."
-- "Ready to build the QBR when M4 or M5 are complete? `/csm:qbr-builder [account]`"
+- "Ready to build the QBR when M4 or M5 are complete? `qbr-builder [account]`"
 
 ---
 
@@ -386,4 +386,4 @@ The following reference files govern this skill's detailed behavior. They are lo
 - Internal signals (health scores, expansion flags, ARR) must not appear in customer-facing plan output
 - Output documents are routed to configured document storage only — customer-facing plan to the configured customer portal or collaboration platform; reviewer notes and internal context to the CSM workspace; do not distribute outside configured destinations
 - Success criteria must be validated against the customer's stated goals — do not invent metrics
-- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for /csm:cold-start-interview
+- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for cold-start-interview

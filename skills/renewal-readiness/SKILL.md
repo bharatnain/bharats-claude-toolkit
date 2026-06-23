@@ -27,12 +27,12 @@ deployment_target: plugin
 
 ## Do NOT Use For
 - Pricing, discount, or negotiation prep — that is AE/AM scope
-- Accounts outside the 90-day renewal window — use /csm:health-score-review for general health
-- Expansion positioning — use /csm:expansion-business-case
-- Post-renewal success planning — use /csm:success-plan-builder
+- Accounts outside the 90-day renewal window — use health-score-review for general health
+- Expansion positioning — use expansion-business-case
+- Post-renewal success planning — use success-plan-builder
 
 ## Typical Activation
-"/csm:renewal-readiness Acme Corp"
+"renewal-readiness Acme Corp"
 "Prep for [account]'s renewal"
 "Renewal is in 60 days for [customer] — what do I need?"
 "Run renewal readiness for [account]"
@@ -50,7 +50,7 @@ Read `~/.claude/plugins/config/claude-for-customer-success/csm/CLAUDE.md` and
 `~/.claude/plugins/config/claude-for-customer-success/company-profile.md`.
 
 If either is missing or contains `[PLACEHOLDER]` markers, stop and prompt for
-`/csm:cold-start-interview`.
+`cold-start-interview`.
 
 Critical configuration to apply:
 - Renewal readiness timeline — when the company typically starts renewal motion
@@ -266,7 +266,7 @@ No / Implicitly — renewal was mentioned on [date] in [context]]
 
 **Price change anticipated?** [Yes — [amount or %] increase / No / Unknown]
 If yes: "Price increase at renewal requires executive-level positioning. See
-`/csm:renewal-readiness --price-increase-prep`."
+`renewal-readiness --price-increase-prep`."
 
 **ARR escalation:** If ARR meets the configured escalation threshold:
 > "ARR ($[amount]) exceeds the configured escalation threshold. Executive-level
@@ -297,7 +297,7 @@ by priority. Not generic.
 1. [Action — e.g., "Schedule executive sponsor touch. Last contact was [N] days ago.
    Purpose: relationship maintenance before commercial motion begins. Do not mention
    renewal — this is a strategic relationship call."]
-2. [Action — e.g., "Run `/csm:value-statement [account]` to build the value story
+2. [Action — e.g., "Run `value-statement [account]` to build the value story
    before the renewal conversation. The value case is currently [strong/partial/weak]."]
 3. [Action — escalation if applicable]
 
@@ -434,11 +434,11 @@ before the renewal call — do not introduce both topics in one customer convers
 
 ## After the brief
 
-- "Value story needs work — build it now: `/csm:value-statement [account]`"
-- "Executive sponsor risk flagged — check stakeholder map: `/csm:stakeholder-map [account] --sponsor-risk`"
-- "Account is Red — run risk memo before renewal motion: `/csm:risk-flag [account]`"
-- "Renewal conversation starting — prep the call: `/csm:call-prep [account] renewal`"
-- "Ready for the QBR before renewal — build it: `/csm:qbr-builder [account]`"
+- "Value story needs work — build it now: `value-statement [account]`"
+- "Executive sponsor risk flagged — check stakeholder map: `stakeholder-map [account] --sponsor-risk`"
+- "Account is Red — run risk memo before renewal motion: `risk-flag [account]`"
+- "Renewal conversation starting — prep the call: `call-prep [account] renewal`"
+- "Ready for the QBR before renewal — build it: `qbr-builder [account]`"
 
 ---
 
@@ -463,4 +463,4 @@ The following reference files govern this skill's detailed behavior. They are lo
 - Pricing, discount, and negotiation content is strictly out of scope — redirect to AE/AM if raised
 - ARR and contract value are internal references only — not included in customer-facing output
 - Expansion signals are internal — do not surface in renewal prep materials shared with the customer
-- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for /csm:cold-start-interview
+- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for cold-start-interview

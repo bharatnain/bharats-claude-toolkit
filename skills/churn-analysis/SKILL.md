@@ -6,7 +6,7 @@ version: "1.0.0"
 deployment_target: plugin
 ---
 
-# /renewals:churn-analysis [VALIDATED]
+# churn-analysis [VALIDATED]
 
 Root cause analysis of a closed churn or contraction. Extract what happened,
 why it happened, and whether it's about to happen again somewhere else.
@@ -20,15 +20,15 @@ why it happened, and whether it's about to happen again somewhere else.
 - You are running a batch retrospective across multiple losses (quarter-end or annual review)
 
 ## Do NOT use for
-- Accounts that have not yet churned — use `/renewals:risk-assessment` for at-risk active accounts
+- Accounts that have not yet churned — use `risk-assessment` for at-risk active accounts
 - Real-time churn prevention or mid-renewal save strategy — this skill analyzes past events, not active ones
 - Expansion or upsell signals in current accounts
 - Generating a risk tier or triggering an escalation from portfolio scan output alone — scan results require a full risk-assessment before any tier is assigned
 
 ## Typical Activation
-> `/renewals:churn-analysis Acme Corp` — full post-mortem on a recently closed loss
-> `/renewals:churn-analysis Acme Corp --quick` — abbreviated root cause and lesson, use when processing multiple losses
-> `/renewals:churn-analysis --portfolio-scan` — skip single-account analysis and scan the active book for matching signal patterns after root cause is already established
+> `churn-analysis Acme Corp` — full post-mortem on a recently closed loss
+> `churn-analysis Acme Corp --quick` — abbreviated root cause and lesson, use when processing multiple losses
+> `churn-analysis --portfolio-scan` — skip single-account analysis and scan the active book for matching signal patterns after root cause is already established
 
 ---
 
@@ -42,7 +42,7 @@ If either file is missing or contains `[PLACEHOLDER]` markers in churn-signal
 or escalation fields, proceed with a notice:
 
 > "Your churn signal definitions are not configured. The analysis will use
-> general SaaS churn patterns. Run `/renewals:cold-start-interview --section
+> general SaaS churn patterns. Run `cold-start-interview --section
 > churn-signals` to configure your specific signals — this will make future
 > churn analysis and portfolio scanning more accurate for your product and motion."
 
@@ -98,16 +98,16 @@ Before generating output, apply these primers:
 
 ## This Skill vs. Risk Assessment
 
-**`/renewals:risk-assessment`** — Use when an account is approaching renewal
+**`risk-assessment`** — Use when an account is approaching renewal
 and you need to assess churn risk in time to act. Output: risk tier, escalation
 routing, save options.
 
-**`/renewals:churn-analysis`** — Use after the account has churned or contracted.
+**`churn-analysis`** — Use after the account has churned or contracted.
 Output: what went wrong, when the signals appeared, whether the response was
 timely, lessons captured, whether the pattern exists in active accounts.
 
 Running churn analysis on an account that hasn't churned yet is the wrong tool —
-route to `/renewals:risk-assessment` instead.
+route to `risk-assessment` instead.
 
 ---
 
@@ -325,11 +325,11 @@ If CRM is available, check active accounts for:
 
 | Active account | ARR | Renewal date | Matching signals | Recommended action |
 |---------------|-----|-------------|------------------|--------------------|
-| [name] | $[ARR] | [date] | [1-2 signals] | `/renewals:risk-assessment` / monitor / no action |
+| [name] | $[ARR] | [date] | [1-2 signals] | `risk-assessment` / monitor / no action |
 
 > ⚠️ Portfolio scan results are leads for risk assessment — not risk tiers.
 > An active account with a similar signal pattern requires a full
-> `/renewals:risk-assessment` before a risk tier is assigned. Do not use
+> `risk-assessment` before a risk tier is assigned. Do not use
 > portfolio scan output as a substitute for individual account assessment.
 
 If no accounts match:
@@ -419,7 +419,7 @@ All account data (ARR, health scores, signal timelines, CRM notes) is provided t
 All inferred root cause assignments carry explicit confidence signals (`[High Confidence]`, `[Moderate]`, `[Low Confidence]`). The Reviewer note surface forces explicit sourcing declarations before any output leaves the session.
 
 **Portfolio scan scope:**
-Portfolio scan output (`--portfolio-scan`) flags pattern matches for CSM review — it does not automatically trigger risk escalations, modify account records, or write any data. All flagged accounts require a full `/renewals:risk-assessment` before any tier is assigned.
+Portfolio scan output (`--portfolio-scan`) flags pattern matches for CSM review — it does not automatically trigger risk escalations, modify account records, or write any data. All flagged accounts require a full `risk-assessment` before any tier is assigned.
 
 **Config file integrity:**
 Pre-flight reads config files at fixed paths. If either config file is absent or malformed, the skill surfaces the gap and asks for manual input rather than proceeding with defaults. Config content is used for display context only — it does not affect analysis logic or output structure.
@@ -438,7 +438,7 @@ specific, named evidence from the account timeline. An inferred root cause must
 be labeled `[Low Confidence]` and noted as requiring verification.
 
 **Portfolio scan is a lead generator, not a risk tier.** Any active account
-surfaced by the portfolio scan requires a full `/renewals:risk-assessment`
+surfaced by the portfolio scan requires a full `risk-assessment`
 before a risk tier is assigned or an escalation is triggered.
 
 **Timing lag is diagnostic data.** The gap between when a signal first appeared

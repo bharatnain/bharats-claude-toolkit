@@ -7,6 +7,12 @@ original licenses and copyright notices are reproduced (MIT) or retained in-tree
 Skills and agents adapted from ECC have had ECC-specific defaults, tool references, and
 branding removed. The underlying technical guidance remains the original authors' work.
 
+**Local modifications:** vendored skills carry local edits — descriptions were disambiguated
+for reliable auto-triggering, and dead cross-references (to external tool registries and
+un-vendored sibling plugins) were neutralized. Per-source upstream repos, licenses, and the
+upstream HEAD SHA recorded at divergence are tracked in
+[`THIRD_PARTY_SOURCES.json`](THIRD_PARTY_SOURCES.json) for deterministic refresh.
+
 ---
 
 ## MIT-licensed components

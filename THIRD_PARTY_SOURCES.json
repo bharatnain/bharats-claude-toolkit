@@ -1,0 +1,240 @@
+{
+  "_comment": "Provenance + deterministic-refresh manifest for VENDORED skills. 'upstream_head_at_manifest' is the upstream HEAD SHA recorded 2026-06-23 (NOT necessarily the exact commit each skill was vendored from \u2014 vendoring predates this manifest). LOCAL DIVERGENCE: all vendored skills carry local edits \u2014 descriptions disambiguated (Phase B) and/or dead-link pointers neutralized (Phase D). Re-pulling upstream requires re-applying those edits. See git history + THIRD_PARTY_NOTICES.md.",
+  "diverged_from_upstream": true,
+  "first_party": [
+    "security-questionnaire-responder"
+  ],
+  "sources": [
+    {
+      "repo": "https://github.com/affaan-m/ecc",
+      "license": "MIT",
+      "copyright": "Affaan Mustafa",
+      "upstream_head_at_manifest": "71d22d0a77b7e0684f4e51cba03749b788993cdb",
+      "skills": [
+        "agentic-engineering",
+        "article-writing",
+        "brand-voice",
+        "codebase-onboarding",
+        "content-engine",
+        "context-budget",
+        "cost-aware-llm-pipeline",
+        "design-system",
+        "eval-harness",
+        "fal-ai-media",
+        "fastapi-patterns",
+        "make-interfaces-feel-better",
+        "market-research",
+        "motion-foundations",
+        "motion-patterns",
+        "postgres-patterns",
+        "production-audit",
+        "python-patterns",
+        "python-testing",
+        "react-patterns",
+        "remotion-video-creation",
+        "repo-scan",
+        "research-ops",
+        "tdd-workflow",
+        "verification-loop",
+        "video-editing"
+      ],
+      "agents": [
+        "architect",
+        "planner",
+        "code-architect",
+        "spec-miner"
+      ]
+    },
+    {
+      "repo": "https://github.com/coreyhaines31/marketingskills",
+      "license": "MIT",
+      "copyright": "Corey Haines",
+      "upstream_head_at_manifest": "8bfcdffb655f16e713940cd04fb08891899c47db",
+      "skills": [
+        "copywriting",
+        "copy-editing",
+        "content-strategy",
+        "onboarding",
+        "seo-audit",
+        "ai-seo",
+        "customer-research",
+        "competitor-profiling",
+        "competitors",
+        "product-marketing",
+        "launch",
+        "sales-enablement",
+        "pricing",
+        "ads",
+        "ad-creative",
+        "emails",
+        "social",
+        "cro",
+        "analytics",
+        "referrals",
+        "public-relations",
+        "marketing-psychology",
+        "lead-magnets",
+        "prospecting",
+        "cold-email",
+        "revops"
+      ]
+    },
+    {
+      "repo": "https://github.com/content-designer/ux-writing-skill",
+      "license": "MIT",
+      "copyright": "Christopher Greer",
+      "upstream_head_at_manifest": "98cacde4ba2dd10ed28df43a8d53eef1e321c539",
+      "skills": [
+        "ux-writing"
+      ]
+    },
+    {
+      "repo": "https://github.com/vercel-labs/agent-skills",
+      "license": "MIT",
+      "copyright": "Vercel, Inc.",
+      "upstream_head_at_manifest": "f8a72b9603728bb92a217a879b7e62e43ad76c81",
+      "skills": [
+        "react-best-practices"
+      ]
+    },
+    {
+      "repo": "https://github.com/ychoi-kr/claude-ffmpeg-skill",
+      "license": "MIT",
+      "copyright": "claude-ffmpeg-skill authors",
+      "upstream_head_at_manifest": "b88cb5ce08337ab55c66c67674100b8de29cf232",
+      "skills": [
+        "ffmpeg-usage"
+      ]
+    },
+    {
+      "repo": "https://github.com/alirezarezvani/claude-skills",
+      "license": "MIT",
+      "copyright": "Alireza Rezvani",
+      "upstream_head_at_manifest": "4a3c05b69e64f4925f7fc65c88890f614f79caf0",
+      "skills": [
+        "pricing-strategist",
+        "deal-desk",
+        "commercial-forecaster",
+        "commercial-policy",
+        "partnerships-architect",
+        "channel-economics",
+        "rfp-responder",
+        "board-deck-builder",
+        "executive-mentor",
+        "ceo-advisor",
+        "cfo-advisor",
+        "cro-advisor",
+        "cmo-advisor",
+        "cpo-advisor",
+        "general-counsel-advisor",
+        "competitive-intel",
+        "ma-playbook",
+        "scenario-war-room",
+        "agent-protocol",
+        "procurement-optimizer",
+        "process-mapper",
+        "vendor-management"
+      ]
+    },
+    {
+      "repo": "https://github.com/OneWave-AI/claude-skills",
+      "license": "MIT",
+      "copyright": "OneWave AI",
+      "upstream_head_at_manifest": "071454bbe3212a2d9c787f6c3c85660098983011",
+      "skills": [
+        "sales-methodology-implementer",
+        "deal-review-framework",
+        "sales-forecast-builder",
+        "pipeline-health-analyzer",
+        "quota-setting-calculator",
+        "territory-planning-optimizer",
+        "sales-comp-plan-designer",
+        "objection-pattern-detector"
+      ]
+    },
+    {
+      "repo": "https://github.com/workos/skills",
+      "license": "MIT",
+      "copyright": "WorkOS",
+      "upstream_head_at_manifest": "2c3acef61ea29296cb6e73e0c59fb5e98f0b1847",
+      "skills": [
+        "workos-enterprise-auth"
+      ]
+    },
+    {
+      "repo": "https://github.com/Void3110/rego-skill",
+      "license": "MIT",
+      "copyright": "Void3110",
+      "upstream_head_at_manifest": "6fbcf7fc5b913fa68bf097223b7753fd0dce67af",
+      "skills": [
+        "rego-skill"
+      ]
+    },
+    {
+      "repo": "https://github.com/intense-visions/harness-engineering",
+      "license": "MIT",
+      "copyright": "Intense Visions, Inc.",
+      "upstream_head_at_manifest": "9bbf0a36a37ccc9e067cac6cdc6b96a45683ce64",
+      "skills": [
+        "security-rbac-design",
+        "api-webhook-design",
+        "api-rate-limiting",
+        "microservices-api-gateway",
+        "api-idempotency-keys"
+      ]
+    },
+    {
+      "repo": "https://github.com/Sushegaad/Claude-Skills-Governance-Risk-and-Compliance",
+      "license": "MIT",
+      "copyright": "Hemant Naik",
+      "upstream_head_at_manifest": "7ec5163f039def01dd6a3e8ce0b0793443ee4639",
+      "skills": [
+        "soc2",
+        "iso-27001",
+        "gdpr",
+        "hipaa",
+        "pci-dss"
+      ]
+    },
+    {
+      "repo": "https://github.com/anthropics/skills",
+      "license": "Apache-2.0",
+      "copyright": "Anthropic",
+      "upstream_head_at_manifest": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+      "skills": [
+        "theme-factory",
+        "brand-guidelines",
+        "mcp-builder"
+      ]
+    },
+    {
+      "repo": "https://github.com/t0ddc3by/claude-for-customer-success",
+      "license": "Apache-2.0",
+      "copyright": "SuccessCOACHING",
+      "upstream_head_at_manifest": "b7c22f6556b31ce78cae8a052b4963933a733466",
+      "skills": [
+        "qbr-builder",
+        "health-score-review",
+        "renewal-readiness",
+        "renewal-forecast",
+        "churn-analysis",
+        "churn-rca",
+        "expansion-business-case",
+        "expansion-signal",
+        "success-plan-builder",
+        "onboarding-plan",
+        "kickoff-prep",
+        "ttv-analysis"
+      ]
+    },
+    {
+      "repo": "https://github.com/openfga/agent-skills",
+      "license": "Apache-2.0",
+      "copyright": "OpenFGA",
+      "upstream_head_at_manifest": "7ffd65d59d2d84d7c424686311022a411588acf4",
+      "skills": [
+        "openfga"
+      ]
+    }
+  ]
+}

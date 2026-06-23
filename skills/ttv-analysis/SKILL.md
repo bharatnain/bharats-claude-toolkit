@@ -17,7 +17,7 @@ deployment_target: plugin
 
 <!-- Status: [PROPOSED] -->
 
-# /onboarding:ttv-analysis
+# ttv-analysis
 
 Time-to-value performance analysis — internal planning use only.
 
@@ -40,7 +40,7 @@ Fields read from onboarding config:
 
 If TtV targets are `[PLACEHOLDER]`:
 > "TtV targets aren't configured. Run
-> `/onboarding:cold-start-interview --section milestones` to set segment-level
+> `cold-start-interview --section milestones` to set segment-level
 > targets before running TtV analysis — analysis will use milestone day targets as
 > a proxy without segment-level benchmarks."
 
@@ -57,17 +57,17 @@ Proceed using milestone day targets as the reference if confirmed.
 - Identifying systemic delay patterns across your onboarding book for process improvement (`--patterns`)
 
 **Do NOT use for:**
-- Milestone status checks without TtV benchmarking (use `/onboarding:milestone-tracker`)
+- Milestone status checks without TtV benchmarking (use `milestone-tracker`)
 - Customer-facing progress reporting — TtV is an internal planning metric only; redirect to milestone-date language
-- Handoff readiness assessment (use `/onboarding:handoff-doc --readiness`)
+- Handoff readiness assessment (use `handoff-doc --readiness`)
 
 ## Typical Activation
 - "Is [Account] on track for TtV?"
 - "Show me the portfolio TtV performance"
 - "What patterns are causing delays across my book?"
-- CSM runs `/onboarding:ttv-analysis [account] --account` to assess TtV pace for a single account mid-onboarding
-- CSM runs `/onboarding:ttv-analysis --portfolio` to generate a comparative TtV view across all active accounts
-- CSM runs `/onboarding:ttv-analysis --patterns` to identify systemic delay patterns across the book
+- CSM runs `ttv-analysis [account] --account` to assess TtV pace for a single account mid-onboarding
+- CSM runs `ttv-analysis --portfolio` to generate a comparative TtV view across all active accounts
+- CSM runs `ttv-analysis --patterns` to identify systemic delay patterns across the book
 
 ---
 

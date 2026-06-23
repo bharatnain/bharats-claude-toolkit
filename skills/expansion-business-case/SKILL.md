@@ -48,7 +48,7 @@ but activates relevant constraint warnings.
 - Account has clear adoption signal and CSM needs to articulate value chain to economic buyer
 - QBR preparation requires a formal expansion proposal
 
-**Upstream dependency:** Before using this skill, identify and qualify expansion signals using the Renewals plugin's expansion-signal skill — this skill builds the business case from those qualified signals (if the `renewals` plugin is installed, run `/renewals:expansion-signal`).
+**Upstream dependency:** Before using this skill, identify and qualify expansion signals using the Renewals plugin's expansion-signal skill — this skill builds the business case from those qualified signals (if the `renewals` plugin is installed, run `expansion-signal`).
 
 ## Do NOT Use For
 
@@ -574,7 +574,7 @@ Read `~/.claude/plugins/config/claude-for-customer-success/csm/CLAUDE.md` and
 `~/.claude/plugins/config/claude-for-customer-success/company-profile.md`.
 
 If either is missing or contains `[PLACEHOLDER]` markers, stop and prompt for
-`/csm:cold-start-interview`.
+`cold-start-interview`.
 
 Note from config:
 - CS motion — shapes whether to recommend CSM-led or CSQL pathway

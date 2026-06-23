@@ -17,7 +17,7 @@ version: "1.0.0"
 deployment_target: plugin
 ---
 
-# /renewals:expansion-signal [VALIDATED]
+# expansion-signal [VALIDATED]
 
 Surface and qualify expansion signals in a renewal account. Every signal found
 here is a lead until proven otherwise.
@@ -31,19 +31,19 @@ here is a lead until proven otherwise.
 - You need to map each expansion signal to a qualification tier and a recommended TARO play before engaging the account or routing to the AE
 - You want to confirm whether an account is at Pipeline-ready or Qualified tier before involving an AE in a commercial conversation
 
-**Downstream dependency:** After this skill produces qualified expansion signals, use the CSM plugin's expansion-business-case skill to build the formal business case document for AE engagement (if the `csm` plugin is installed, run `/csm:expansion-business-case`).
+**Downstream dependency:** After this skill produces qualified expansion signals, use the CSM plugin's expansion-business-case skill to build the formal business case document for AE engagement (if the `csm` plugin is installed, run `expansion-business-case`).
 
 ## Do NOT use for
-- Accounts with active churn risk signals — run `/renewals:risk-assessment` first; expansion pursuit on at-risk accounts damages trust and is counterproductive
+- Accounts with active churn risk signals — run `risk-assessment` first; expansion pursuit on at-risk accounts damages trust and is counterproductive
 - GRR or renewal-rate forecasting — expansion ARR is never included in GRR calculations
 - Moving an expansion opportunity into NRR pipeline without a qualifying economic buyer conversation — this skill identifies and qualifies signals; formal pipeline entry requires AE involvement
-- Post-churn expansion analysis — use `/renewals:churn-rca`
-- Quick renewal status checks without an expansion research goal — use `/renewals:executive-summary`
+- Post-churn expansion analysis — use `churn-rca`
+- Quick renewal status checks without an expansion research goal — use `executive-summary`
 
 ## Typical Activation
-> `/renewals:expansion-signal Acme Corp` — full expansion signal audit across all six signal types with qualification tier and TARO play recommendations
-> `/renewals:expansion-signal Acme Corp --quick` — targeted pass for highest-probability signal before a renewal call
-> `/renewals:expansion-signal --catalog` — list all detectable signal types for your configured pricing model
+> `expansion-signal Acme Corp` — full expansion signal audit across all six signal types with qualification tier and TARO play recommendations
+> `expansion-signal Acme Corp --quick` — targeted pass for highest-probability signal before a renewal call
+> `expansion-signal --catalog` — list all detectable signal types for your configured pricing model
 
 ---
 
@@ -55,7 +55,7 @@ Read both configuration files before analyzing any account:
 
 If either file is missing or contains `[PLACEHOLDER]` markers in the pricing,
 renewal book, or methodology sections, stop and route to
-`/renewals:cold-start-interview`. Without pricing model, product structure, and
+`cold-start-interview`. Without pricing model, product structure, and
 configured NRR target, expansion signal outputs will be untethered from your
 actual commercial posture.
 
@@ -90,7 +90,7 @@ Before generating output, apply these primers:
    - Pricing model from config constrains which signal types apply (usage-based expansion is irrelevant for flat-fee accounts).
 
 3. **EXPERT CHECK**: What would a veteran renewals manager verify first?
-   - Is there active churn risk on this account? If yes, expansion signals are deferred until the account is stabilized — run `/renewals:risk-assessment` first.
+   - Is there active churn risk on this account? If yes, expansion signals are deferred until the account is stabilized — run `risk-assessment` first.
    - Is the signal coming from a champion or an economic buyer? Champion enthusiasm alone never upgrades qualification tier — apply the Champion vs. Buyer Test.
    - Does the 90-day trend support the signal, or is this a point-in-time anomaly? A single data point is anecdotal; three consecutive months of directional signal is a pattern.
 
@@ -266,7 +266,7 @@ For any signal at Pipeline-ready or Qualified tier, note the AE handoff:
 
 If no AE partner is configured:
 > "No AE partner is configured in your company profile. Run
-> `/renewals:cold-start-interview --section team` to add your AE contact."
+> `cold-start-interview --section team` to add your AE contact."
 
 ---
 
@@ -343,7 +343,7 @@ This skill reads configuration and account data from CRM and CS Platform connect
 - **Signal qualification integrity:** Every expansion signal is tagged `[early signal — not yet qualified]` until an economic buyer conversation has occurred and the expansion has entered formal pipeline. This tag is enforced at the Reasoning Protocol and output format levels and cannot be removed by configuration or user instruction.
 - **ARR estimate labeling:** All pre-proposal ARR potential estimates carry `[Low Confidence]` tags. The skill will not present expansion ARR estimates as committed pipeline or include them in GRR calculations.
 - **Account data handling:** CRM and CS Platform data is used for signal identification and qualification only. Data is not persisted, cached, or written to any file.
-- **Churn-first guard:** The CLASSIFY step and Guardrails both require that active churn risk signals are surfaced before expansion signals. Accounts flagged as at-risk are redirected to `/renewals:risk-assessment` before expansion pursuit continues.
+- **Churn-first guard:** The CLASSIFY step and Guardrails both require that active churn risk signals are surfaced before expansion signals. Accounts flagged as at-risk are redirected to `risk-assessment` before expansion pursuit continues.
 - **AE routing gate:** Signals that reach Qualified tier require AE partner routing per configuration. The skill does not initiate commercial conversations directly.
 - **Free-text field handling:** Account name, call notes, and context provided by the user are used for display and analysis only. They are not executed or used to derive file paths or system behavior.
 
@@ -371,7 +371,7 @@ the signal identification and qualification handoff; the AE owns the commercial
 conversion unless configured otherwise.
 
 **Renewal risk first.** If the account also has active churn risk signals,
-surface them before expansion signals and recommend `/renewals:risk-assessment`
+surface them before expansion signals and recommend `risk-assessment`
 before pursuing expansion. An at-risk account's priority is renewal, not growth.
 
 ---

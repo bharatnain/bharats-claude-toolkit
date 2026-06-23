@@ -124,8 +124,10 @@ def scan_links(text, name, skill_dir, root, findings, path):
     for m in MD_LINK_RE.finditer(text):
         tgt = m.group(1).strip()
         classify_link(tgt, name, skill_dir, root, findings, path)
-    # bare colon-ref tokens
+    # bare colon-ref tokens (skip matches inside URLs, e.g. http://localhost:8080)
     for m in COLON_REF_SCAN.finditer(text):
+        if m.start() > 0 and text[m.start() - 1] in ("/", ":"):
+            continue
         tok = m.group(0)
         if tok in seen:
             continue

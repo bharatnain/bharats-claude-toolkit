@@ -21,13 +21,13 @@ deployment_target: plugin
 - Renewal is approaching and the QBR doubles as the value review before the commercial conversation
 
 ## Do NOT Use For
-- Routine check-in prep — use /csm:call-prep
-- Success plan construction — use /csm:success-plan-builder
-- Value statements without the full QBR structure — use /csm:value-statement
-- Expansion business case — use /csm:expansion-business-case
+- Routine check-in prep — use call-prep
+- Success plan construction — use success-plan-builder
+- Value statements without the full QBR structure — use value-statement
+- Expansion business case — use expansion-business-case
 
 ## Typical Activation
-"/csm:qbr-builder Acme Corp"
+"qbr-builder Acme Corp"
 "Build the QBR for [account]"
 "Prep for [customer]'s quarterly review"
 "Create an EBR for [account]"
@@ -46,7 +46,7 @@ Read `~/.claude/plugins/config/claude-for-customer-success/csm/CLAUDE.md` and
 `~/.claude/plugins/config/claude-for-customer-success/company-profile.md`.
 
 If either is missing or contains `[PLACEHOLDER]` markers, stop and prompt for
-`/csm:cold-start-interview`.
+`cold-start-interview`.
 
 Note from config:
 - Primary value metric and success criteria model
@@ -367,10 +367,10 @@ state that and propose establishing them as a next-quarter action.
 ## After the QBR
 
 Post-QBR actions to offer:
-- "Want call prep for the QBR presentation? `/csm:call-prep [account] qbr`"
-- "Want to run a stakeholder map before the QBR? `/csm:stakeholder-map [account]`"
-- "QBR showed risk signals — want a risk memo? `/csm:risk-flag [account]`"
-- "Renewal is approaching — want a renewal readiness check? `/csm:renewal-readiness [account]`"
+- "Want call prep for the QBR presentation? `call-prep [account] qbr`"
+- "Want to run a stakeholder map before the QBR? `stakeholder-map [account]`"
+- "QBR showed risk signals — want a risk memo? `risk-flag [account]`"
+- "Renewal is approaching — want a renewal readiness check? `renewal-readiness [account]`"
 
 ---
 
@@ -394,4 +394,4 @@ The following reference files govern this skill's detailed behavior. They are lo
 - The internal prep brief and customer-facing EBR deck are distinct outputs — internal health scores, expansion signals, and stakeholder assessments must not appear in the customer deck
 - Output documents are routed to configured document storage only — customer-facing deliverable to the configured customer portal or presentation platform; internal working document to the CSM workspace; do not distribute outside configured destinations
 - Value metrics must reference configured success criteria — do not invent outcomes
-- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for /csm:cold-start-interview
+- If config files are missing or contain [PLACEHOLDER] markers, halt and prompt for cold-start-interview

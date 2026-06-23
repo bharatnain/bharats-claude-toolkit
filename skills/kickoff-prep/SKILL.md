@@ -8,7 +8,7 @@ deployment_target: plugin
 
 <!-- Status: [PROPOSED] -->
 
-# /onboarding:kickoff-prep
+# kickoff-prep
 
 Kickoff agenda and preparation checklist for a specific account.
 
@@ -31,7 +31,7 @@ Fields read from config:
 
 If either config file is missing or kickoff-related fields contain `[PLACEHOLDER]` markers:
 > "Kickoff format and required attendees aren't configured. Run
-> `/onboarding:cold-start-interview --section kickoff` to set these before
+> `cold-start-interview --section kickoff` to set these before
 > generating kickoff materials — the output will be generic without your
 > actual format and attendee requirements."
 
@@ -49,7 +49,7 @@ despite missing config.
 - Generating only the internal preparation checklist for the CSM (`--checklist`)
 
 **Do NOT use for:**
-- Post-kickoff milestone tracking (use `/onboarding:milestone-tracker`)
+- Post-kickoff milestone tracking (use `milestone-tracker`)
 - Onboarding plan generation — the kickoff prep and onboarding plan are separate artifacts
 - Blocker review or risk assessment — this skill is pre-onboarding preparation only
 
@@ -57,9 +57,9 @@ despite missing config.
 - "Prep me for my kickoff with [Account] on [date]"
 - "Generate the kickoff agenda for [Account]"
 - "Give me the internal checklist for the [Account] kickoff"
-- CSM runs `/onboarding:kickoff-prep [account] --prep` to generate both agenda and checklist
-- CSM runs `/onboarding:kickoff-prep [account] --agenda` for the customer-facing agenda only
-- CSM runs `/onboarding:kickoff-prep [account] --checklist` for the internal prep checklist only
+- CSM runs `kickoff-prep [account] --prep` to generate both agenda and checklist
+- CSM runs `kickoff-prep [account] --agenda` for the customer-facing agenda only
+- CSM runs `kickoff-prep [account] --checklist` for the internal prep checklist only
 
 ---
 

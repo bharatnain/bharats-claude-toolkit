@@ -7,7 +7,7 @@ tags: [renewals, churn, rca, root-cause, customer-success]
 deployment_target: plugin
 ---
 
-# /renewals:churn-rca [VALIDATED]
+# churn-rca [VALIDATED]
 
 ## Overview
 
@@ -40,9 +40,9 @@ Please use renewals:downgrade-analysis for downgrade analysis.
 Contraction signals: "reduce," "downgrade," "fewer seats," "smaller tier," "partial cancellation."
 
 ## Typical Activation
-> `/renewals:churn-rca analyze "Acme Corp"` — full RCA on a single churned account with root cause taxonomy, timeline reconstruction, and win-back assessment
-> `/renewals:churn-rca cohort` — multi-account pattern analysis to detect systemic churn drivers; triggers portfolio-level escalation if cohort churn rate ≥ 25%
-> `/renewals:churn-rca export "Acme Corp"` — retrieve and format an existing RCA record for stakeholder reporting or portfolio review
+> `churn-rca analyze "Acme Corp"` — full RCA on a single churned account with root cause taxonomy, timeline reconstruction, and win-back assessment
+> `churn-rca cohort` — multi-account pattern analysis to detect systemic churn drivers; triggers portfolio-level escalation if cohort churn rate ≥ 25%
+> `churn-rca export "Acme Corp"` — retrieve and format an existing RCA record for stakeholder reporting or portfolio review
 
 ---
 
@@ -59,9 +59,9 @@ Contraction signals: "reduce," "downgrade," "fewer seats," "smaller tier," "part
 - Win-back campaign execution (this skill recommends; it does not execute)
 
 ## Typical Activation
-> `/renewals:churn-rca analyze "Acme Corp"` — full RCA on a single churned account with root cause taxonomy, timeline reconstruction, and win-back assessment
-> `/renewals:churn-rca cohort` — multi-account pattern analysis to detect systemic churn drivers; triggers portfolio-level escalation if cohort churn rate ≥ 25%
-> `/renewals:churn-rca export "Acme Corp"` — retrieve and format an existing RCA record for stakeholder reporting or portfolio review
+> `churn-rca analyze "Acme Corp"` — full RCA on a single churned account with root cause taxonomy, timeline reconstruction, and win-back assessment
+> `churn-rca cohort` — multi-account pattern analysis to detect systemic churn drivers; triggers portfolio-level escalation if cohort churn rate ≥ 25%
+> `churn-rca export "Acme Corp"` — retrieve and format an existing RCA record for stakeholder reporting or portfolio review
 
 ---
 

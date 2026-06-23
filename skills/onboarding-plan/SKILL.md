@@ -21,7 +21,7 @@ deployment_target: plugin
 
 <!-- Status: [PROPOSED] -->
 
-# /onboarding:onboarding-plan
+# onboarding-plan
 
 Onboarding plan document — generate, update, or summarize.
 
@@ -53,7 +53,7 @@ Fields read from company profile:
 
 If either config file is missing or milestone framework fields contain `[PLACEHOLDER]`:
 > "Milestone targets and onboarding model aren't configured. Run
-> `/onboarding:cold-start-interview --section milestones` to set these before
+> `cold-start-interview --section milestones` to set these before
 > generating an onboarding plan — the output will use generic timelines without your
 > actual targets."
 
@@ -71,17 +71,17 @@ missing config.
 - Producing a customer-facing summary of the onboarding plan for sharing or review (`--summary`)
 
 **Do NOT use for:**
-- Milestone status tracking against an existing plan (use `/onboarding:milestone-tracker`)
+- Milestone status tracking against an existing plan (use `milestone-tracker`)
 - Success criteria definition — criteria must be defined before or during plan generation, not after
-- Handoff document generation (use `/onboarding:handoff-doc`)
+- Handoff document generation (use `handoff-doc`)
 
 ## Typical Activation
 - "Draft the onboarding plan for [Account]"
 - "The timeline changed — update the onboarding plan for [Account]"
 - "Give me a summary of the [Account] onboarding plan to share with the customer"
-- CSM runs `/onboarding:onboarding-plan [account] --draft` to generate a new post-kickoff plan
-- CSM runs `/onboarding:onboarding-plan [account] --update` after a milestone completion or scope change
-- CSM runs `/onboarding:onboarding-plan [account] --summary` to produce an async stakeholder update
+- CSM runs `onboarding-plan [account] --draft` to generate a new post-kickoff plan
+- CSM runs `onboarding-plan [account] --update` after a milestone completion or scope change
+- CSM runs `onboarding-plan [account] --summary` to produce an async stakeholder update
 
 ---
 
@@ -257,9 +257,9 @@ This section is a placeholder on the first `--draft` output:
 > We'll document what "successful onboarding" looks like for [account name] —
 > typically 3–5 measurable outcomes you want to achieve by [M5 date].
 
-If the `/onboarding:success-criteria` skill has already been run for this account, replace the
+If the `success-criteria` skill has already been run for this account, replace the
 placeholder with the confirmed criteria list. Ask: "Have you already run the
-`/onboarding:success-criteria` skill for this account? If so, paste or describe the agreed criteria
+`success-criteria` skill for this account? If so, paste or describe the agreed criteria
 and I'll populate this section."
 
 ### Section 7 — Internal section (suppressed in customer-facing output)
@@ -339,9 +339,9 @@ For each change type:
 
 **Scope change:**
 - Revise the affected sections (First priorities, Section 3 descriptions if needed)
-- If the scope change affects graduation criteria, flag it for the `/onboarding:success-criteria`
+- If the scope change affects graduation criteria, flag it for the `success-criteria`
   skill: "This change may affect your agreed success criteria — run
-  `/onboarding:success-criteria --update` to confirm."
+  `success-criteria --update` to confirm."
 - Append change log: `[date] — [CSM name]: Scope change — [brief description].`
 
 **Stakeholder change:**
@@ -415,7 +415,7 @@ Questions? [CSM name] · [contact]
 >   day targets]), duration target ([segment: X days]), plan format ([value])
 > - **Milestone dates calculated from:** contract start [date] + config day targets
 > - **TtV projection:** [X days vs. target Y days — on track / [±Z days]]
-> - **Success criteria section:** [placeholder — run /onboarding:success-criteria |
+> - **Success criteria section:** [placeholder — run success-criteria |
 >   populated from prior run]
 > - **Flagged for your judgment:** [weekend milestone dates / missing stakeholders /
 >   scope not yet confirmed | none]
@@ -461,7 +461,7 @@ keep the plan current. Do not regenerate the plan from scratch when an update is
 needed — use `--update` to preserve the change log and milestone history.
 
 **Success criteria is a placeholder until confirmed.** Section 6 always displays
-a placeholder on the first `--draft` run unless the `/onboarding:success-criteria` skill has
+a placeholder on the first `--draft` run unless the `success-criteria` skill has
 already been completed for this account. Do not populate success criteria from
 assumptions or sales notes — they require explicit agreement with the customer.
 

@@ -3,6 +3,15 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), and versions map to the toolkit's phases.
 
+## [0.6.0] - 2026-06-23 — Desktop notifications
+
+- Added a plugin hook (`hooks/hooks.json` + `hooks/notify.py`) that fires a desktop notification
+  when Claude needs you: the `Notification` event (permission prompt / idle wait). Opt-in `Stop`
+  ping (`CLAUDE_NOTIFY_ON_STOP=1`) for "finished" alerts that stays quiet while background work is
+  pending. macOS via `osascript`/`terminal-notifier`, Linux via `notify-send`. Toggles:
+  `CLAUDE_NOTIFY=0`, `CLAUDE_NOTIFY_SOUND`.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then `/reload-plugins` (or restart Claude Code).
+
 ## [0.5.0] - 2026-06-23 — Phase E: onboarding & UX pass
 
 - Added `scripts/bootstrap.sh` — the recommended one-command onboarding path; safely

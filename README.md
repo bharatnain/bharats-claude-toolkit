@@ -111,6 +111,27 @@ yourself. Returning users only need these three lines.
 
 ---
 
+## Desktop notifications (when Claude needs you)
+
+A plugin hook pings your desktop the moment Claude is **waiting on you** — a permission prompt or
+an idle wait (the `Notification` event) — so you can step away during long runs and get pulled back
+exactly when needed. macOS works out of the box via `osascript` (zero install); install
+`terminal-notifier` for clickable, app-branded pings; Linux uses `notify-send`.
+
+It ships in the always-on plugin (`hooks/notify.py`) — `git pull && bash scripts/bootstrap.sh`
+then `/reload-plugins` to activate. Tunables (set in your shell, or under `env` in
+`~/.claude/settings.json`):
+
+- `CLAUDE_NOTIFY_ON_STOP=1` — also ping when Claude **finishes** a turn (default off; it stays
+  quiet while a background task/workflow is still running, so you're only pinged when truly done).
+- `CLAUDE_NOTIFY=0` — turn all notifications off.
+- `CLAUDE_NOTIFY_SOUND=Ping` — macOS sound name (empty string = silent).
+
+> macOS first run: allow notifications for your terminal app when prompted (or System Settings →
+> Notifications), otherwise pings won't appear.
+
+---
+
 ## Pull more, mid-project (cheatsheet)
 
 ```text

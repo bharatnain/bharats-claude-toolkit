@@ -24,11 +24,13 @@ front is what sits in my *always-on* index vs. what stays *one command away*.
 - `web-quality-skills` — Addy Osmani: accessibility (WCAG 2.2), performance, Core Web Vitals, SEO
 - `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills: discovery, strategy, PRDs/OKRs/roadmaps
 - `agent-teams` / `agent-orchestration` — wshobson `claude-code-workflows`: multi-agent role/team setups (tech-lead, frontend, backend, ml-engineer)
+- **ship & operate** (wshobson `claude-code-workflows`): `backend-development`, `backend-api-security`, `cloud-infrastructure`, `kubernetes-operations`, `cicd-automation`, `deployment-strategies`, `deployment-validation`, `observability-monitoring`, `incident-response` — deploy/run/monitor the product
+- **data & ML** (wshobson `claude-code-workflows`): `data-engineering`, `machine-learning-ops` — pipelines/warehouses, ML training & MLOps
 
 **On-demand (registered, install when needed)**
 - `ecc@ecc` — the full 271-skill ECC collection
 - `superpowers@superpowers-marketplace`, `elements-of-style@superpowers-marketplace` — obra
-- more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `backend-development`, `frontend-mobile-development`, `data-engineering`)
+- more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `frontend-mobile-development`, …)
 - `beads` — agentic issue tracker (`bd` CLI + plugin); see **Agentic project management** below
 
 ---

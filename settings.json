@@ -32,6 +32,17 @@
     "pm-product-strategy@pm-skills",
     "pm-execution@pm-skills",
     "agent-teams@claude-code-workflows",
-    "agent-orchestration@claude-code-workflows"
+    "agent-orchestration@claude-code-workflows",
+    "cloud-infrastructure@claude-code-workflows",
+    "kubernetes-operations@claude-code-workflows",
+    "cicd-automation@claude-code-workflows",
+    "deployment-strategies@claude-code-workflows",
+    "deployment-validation@claude-code-workflows",
+    "observability-monitoring@claude-code-workflows",
+    "incident-response@claude-code-workflows",
+    "backend-development@claude-code-workflows",
+    "backend-api-security@claude-code-workflows",
+    "data-engineering@claude-code-workflows",
+    "machine-learning-ops@claude-code-workflows"
   ]
 }

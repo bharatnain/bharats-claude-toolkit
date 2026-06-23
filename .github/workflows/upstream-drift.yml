@@ -1,0 +1,30 @@
+name: upstream-drift
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # weekly, Monday 09:00 UTC
+  workflow_dispatch: {}
+permissions:
+  issues: write
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      # Informational report only; never pass --fail-on-drift (drift is not a red build).
+      - name: Check upstream drift
+        run: python3 scripts/check_upstream.py --format human | tee report.txt
+      - name: Upsert single rolling drift issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          num=$(gh issue list --state open --search 'Upstream drift report in:title' \
+            --json number,title \
+            --jq '.[] | select(.title=="Upstream drift report") | .number' | head -1)
+          if [ -n "$num" ]; then
+            gh issue edit "$num" --body-file report.txt
+          else
+            gh issue create --title 'Upstream drift report' --body-file report.txt
+          fi

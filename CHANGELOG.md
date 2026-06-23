@@ -3,6 +3,26 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), and versions map to the toolkit's phases.
 
+## [0.8.0] - 2026-06-23 — Phase G: self-maintaining automation
+
+- Added `scripts/check_upstream.py` (stdlib-only) — `git ls-remote`s every source in
+  `THIRD_PARTY_SOURCES.json` and reports which vendored skills have drifted from their
+  recorded upstream HEAD (`--format human|json`, never fails the build on drift).
+- Added `scripts/doctor.py` plus the `/doctor` slash command — a health check over
+  settings, plugins, marketplace, and optional tools that prints the exact inline fix
+  for every ✗/⚠ line (`--format human|json`; exit 1 only on a critical failure).
+- Added `scripts/validate_assets.py` (stdlib + `node --check`) — validates `agents/`,
+  `commands/`, and `workflows/` frontmatter/meta, reusing `validate_skills.py`'s parser;
+  same `--format text|github` and exit codes so it is CI-interchangeable.
+- Added `scripts/release.py` — surgically bumps `plugin.json`, scaffolds this CHANGELOG
+  section, optionally refreshes the manifest, and creates a local tag; it NEVER commits
+  or pushes (`--bump <level>` / `--version X.Y.Z`, `--dry-run`).
+- Added the CI workflows: `upstream-drift.yml` (weekly Monday cron that upserts a single
+  rolling "Upstream drift report" issue) and `release.yml` (a pushed `vX.Y.Z` tag becomes
+  a published GitHub Release), plus the `claude-code-docs` skill that fetches the current
+  official Claude Code docs before building or explaining any Claude Code internals.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then `/reload-plugins` (or restart Claude Code).
+
 ## [0.7.0] - 2026-06-23 — Phase F: team orchestration
 
 - Added `scripts/team_sentinel.py` (session-scoped `set`/`clear` marker) and the `team_gate`

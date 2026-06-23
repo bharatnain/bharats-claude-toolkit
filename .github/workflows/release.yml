@@ -1,0 +1,22 @@
+name: Release
+
+# A pushed vX.Y.Z tag becomes a published GitHub Release. The release.py script
+# creates the local tag and prints the git commands; pushing the tag (by a human)
+# is what triggers this. --generate-notes is the simple, robust path.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{ github.ref_name }}" --generate-notes

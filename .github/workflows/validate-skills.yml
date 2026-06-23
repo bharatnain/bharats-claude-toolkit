@@ -1,9 +1,9 @@
 name: validate-skills
 on:
   push:
-    paths: ['skills/**', 'agents/**', 'SKILLS.md', 'scripts/validate_skills.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
+    paths: ['skills/**', 'agents/**', 'commands/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
   pull_request:
-    paths: ['skills/**', 'agents/**', 'SKILLS.md', 'scripts/validate_skills.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
+    paths: ['skills/**', 'agents/**', 'commands/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -13,6 +13,8 @@ jobs:
         with:
           python-version: '3.x'
       - run: python scripts/validate_skills.py --format=github
+      - name: Validate assets
+        run: python scripts/validate_assets.py --format=github
       - name: Check catalog freshness
         run: python scripts/validate_skills.py --check-catalog
       - name: Validate team profiles

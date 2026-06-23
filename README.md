@@ -7,9 +7,9 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 20 enabled plugins**, which bring **115 vendored skills + 4 agents** from this
+**Always-on = 20 enabled plugins**, which bring **116 vendored skills + 4 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
-*enable* is the plugin; the 115 skills + 4 agents are what *this* repo's plugin contributes,
+*enable* is the plugin; the 116 skills + 4 agents are what *this* repo's plugin contributes,
 and the other 19 plugins layer their skills on top.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
@@ -93,7 +93,10 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 
 **Browse the toolkit.** Once the plugin is enabled, run the [`/toolkit`](commands/toolkit.md)
 slash command to see every vendored skill grouped by domain plus the enabled external plugins —
-so you never have to remember what's installed. Full catalog: see [`SKILLS.md`](SKILLS.md).
+so you never have to remember what's installed. Full catalog: see [`SKILLS.md`](SKILLS.md). Run
+[`/doctor`](commands/doctor.md) to health-check the setup, and note the always-on
+`claude-code-docs` skill auto-consults the current official docs before Claude touches any
+Claude Code internals — so explanations track the latest release, not stale memory.
 
 ## Already set up? Re-sync
 
@@ -274,11 +277,28 @@ personal-voice samples removed). Attribution and licenses for everything vendore
 
 ---
 
-## Maintaining vendored skills
+## Maintaining the toolkit
 
-Vendored skills are point-in-time snapshots. To refresh one, re-copy its directory from the
-upstream repo and re-apply the de-branding (drop `metadata.origin: ECC`, strip ECC tool/skill
-cross-references). For frequently-updated upstreams (Vercel, Addy, Anthropic, ui-ux-pro-max)
+Every maintenance command is **stdlib-only and read-only** — they report, they never commit
+or push. `release.py` writes files and tags locally, then prints the exact `git push` for you
+to run by hand.
+
+- **Health-check** — `python3 scripts/doctor.py` (or the **`/doctor`** command) checks your
+  settings, plugins, marketplace, and optional tools, printing the inline fix for each issue.
+- **Upstream drift** — `python3 scripts/check_upstream.py` `git ls-remote`s every source in
+  `THIRD_PARTY_SOURCES.json` and flags vendored skills that have drifted from their recorded
+  upstream HEAD. The **`upstream-drift.yml`** Action runs this weekly and upserts a single
+  rolling **"Upstream drift report"** issue.
+- **Release** — `python3 scripts/release.py --bump <level>` is the one-command release: it
+  bumps the version, scaffolds the CHANGELOG section, and creates the local tag — then prints
+  the push command. It **never auto-pushes**. Add `--dry-run` to preview. Pushing the `vX.Y.Z`
+  tag triggers `release.yml`, which publishes the GitHub Release.
+- **Validate** — `validate_skills.py` (skills + `SKILLS.md` catalog) and `validate_assets.py`
+  (`agents/`, `commands/`, `workflows/`) gate every change; both also run in CI.
+
+**Refreshing a vendored skill** — vendored skills are point-in-time snapshots. Re-copy the
+directory from upstream and re-apply de-branding (drop `metadata.origin: ECC`, strip ECC
+tool/skill cross-references). For fast-moving upstreams (Vercel, Addy, Anthropic, ui-ux-pro-max)
 prefer the *enabled-plugin* tier over vendoring so they stay current automatically.
 
 ## Layout
@@ -288,7 +308,17 @@ bharats-claude-toolkit/
 ├── .claude-plugin/
 │   ├── plugin.json          # this plugin's manifest
 │   └── marketplace.json     # one-plugin marketplace (name: bharats-claude-toolkit-dev)
-├── commands/toolkit.md      # /toolkit slash command (browse skills by domain)
+├── commands/
+│   ├── toolkit.md           # /toolkit slash command (browse skills by domain)
+│   └── doctor.md            # /doctor slash command (run scripts/doctor.py + walk fixes)
+├── scripts/
+│   ├── check_upstream.py    # report vendored-skill drift vs THIRD_PARTY_SOURCES.json
+│   ├── doctor.py            # health-check settings/plugins/tools (backs /doctor)
+│   ├── validate_assets.py   # validate agents/, commands/, workflows/ assets
+│   └── release.py           # bump version + scaffold CHANGELOG + local tag (no push)
+├── .github/workflows/
+│   ├── upstream-drift.yml   # weekly cron → rolling "Upstream drift report" issue
+│   └── release.yml          # pushed vX.Y.Z tag → published GitHub Release
 ├── settings.json            # template to merge into ~/.claude/settings.json
 ├── skills/<name>/SKILL.md   # vendored skills
 ├── agents/<name>.md         # vendored agents

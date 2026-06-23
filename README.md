@@ -7,6 +7,13 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
+**Always-on = 20 enabled plugins**, which bring **114 vendored skills + 4 agents** from this
+repo plus the external plugins' own skills — all loaded lazily by description. The unit you
+*enable* is the plugin; the 114 skills + 4 agents are what *this* repo's plugin contributes,
+and the other 19 plugins layer their skills on top.
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
+
 ---
 
 ## How it's structured (3 tiers)
@@ -37,11 +44,27 @@ front is what sits in my *always-on* index vs. what stays *one command away*.
 
 ## Bootstrap a new machine
 
-**Option A — committed settings (recommended, reproducible).**
+**Recommended — run the bootstrap script:**
+
+```bash
+bash scripts/bootstrap.sh
+```
+
+It safely deep-merges this repo's [`settings.json`](settings.json) (both
+`extraKnownMarketplaces` and `enabledPlugins`) into your user-global
+`~/.claude/settings.json`, writing a timestamped backup first, and is idempotent — re-running
+it never duplicates or removes entries. Open Claude Code in any directory and the always-on
+tier is live; `ecc`/`superpowers` are registered and one command away.
+
+*Advanced/test:* set `CLAUDE_SETTINGS=/path/to/settings.json` to merge into a different target file.
+
+<details>
+<summary>Fallbacks (manual)</summary>
+
+**Option A — committed settings (manual merge).**
 Merge the contents of [`settings.json`](settings.json) into your user-global
-`~/.claude/settings.json` (it carries both `extraKnownMarketplaces` and `enabledPlugins`).
-Open Claude Code in any directory and the always-on tier is live; `ecc`/`superpowers` are
-registered and one command away.
+`~/.claude/settings.json` by hand (it carries both `extraKnownMarketplaces` and
+`enabledPlugins`). This is what `bootstrap.sh` does for you.
 
 **Option B — slash commands (manual).**
 ```text
@@ -65,6 +88,26 @@ registered and one command away.
 /plugin install agent-teams@claude-code-workflows
 /plugin install agent-orchestration@claude-code-workflows
 ```
+
+</details>
+
+**Browse the toolkit.** Once the plugin is enabled, run the [`/toolkit`](commands/toolkit.md)
+slash command to see every vendored skill grouped by domain plus the enabled external plugins —
+so you never have to remember what's installed. Full catalog: see [`SKILLS.md`](SKILLS.md).
+
+## Already set up? Re-sync
+
+When this repo's `settings.json` changes — a new always-on plugin or marketplace — pull and
+re-run the bootstrap to pick it up:
+
+```bash
+git pull
+bash scripts/bootstrap.sh   # backup + union-merge; won't disable anything you added
+/reload-plugins             # activate in this session (or restart Claude Code)
+```
+
+The merge is a union: it only *adds* the new entries and never removes plugins you enabled
+yourself. Returning users only need these three lines.
 
 ---
 
@@ -197,6 +240,7 @@ bharats-claude-toolkit/
 ├── .claude-plugin/
 │   ├── plugin.json          # this plugin's manifest
 │   └── marketplace.json     # one-plugin marketplace (name: bharats-claude-toolkit-dev)
+├── commands/toolkit.md      # /toolkit slash command (browse skills by domain)
 ├── settings.json            # template to merge into ~/.claude/settings.json
 ├── skills/<name>/SKILL.md   # vendored skills
 ├── agents/<name>.md         # vendored agents

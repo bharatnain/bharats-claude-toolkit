@@ -1,9 +1,9 @@
 name: validate-skills
 on:
   push:
-    paths: ['skills/**', 'scripts/validate_skills.py', '.github/workflows/validate-skills.yml']
+    paths: ['skills/**', 'agents/**', 'SKILLS.md', 'scripts/validate_skills.py', '.github/workflows/validate-skills.yml']
   pull_request:
-    paths: ['skills/**', 'scripts/validate_skills.py', '.github/workflows/validate-skills.yml']
+    paths: ['skills/**', 'agents/**', 'SKILLS.md', 'scripts/validate_skills.py', '.github/workflows/validate-skills.yml']
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -13,3 +13,5 @@ jobs:
         with:
           python-version: '3.x'
       - run: python scripts/validate_skills.py --format=github
+      - name: Check catalog freshness
+        run: python scripts/validate_skills.py --check-catalog

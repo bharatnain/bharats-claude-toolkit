@@ -1,7 +1,18 @@
 {
   "name": "bharats-claude-toolkit",
-  "description": "My personal Claude Code setup: skills, settings, tooling",
-  "version": "0.4.0",
+  "displayName": "Bharat's Claude Toolkit",
+  "description": "Bharat's personal Claude Code setup, packaged as a plugin + marketplace: 114 vendored skills and 4 agents spanning engineering, AI, product, design, copy/UX, go-to-market, marketing, and enterprise & ops, plus a curated always-on plugin tier and an on-demand firehose one command away.",
+  "version": "0.5.0",
+  "keywords": [
+    "claude-code",
+    "skills",
+    "agents",
+    "plugin",
+    "marketplace",
+    "productivity",
+    "toolkit",
+    "ai-engineering"
+  ],
   "author": { "name": "Bharat Nain" },
   "repository": "https://github.com/bharatnain/bharats-claude-toolkit",
   "license": "MIT"

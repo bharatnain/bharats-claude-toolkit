@@ -166,6 +166,24 @@ track long-horizon work. For lighter needs, `pm-execution` (above) covers PRDs/r
 
 ---
 
+## Team orchestration
+
+`/team <goal>` spins up a maturity-matched multi-agent team to deliver a goal end-to-end. The
+thin `/team` command defers to the **`team-orchestration`** skill (the brain), which runs a
+6-step loop: detect the codebase maturity profile (`team_profile_detect.py`), pick the roster
+from that profile's required roles, activate a session **sentinel** (`team_sentinel.py set`)
+so the **gate hooks** + `quality_gate.py` enforce the profile's checks automatically,
+decompose the goal into acceptance-criteria-bearing tasks (beads if `bd` is present, native
+Task tools otherwise), spawn worktree-isolated teammates per the profile's isolation flag, and
+tear the session down (`team_sentinel.py clear`) at the end. Tasks pair with the beads tracker
+above when available.
+
+**Solo-safe by design:** with no sentinel marker, the gate hooks are pure no-ops — installing
+this changes nothing for solo work until `/team` activates a session, and teardown returns the
+hooks to no-ops.
+
+---
+
 ## What's vendored in this plugin
 
 **Workflow & engineering** — `tdd-workflow`, `verification-loop`, `codebase-onboarding`,

@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), and versions map to the toolkit's phases.
 
+## [0.7.0] - 2026-06-23 — Phase F: team orchestration
+
+- Added `scripts/team_sentinel.py` (session-scoped `set`/`clear` marker) and the `team_gate`
+  hooks that read it, so a live session activates the quality gates automatically while
+  staying a pure no-op when no session is active.
+- Added the multi-agent workflows: the `/team <goal>` slash command (thin) plus the
+  `team-orchestration` skill (the brain) that detects the maturity profile, staffs the
+  roster, sets the sentinel, decomposes the goal into acceptance-criteria-bearing tasks
+  (beads or native Task tools), spawns worktree-isolated teammates, and tears the session
+  down. References split into `roster-matrix.md` and `beads-contract.md`.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then `/reload-plugins` (or restart Claude Code).
+
 ## [0.6.0] - 2026-06-23 — Desktop notifications
 
 - Added a plugin hook (`hooks/hooks.json` + `hooks/notify.py`) that fires a desktop notification

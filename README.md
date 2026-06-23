@@ -7,9 +7,9 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 20 enabled plugins**, which bring **114 vendored skills + 4 agents** from this
+**Always-on = 20 enabled plugins**, which bring **115 vendored skills + 4 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
-*enable* is the plugin; the 114 skills + 4 agents are what *this* repo's plugin contributes,
+*enable* is the plugin; the 115 skills + 4 agents are what *this* repo's plugin contributes,
 and the other 19 plugins layer their skills on top.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
@@ -181,6 +181,15 @@ above when available.
 **Solo-safe by design:** with no sentinel marker, the gate hooks are pure no-ops — installing
 this changes nothing for solo work until `/team` activates a session, and teardown returns the
 hooks to no-ops.
+
+### Experimental: agent-teams gates
+
+When run with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, three additional team
+lifecycle events — `TaskCreated`, `TaskCompleted`, `TeammateIdle` — route into the
+same gate hook. The wiring is **additive and safe when the flag is off**: the
+events only fire under the experimental flag, and the hook stays sentinel-gated and
+fails open. The payload field names were inferred and must be verified live — see
+[`docs/agent-teams-probe.md`](docs/agent-teams-probe.md) for the one-time probe runbook.
 
 ---
 

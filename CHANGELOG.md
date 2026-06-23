@@ -13,6 +13,10 @@ All notable changes to this project are documented here. Format follows
   roster, sets the sentinel, decomposes the goal into acceptance-criteria-bearing tasks
   (beads or native Task tools), spawns worktree-isolated teammates, and tears the session
   down. References split into `roster-matrix.md` and `beads-contract.md`.
+- Wired the additive experimental agent-teams events (`TaskCreated`, `TaskCompleted`,
+  `TeammateIdle`) into the `team_gate` hook (fail-open, sentinel-gated — no-op with the
+  `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` flag off), plus the `docs/agent-teams-probe.md`
+  runbook for verifying the inferred event payload fields live.
 - **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then `/reload-plugins` (or restart Claude Code).
 
 ## [0.6.0] - 2026-06-23 — Desktop notifications

@@ -139,6 +139,39 @@ vendored `research-ops`.
 and a paid fal.ai `FAL_KEY` (`fal-ai-media`). No good Claude skill exists for streaming/codec
 *product* engineering (WebRTC/HLS) — use libraries like SRS/mediamtx directly.
 
+### Running the company (the enterprise layer)
+
+Skills that take the toolkit from "build & market a product" to "run a company end-to-end."
+
+**Exec & strategy (C-suite advisory)** — `ceo-advisor`, `cfo-advisor`, `cro-advisor`, `cmo-advisor`,
+`cpo-advisor`, `general-counsel-advisor`, `board-deck-builder`, `executive-mentor` (adversarial
+thinking partner), `competitive-intel`, `ma-playbook`, `scenario-war-room`, `agent-protocol`
+(inter-advisor coordination)
+
+**Commercial & finance** — `pricing-strategist`, `deal-desk`, `commercial-policy`,
+`commercial-forecaster`, `partnerships-architect`, `channel-economics`, `rfp-responder` (Shipley
+method)
+
+**Enterprise sales** — `sales-methodology-implementer` (MEDDIC/Challenger/SPIN), `deal-review-framework`,
+`sales-forecast-builder`, `pipeline-health-analyzer`, `quota-setting-calculator`,
+`territory-planning-optimizer`, `sales-comp-plan-designer`, `objection-pattern-detector`
+
+**Customer success & retention** — `qbr-builder`, `health-score-review`, `renewal-readiness`,
+`renewal-forecast`, `churn-analysis`, `churn-rca`, `expansion-business-case`, `expansion-signal`,
+`success-plan-builder`, `onboarding-plan`, `kickoff-prep`, `ttv-analysis` (real GRR/NRR formulas)
+
+**Business operations** — `procurement-optimizer`, `process-mapper`, `vendor-management`
+
+**Enterprise software (sellable-to-enterprise engineering)** — `workos-enterprise-auth`
+(SSO/SAML, SCIM, audit logs), `openfga` + `rego-skill` + `security-rbac-design` (fine-grained authz
+& policy-as-code — pick the model that fits your stack), `api-webhook-design`, `api-rate-limiting`,
+`microservices-api-gateway`, `api-idempotency-keys`, and `security-questionnaire-responder`
+(the recurring SIG/CAIQ/VSA grind). *`workos-enterprise-auth` fetches live WorkOS docs via WebFetch.*
+
+**Compliance-as-code** — `soc2`, `iso-27001`, `gdpr`, `hipaa`, `pci-dss` (controls, evidence,
+policy templates). For an alternative ReBAC engine, SpiceDB's `authzed/authzed-marketplace` is
+one clone away; for transcript-driven MEDDPICC, `extruct-ai/gtm-cowork-skills` is enable-only (no license).
+
 > **Not duplicated:** `code-review`, `security-review`, `deep-research`, `verify`, and `simplify`
 > ship natively with Claude Code — use those directly.
 

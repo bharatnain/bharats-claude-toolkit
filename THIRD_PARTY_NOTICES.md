@@ -48,6 +48,45 @@ Copyright (c) the claude-ffmpeg-skill authors
 
 - Skill: `ffmpeg-usage`
 
+### Alireza Rezvani — business & C-suite skills — https://github.com/alirezarezvani/claude-skills
+Copyright (c) 2025 Alireza Rezvani
+
+- Commercial: `pricing-strategist`, `deal-desk`, `commercial-forecaster`, `commercial-policy`,
+  `partnerships-architect`, `channel-economics`, `rfp-responder`
+- C-suite advisory: `board-deck-builder`, `executive-mentor`, `ceo-advisor`, `cfo-advisor`,
+  `cro-advisor`, `cmo-advisor`, `cpo-advisor`, `general-counsel-advisor`, `competitive-intel`,
+  `ma-playbook`, `scenario-war-room`, `agent-protocol`
+- Business operations: `procurement-optimizer`, `process-mapper`, `vendor-management`
+
+### OneWave AI — enterprise sales skills — https://github.com/OneWave-AI/claude-skills
+Copyright (c) 2025 OneWave AI
+
+- Skills: `sales-methodology-implementer`, `deal-review-framework`, `sales-forecast-builder`,
+  `pipeline-health-analyzer`, `quota-setting-calculator`, `territory-planning-optimizer`,
+  `sales-comp-plan-designer`, `objection-pattern-detector`
+
+### WorkOS — enterprise identity skill — https://github.com/workos/skills
+Copyright (c) 2026 WorkOS
+
+- Skill: `workos-enterprise-auth` (SSO/SAML, SCIM directory sync, RBAC, audit logs, AuthKit;
+  fetches live WorkOS docs via WebFetch at runtime)
+
+### Void3110 — OPA/Rego policy-as-code skill — https://github.com/Void3110/rego-skill
+Copyright (c) 2026 Void3110
+
+- Skill: `rego-skill`
+
+### Intense Visions, Inc. — API & RBAC engineering skills — https://github.com/intense-visions/harness-engineering
+Copyright (c) 2026 Intense Visions, Inc.
+
+- Skills: `security-rbac-design`, `api-webhook-design`, `api-rate-limiting`,
+  `microservices-api-gateway`, `api-idempotency-keys` (vendored from `agents/skills/claude-code/`)
+
+### Hemant Naik — compliance-as-code skills — https://github.com/Sushegaad/Claude-Skills-Governance-Risk-and-Compliance
+Copyright (c) 2026 Hemant Naik
+
+- Skills: `soc2`, `iso-27001`, `gdpr`, `hipaa`, `pci-dss` (extracted from upstream `.skill` archives)
+
 ### MIT License text
 
 The MIT terms below apply to each MIT-licensed component listed above, with its
@@ -87,6 +126,30 @@ Licensed under the Apache License, Version 2.0 — https://www.apache.org/licens
 > Note: Anthropic's document skills (`docx`, `pdf`, `pptx`, `xlsx`) are source-available,
 > **not** open source, and are intentionally **not** vendored here. They are available
 > natively in Claude Code regardless.
+
+### SuccessCOACHING — enterprise customer-success skills — https://github.com/t0ddc3by/claude-for-customer-success
+Copyright 2026 SuccessCOACHING
+
+- Skills: `qbr-builder`, `health-score-review`, `renewal-readiness`, `renewal-forecast`,
+  `churn-analysis`, `churn-rca`, `expansion-business-case`, `expansion-signal`,
+  `success-plan-builder`, `onboarding-plan`, `kickoff-prep`, `ttv-analysis`
+
+Each retains the original Apache License 2.0 as `LICENSE.txt` in its own skill directory.
+(GitHub's API mislabels the repo `NOASSERTION`; the in-repo `LICENSE` is verbatim Apache 2.0.)
+
+### OpenFGA — fine-grained authorization skill — https://github.com/openfga/agent-skills
+- Skill: `openfga` (ReBAC/Zanzibar modeling: types, relations, tuples, CEL/ABAC conditions, `.fga.yaml` tests)
+
+Retains the original Apache License 2.0 as `skills/openfga/LICENSE.txt`.
+
+---
+
+## First-party skills
+
+Authored for this toolkit (not third-party), MIT-licensed under this repo:
+
+- `security-questionnaire-responder` — recurring vendor-security-questionnaire (SIG/CAIQ/VSA)
+  workflow with an evidence-mapped answer library; complements `rfp-responder` and the compliance skills.
 
 ---
 

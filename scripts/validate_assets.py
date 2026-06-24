@@ -2,9 +2,9 @@
 """Validate agents/, commands/, and workflows/ assets.
 
 Stdlib-only for the Python parts; the ONLY external process call is
-`node --check <file>` (node is already a documented toolkit dependency for
-workflows/, so this introduces no NEW runtime dep). Reuses parse_frontmatter
-from validate_skills.py rather than copy-pasting (DRY).
+`node --check --input-type=module` (fed via stdin; node is already a documented
+toolkit dependency for workflows/, so this introduces no NEW runtime dep).
+Reuses parse_frontmatter from validate_skills.py rather than copy-pasting (DRY).
 
 Decision (RECORDED): a SEPARATE script from validate_skills.py rather than
 extending it. validate_skills.py is single-domain (skill/agent frontmatter +
@@ -30,6 +30,16 @@ META_RE = re.compile(r"export\s+const\s+meta\s*=\s*\{")
 NAME_KEY_RE = re.compile(r"\bname\s*:")
 DESC_KEY_RE = re.compile(r"\bdescription\s*:")
 PHASES_KEY_RE = re.compile(r"\bphases\s*:")
+
+# A *.workflow.js script is NOT a standalone module: the Workflow runtime hoists
+# its `import`s, treats `export const meta` as a module export, and wraps the rest
+# of the body — which uses top-level `return`/`await` — in an async function. So a
+# plain `node --check <file>` can never pass on one. To syntax-check faithfully we
+# reproduce that wrap (imports stay at module top; `export const meta` becomes a
+# plain `const`; everything else goes inside an async function) and check the
+# result as an ES module via stdin. lib/*.js are real modules, checked as-is.
+IMPORT_RE = re.compile(r"^\s*import\b.*$", re.M)
+EXPORT_META_RE = re.compile(r"\bexport\s+(const\s+meta\b)")
 
 
 class Finding:
@@ -142,6 +152,35 @@ def check_meta(text, rel, path, findings):
                                     f"{rel}: meta missing '{key}'"))
 
 
+def node_check_source(source):
+    """`node --check --input-type=module` on `source` via stdin.
+
+    Returns (ok, detail). detail is the first stderr line on failure, or the
+    sentinel "<node-missing>" when node is not installed (caller decides how to
+    report — node is a documented workflow dependency, so missing is an error)."""
+    try:
+        proc = subprocess.run(
+            ["node", "--check", "--input-type=module"],
+            input=source, capture_output=True, text=True, timeout=20,
+        )
+    except FileNotFoundError:
+        return False, "<node-missing>"
+    if proc.returncode == 0:
+        return True, ""
+    return False, (proc.stderr.strip().splitlines() or ["syntax error"])[0]
+
+
+def wrap_workflow_source(src):
+    """Reproduce the Workflow runtime's wrap so a *.workflow.js body becomes a
+    syntactically valid ES module: imports hoisted to module top, `export const
+    meta` demoted to a plain `const`, and the rest wrapped in an async function
+    (legalizing its top-level `return`/`await`)."""
+    imports = IMPORT_RE.findall(src)
+    body = IMPORT_RE.sub("", src)
+    body = EXPORT_META_RE.sub(r"\1", body)
+    return "\n".join(imports) + "\nasync function __wf(){\n" + body + "\n}\n"
+
+
 def check_workflows(root, findings):
     """workflows/*.js AND workflows/lib/*.js: W1 `node --check` passes;
     *.workflow.js also: W2 meta has name+description+phases."""
@@ -153,22 +192,19 @@ def check_workflows(root, findings):
     for js in js_files:
         count += 1
         rel = str(js.relative_to(root))
-        try:
-            proc = subprocess.run(
-                ["node", "--check", str(js)],
-                capture_output=True, text=True, timeout=20,
-            )
-        except FileNotFoundError:
+        src = js.read_text(encoding="utf-8")
+        is_workflow = js.name.endswith(".workflow.js")
+        ok, detail = node_check_source(wrap_workflow_source(src) if is_workflow else src)
+        if detail == "<node-missing>":
             # node missing: fail loudly so CI does not silently pass.
             findings.append(Finding("workflows", str(js), "error", "W1",
                                     f"{rel}: 'node' not found — cannot run node --check"))
             continue
-        if proc.returncode != 0:
-            first = (proc.stderr.strip().splitlines() or ["syntax error"])[0]
+        if not ok:
             findings.append(Finding("workflows", str(js), "error", "W1",
-                                    f"{rel}: node --check failed: {first}"))
-        if js.name.endswith(".workflow.js"):
-            check_meta(js.read_text(encoding="utf-8"), rel, str(js), findings)
+                                    f"{rel}: node --check failed: {detail}"))
+        if is_workflow:
+            check_meta(src, rel, str(js), findings)
     return count
 
 

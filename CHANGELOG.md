@@ -3,6 +3,19 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), and versions map to the toolkit's phases.
 
+## [0.8.1] - 2026-06-24
+
+- Removed the redundant `"hooks": "./hooks/hooks.json"` field from `.claude-plugin/plugin.json`.
+  The standard `hooks/hooks.json` is loaded automatically, so the explicit reference caused a
+  duplicate-hooks load error on `/doctor`. Hook behavior is unchanged.
+- Fixed `scripts/validate_assets.py`: it ran a plain `node --check <file>` on `*.workflow.js`
+  scripts, which always failed (5 false-positive errors) because those scripts use the Workflow
+  runtime's top-level `return`/`await` + `export const meta` form and are not standalone modules.
+  The W1 check now reproduces the runtime's wrap (imports hoisted, `meta` demoted, body wrapped in
+  an async function) and checks the result as an ES module via stdin, while still catching genuine
+  syntax errors. `validate_assets.py` is now clean (16 assets, 0 errors).
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then `/reload-plugins` (or restart Claude Code).
+
 ## [0.8.0] - 2026-06-23 — Phase G: self-maintaining automation
 
 - Added `scripts/check_upstream.py` (stdlib-only) — `git ls-remote`s every source in

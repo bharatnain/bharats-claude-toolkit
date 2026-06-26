@@ -1,0 +1,1688 @@
+# AI Engineering Masterclass — Sources
+
+_1684 unique sources across the technique chapters, curriculum, and team blueprint. As of 2026-06-25._
+
+- "Not yet clinically ready" critique — PMC12547120: https://pmc.ncbi.nlm.nih.gov/articles/PMC12547120/ (accessed 2026-06-25)
+- AGENTS.md (OpenAI, Aug 2025) and Agentic AI Foundation under the Linux Foundation (Dec 2025)
+- AI Agent Development Cost 2026 — Softteco (softteco.com/blog/ai-agent-development-cost)
+- AI21, Long-horizon agentic test-time compute — https://www.ai21.com/blog/test-time-compute-swe-bench/
+- ARC Prize, OpenAI o3 breakthrough — https://arcprize.org/blog/oai-o3-pub-breakthrough (Dec 2024)
+- ARES adaptive reasoning-effort — https://arxiv.org/abs/2603.07915 (2026)
+- AWS, Verifiable-rewards RL with GRPO on SageMaker — https://aws.amazon.com/blogs/machine-learning/overcoming-reward-signal-challenges-verifiable-rewards-based-reinforcement-learning-with-grpo-on-sagemaker-ai/ (2026)
+- Agent Context Engineering 2026: Sliding Windows, Hierarchical Summarization, Memory Offloading — AgentMarketCap, Apr 2026 (agentmarketcap.ai/blog/2026/04/11/agent-context-engineering-sliding-windows-memory-2026)
+- Agentic RAG Explained — freeacademy.ai (2026): https://freeacademy.ai/blog/agentic-rag-ai-agents-supercharge-retrieval-2026
+- Agentic RAG Failure Modes: Retrieval Thrash, Tool Storms, Context Bloat — Towards Data Science (accessed 2026-06-25): https://towardsdatascience.com/agentic-rag-failure-modes-retrieval-thrash-tool-storms-and-context-bloat-and-how-to-spot-them-early/
+- Agentic RAG enterprise guide — Data Nucleus (2026): https://datanucleus.dev/rag-and-agentic-ai/agentic-rag-enterprise-guide-2026
+- Agentic RAG in 2026: Architecture Patterns, Frameworks & When to Use It — jobsbyculture.com (accessed 2026-06-25): https://jobsbyculture.com/blog/agentic-rag-guide-2026
+- Agentic RAG: A Survey — arXiv 2501.09136
+- Agentic RAG: The 2026 Production Guide — MarsDevs: https://www.marsdevs.com/guides/agentic-rag-2026-guide
+- Anthropic Claude fine-tuning via Amazon Bedrock, AWS docs (2026-06-25)
+- Anthropic, Measuring Faithfulness in Chain-of-Thought Reasoning — https://www-cdn.anthropic.com/827afa7dd36e4afbb1a49c735bfbb2c69749756e/measuring-faithfulness-in-chain-of-thought-reasoning.pdf
+- Automated rubric generation — Autorubric https://arxiv.org/abs/2603.00077 ; RubricHub https://arxiv.org/pdf/2601.08430 ; Medical Dialogue Rubrics https://arxiv.org/abs/2601.15161 ; Scalable Stewardship https://arxiv.org/pdf/2512.19691 (accessed 2026-06-25)
+- Beyond English-Centric Training, Sep 2025 (46.3/66.8/71.5)
+- CNN, DeepSeek AI training cost — https://www.cnn.com/2025/09/19/business/deepseek-ai-training-cost-china-intl (Sep 2025)
+- Catastrophic forgetting: arXiv 2308.08747, arXiv 2406.04836 and 2026 follow-ups
+- Chain of Thought Monitorability — https://arxiv.org/pdf/2507.11473 (2025)
+- Chu et al., SFT Memorizes RL Generalizes, Jan 2025
+- Claude Opus 4.8 for Coding Agents — verdent.ai (2026); Claude Opus coverage — datacamp.com
+- Clinical World Model / Skill-Mix — https://arxiv.org/abs/2604.08226 (accessed 2026-06-25)
+- CodeMonkeys (test-time search for code) — https://arxiv.org/abs/2501.14723 (2025)
+- Coding-model pipelines and SWE-Bench Verified/Pro coverage (2026-06-25)
+- Communications of the ACM, Feb 2026 — model collapse in production (cacm.acm.org; aibuzz.blog)
+- Context Engineering: A Practical Guide (2026) — Sourcegraph (sourcegraph.com/blog/context-engineering)
+- Context Engineering: Complete 2026 Field Guide — Taskade (taskade.com/blog/context-engineering)
+- Context Rot — Chroma, 2025; 2026 long-context benchmark write-ups
+- Context engineering: memory, compaction, tool clearing — Claude Cookbook (platform.claude.com/cookbook/tool-use-context-engineering)
+- Corrective RAG (CRAG) — Analytics Vidhya (2024): https://www.analyticsvidhya.com/blog/2024/12/corrective-rag/
+- DRAGON — PMC12084576 (accessed 2026-06-25)
+- Debunk the Myth of SFT Generalization, arXiv 2510.00237, 2025
+- Decagon ($4.5B, Jan 2026) and Sierra ($15.8B, May 2026) — vendor announcements
+- Decomposing Physician Disagreement in HealthBench — https://arxiv.org/pdf/2602.22758 (accessed 2026-06-25)
+- DeepEval — LLM-as-a-Judge in 2026 (deepeval.com/guides/guides-llm-as-a-judge)
+- DeepMind AlphaProof — Nature s41586-025-09833-y (2025)
+- DeepSeek-R1 paper (79.8% AIME 2024; R1-Zero 71.0%) — arXiv:2501.12948
+- DeepSeek-R1: Incentivizing Reasoning Capability via RL — https://arxiv.org/abs/2501.12948 (Jan 2025)
+- Defense: Scale AI Defense Llama (Nov 2024, SFT+RLHF), Palantir AIP, WARBENCH 2026
+- Demystifying deep search (EvidenceLoop) — arXiv 2510.05137: https://arxiv.org/pdf/2510.05137
+- Domain benchmark map / FinBen / LegalBench / TRIDENT — https://kili-technology.com/blog/domain-specific-llm-benchmarks-guide ; https://arxiv.org/pdf/2507.21134 (accessed 2026-06-25)
+- EU AI Act/GDPR: gblock.app, bluegen.ai, insideprivacy.com, bsk.com
+- Effective context engineering for AI agents — Anthropic (anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- Emergent misalignment from narrow data: arXiv 2511.20104
+- EmergentMind, DeepSeek-R1-Zero — https://www.emergentmind.com/topics/deepseek-r1-zero (2026)
+- Empowering Multi-Turn Tool-Integrated Reasoning with Group Turn Policy Optimization (GTPO) — arXiv:2511.14846
+- Environment Scaling for Agentic Experience Collection: A Survey — arXiv:2511.09586
+- Epoch AI — Will we run out of data? (2026–2032 utilization window)
+- FDA AI/ML SaMD lifecycle, healthcare AI hiring/observability/compliance — https://intuitionlabs.ai/articles/fda-ai-ml-samd-guidance-compliance ; https://www.confident-ai.com/knowledge-base/compare/best-ai-observability-tools-for-healthcare-companies-2026 ; https://www.kore1.com/healthcare-ai-hiring-2026/ ; https://www.digitalapplied.com/blog/llm-benchmark-methodology-2026-contamination-leaderboard-guide (accessed 2026-06-25)
+- Finance: BloombergGPT, FinGPT, PIXIU, FinLoRA (2023-2026)
+- Fine-Tuning Engineer role/market: secondtalent.com (2026)
+- Fine-tuned-LLM eval playbook; futureagi.com/blog/evaluating-fine-tuned-llms-2026 (2026-06-25)
+- FrugalRAG — arXiv 2507.07634: https://arxiv.org/pdf/2507.07634
+- GEPA: Reflective Prompt Evolution Can Outperform RL — arXiv 2507.19457, ICLR 2026 Oral (arxiv.org/pdf/2507.19457)
+- Gartner: 'context engineering is in, prompt engineering is out,' July 28 2025
+- General-purpose vs specialized clinical AI (Nature Medicine, June 2026) — https://www.nature.com/articles/s41591-026-04431-5 (accessed 2026-06-25)
+- Google Vertex AI Gemini 2.5 SFT (retirement ~Oct 16-17 2026), Vertex docs (2026-06-25)
+- Harvey customer figures — Sacra / Harvey materials (2026)
+- HealthBench (OpenAI, May 2025): https://openai.com/index/healthbench/ ; https://arxiv.org/pdf/2505.08775 ; https://www.emergentmind.com/topics/healthbench (accessed 2026-06-25)
+- HealthBench Professional (arXiv, Apr 2026): https://arxiv.org/abs/2604.27470 ; https://cdn.openai.com/dd128428-0184-4e25-b155-3a7686c7d744/HealthBench-Professional.pdf (accessed 2026-06-25)
+- Healthcare clinical SFT: JMIR, npj Digital Medicine (2025-2026)
+- Hiring/tooling: kore1.com, turing.com, secondtalent.com, innodatainc.recruitee.com, k2view.com, tonic.ai, buildmvpfast.com (2026)
+- How Top AI Labs Are Building RL Agents in 2026 — blog.dailydoseofds.com (2026-06)
+- How we built our multi-agent research system — Anthropic (anthropic.com/engineering/multi-agent-research-system)
+- Hugging Face TRL SFTTrainer docs, huggingface.co/docs/trl/sft_trainer (2026-06-25)
+- Hugging Face — Cosmopedia (huggingface.co/blog/cosmopedia) and Nemotron-Personas (huggingface.co/blog/nvidia), accessed 2026-06-25
+- Hugging Face, DeepSeek-R1 explained — https://huggingface.co/blog/NormalUhr/deepseek-r1-explained (2025)
+- ICLR 2025 tabular synthesis for fraud (iclr.cc); arXiv 2602.09288 — financial synthetic data privacy/utility
+- Judge bias — "Neither Valid nor Reliable?" https://arxiv.org/pdf/2508.18076 ; "Reliability without Validity" https://arxiv.org/html/2606.19544 (accessed 2026-06-25)
+- KLong: Training LLM Agents for Extremely Long-horizon Tasks — arXiv:2602.17547 (2026)
+- LIMA: Less Is More for Alignment, Meta 2023
+- LLM Context Window Management and Long-Context Strategies 2026 — Zylos (zylos.ai/research/2026-01-19-llm-context-management)
+- LLM-judge speed/reliability — npj Digital Medicine: https://www.nature.com/articles/s41746-025-02005-2 (accessed 2026-06-25)
+- LangSmith vs. Braintrust — Braintrust (braintrust.dev/articles/langsmith-vs-braintrust)
+- Legal: HSBC-Harvey announcement 2026-01-20; HSBC, Harvey, Law.com, Artificial Lawyer
+- Lie to Me: How Faithful Is CoT in Open-Weight Reasoning Models? — https://arxiv.org/html/2603.22582v1 (2026)
+- LiveMedBench — https://arxiv.org/abs/2602.10367 ; https://arxiv.org/html/2602.10367v1 (accessed 2026-06-25)
+- LivePerson Syntrix (liveperson.com/syntrix); DefenseScoop 2026-06-16 Ukraine drone footage
+- LoRA (Hu et al. 2021) and QLoRA (Dettmers et al. 2023)
+- LoRA/QLoRA guides: effloow.com, sitepoint.com, futureagi.com (2026)
+- LongCat-Flash-Thinking Technical Report; DORA >3x async speedup — arXiv:2509.18883
+- MCP donated to Linux Foundation's Agentic AI Foundation, Dec 9 2025 (co-founded Anthropic/Block/OpenAI, Google support) — confirmed via claude-api skill reference
+- Managed SFT pricing: Together AI/Fireworks, OpenAI; eesel.ai, docs.fireworks.ai, pricepertoken.com (2026-06-25)
+- Managing Agentic AI Costs at Scale — Cockroach Labs: https://www.cockroachlabs.com/blog/agentic-ai-costs-at-scale/
+- MedAgentBench (NEJM AI) — https://ai.nejm.org/doi/full/10.1056/AIdbp2500144 (accessed 2026-06-25)
+- MedGemma 1.5 Technical Report — https://arxiv.org/abs/2604.05081 (accessed 2026-06-25)
+- MedGemma 1.5 technical report — Google, arXiv 2604.05081, May 2026; model card (69% MedQA, 4B)
+- MedHELM — https://medhelm.org/ ; https://www.nature.com/articles/s41591-025-04151-2 (accessed 2026-06-25)
+- Mem0 LOCOMO benchmark figures, reported April 2026 (mem0.ai)
+- Mordor Intelligence synthetic data market (~$710M 2026 → ~$3.67B 2031); github.com/NVIDIA-AI-Blueprints/data-flywheel (deprecated Apr 2026)
+- Multi-LoRA serving (S-LoRA/LoRAX/Predibase); awesomeagents.ai (2026-06-25)
+- NVIDIA Cosmos (nvidia.com/en-us/ai/cosmos; axios.com 2026-06-01); NVIDIA Synthetic Data for Agentic AI
+- Nathan Lambert, RLHF Book Ch.15 (rlhfbook.com/c/15-synthetic), accessed 2026-06-25
+- Nathan Lambert, RLHF Book, rlhfbook.com (2026-06-25)
+- Natural Emergent Misalignment from Reward Hacking in Production RL — arXiv:2511.18397 (Nov 2025)
+- OWASP GenAI — Prompt Injection (LLM01) + Agentic Top 10 (genai.owasp.org)
+- OpenAI fine-tuning wind-down and RFT (~$100/hr o4-mini-class), OpenAI docs (2026-06-25)
+- PRBench Finance/Law — https://labs.scale.com/leaderboard/prbench-legal ; https://arxiv.org/abs/2511.11562 (accessed 2026-06-25)
+- PhysicianBench — https://arxiv.org/abs/2605.02240 ; https://healthrex.github.io/PhysicianBench/ (accessed 2026-06-25)
+- Post-Training in 2026: GRPO, DAPO, RLVR & Beyond — llm-stats.com (2026)
+- ProRL: Prolonged Reinforcement Learning Expands Reasoning Boundaries — arXiv:2505.24864 (NeurIPS 2025); follow-ups arXiv:2602.08281, 2512.01970
+- Prompt Engineering Salary: A 2026 Guide — Coursera (coursera.org/articles/prompt-engineering-salary)
+- Prompting-vs-RAG-vs-fine-tuning (not a ladder): thenewstack.io, bigdataboutique.com (2026)
+- Query-Adaptive RAG routing — ragaboutit.com (accessed 2026-06-25): https://ragaboutit.com/query-adaptive-rag-routing-complex-questions-to-multi-hop-retrieval-while-keeping-simple-queries-fast/
+- R1-Searcher — arXiv 2503.05592: https://arxiv.org/pdf/2503.05592
+- RL Environments for Agentic AI: Who Will Win the Training & Verification Layer — datagravity.dev / Wing VC (2026)
+- RL Heals OOD Forgetting, arXiv 2509.12235, 2025
+- RL Post-training for Tool-Using Agents: GRPO, Async RL, Reward Design 2026 — zylos.ai (2026-04-10)
+- RLHF in 2026: when to pick PPO, DPO, or verifier-based RL — dev.to (2026)
+- Recurrent-Depth VLA (latent reasoning, robotics) — https://arxiv.org/abs/2602.07845 (2026)
+- Robotics VLAs: pi0/Physical Intelligence, OpenVLA, MolmoAct, LeRobot (2025-2026)
+- Rubric-based eval methodology / Agentic Benchmark Checklist — https://medium.com/@adnanmasood/rubric-based-evals-llm-as-a-judge-methodologies-and-empirical-validation-in-domain-context-71936b989e80 ; https://openreview.net/forum?id=E58HNCqoaA (accessed 2026-06-25)
+- SWE-bench-Live — https://arxiv.org/pdf/2505.23419 (accessed 2026-06-25)
+- Scaling Managed Agents — Anthropic (anthropic.com/engineering/managed-agents)
+- Scaling RL: Environments, Reward Hacking, Agents, Data — newsletter.semianalysis.com
+- Sea AI Lab, Understanding the aha moment (contested) — https://sail.sea.com/blog/articles/62 ; https://arxiv.org/pdf/2503.20783 (2025)
+- Search-R1 — arXiv 2503.09516: https://arxiv.org/abs/2503.09516 / GitHub: https://github.com/PeterGriffinJin/Search-R1
+- Self-RAG — arXiv 2310.11511; CRAG — arXiv 2401.15884
+- Self-Reflective RAG with LangGraph — LangChain: https://www.langchain.com/blog/agentic-rag-with-langgraph
+- Self-distillation SFT of protein language models, Dec 2025
+- Silicon Valley bets big on 'environments' to train AI agents — techcrunch.com (2025-09-21)
+- Snell et al., Scaling LLM Test-Time Compute Optimally — https://arxiv.org/abs/2408.03314 (2024)
+- State of Context Engineering in 2026 — SwirlAI, Aurimas Griciūnas (newsletter.swirlai.com/p/state-of-context-engineering-in-2026)
+- Systematic Prompt Optimization with GEPA — MLflow (mlflow.org/blog/mlflow-prompt-optimization)
+- Tencent Persona Hub (github.com/tencent-ailab/persona-hub; paper mid-2024, ~200K released)
+- Test-time scaling vs knowledge-intensive lookup — https://arxiv.org/abs/2509.06861 (2025)
+- The Complete Guide to DeepSeek Models — bentoml.com (2026)
+- The GenAI Divide: State of AI in Business 2025 — MIT NANDA, Aug 2025
+- The Landscape of Agentic RL for LLMs: A Survey — arXiv:2509.02547
+- The Register, DeepSeek training cost — https://www.theregister.com/2025/09/19/deepseek_cost_train/ (Sep 2025)
+- The best AI agent frameworks in 2026 — LangChain (langchain.com/resources/ai-agent-frameworks)
+- Top Agentic Frameworks for Building Applications 2026 — JetBrains, Jun 2026 (blog.jetbrains.com/pycharm/2026/06/top-agentic-frameworks-for-building-applications-2026)
+- Towards a Science of Scaling Agent Systems — Google Research / MIT
+- Unsloth benchmarks and 2026 fine-tuning guides; spheron.network, dev.to/ultraduneai (2026-06-25)
+- Vendor figures (directional, company/analyst-reported): Decagon, Sierra, Harvey, Cresta, Wolters Kluwer survey, Forrester, State of Context Management survey (n=250)
+- VerlTool: Holistic Agentic RL with Tool Use — arXiv:2509.01055
+- Why Multi-Agent Systems Fail at Scale — Bijit Ghosh, Medium (medium.com/@bijit211987/why-multi-agent-systems-fail-at-scale-and-why-simplicity-always-wins-7490f9002a9b)
+- Writing effective tools for AI agents — Anthropic (anthropic.com/engineering/writing-tools-for-agents)
+- agentmarketcap.ai, ARC-AGI-2 leaderboard 2026 — https://agentmarketcap.ai/blog/2026/04/06/arc-agi-2-leaderboard-2026-gemini-gpt5-claude-reasoning-benchmark (Apr 2026)
+- allenai/tulu-3-sft-mixture, Hugging Face (939,344 examples)
+- arXiv 2404.01413 — model collapse / accumulate-vs-replace
+- arXiv 2406.14532 — RL on incorrect synthetic data scales LLM math reasoning
+- arXiv 2406.15126 — survey of LLM-driven synthetic data generation/curation/evaluation
+- arXiv 2412.02980 — Quality, Diversity, Complexity in synthetic data
+- arXiv 2507.08794 — One Token to Fool LLM-as-a-Judge
+- arXiv 2510.01631 — Demystifying Synthetic Data in LLM Pre-training
+- arXiv 2510.10649 — exploration/entropy collapse in RLVR
+- arXiv 2510.16657 — Escaping Model Collapse via Synthetic Data Verification
+- arXiv 2601.22511 — Mock Worlds, Real Skills (small agentic models)
+- arXiv 2601.22607 / 2602.10090 — self-evolving synthetic data and auto-generated agent environments
+- digitalapplied.com — Synthetic Data for LLM Training Decision Guide 2026, accessed 2026-06-25
+- futureagi.com — Synthetic Data for LLM Fine-Tuning 2026, accessed 2026-06-25
+- http://benchmarkingagents.com/human-vs-automated/
+- http://gopikrishnatummala.com/posts/mlops/modern-post-training-peft-2026/
+- https://abhyashsuchi.in/model-routing-llm-2026-best-practices/
+- https://academic.oup.com/jamia/article/32/11/1663/8253274
+- https://aclanthology.org/2025.llmsec-1.8/
+- https://agamisoft.com/llm-fine-tuning-guide-production-2026
+- https://agentmarketcap.ai/blog/2026/04/06/arc-agi-2-leaderboard-2026-gemini-gpt5-claude-reasoning-benchmark
+- https://agentmarketcap.ai/blog/2026/04/06/big-law-ai-agents-harvey-cocounsel-lexis-contract-review-discovery
+- https://agentmarketcap.ai/blog/2026/04/11/agent-context-engineering-sliding-windows-memory-2026
+- https://agentwiki.org/agent_rlvr
+- https://ai.google.dev/gemini-api/docs/live-api
+- https://ai.ksopyla.com/posts/voice-to-voice-models-2026-review/
+- https://ai.nejm.org/doi/full/10.1056/AIdbp2500144
+- https://ai.rs/ai-developer/qwen-agentworld-language-world-model
+- https://ai2.work/blog/78-ai-chatbot-safety-bills-across-27-states-reshape-tech-in-2026
+- https://ai2.work/blog/decagon-hits-4-5b-valuation-as-ai-support-agents-scale-2026
+- https://aibuzz.blog/ai-model-collapse-data-poisoning/
+- https://aicheckerhub.com/anthropic-prompt-caching-2026-cost-latency-guide
+- https://aicollab.app/blog/openrouter-auto/
+- https://aicostcheck.com/blog/ai-fine-tuning-costs-2026
+- https://aidevdayindia.org/blogs/fine-tuning-llms-lora-qlora/fine-tuning-llms-lora-qlora.html
+- https://ailearningguides.com/rag-production-patterns-2026/
+- https://aimultiple.com/llm-fine-tuning
+- https://aimultiple.com/llm-scaling-laws
+- https://aisecurityandsafety.org/en/guides/llm-guardrails/
+- https://aisera.com/blog/build-vs-buy-ai/
+- https://aisuperior.com/cost-of-training-llm-from-scratch/
+- https://aisuperior.com/cost-to-train-large-language-model/
+- https://aivoiceresearch.com/voice-agents-2026/
+- https://alignlist.com/guides/top-40-rl-environments-startups-and-companies
+- https://alignment.anthropic.com/2025/cheap-monitors/
+- https://allenai.org/blog/olmo3
+- https://allenai.org/blog/tulu-3-405B
+- https://allenai.org/blog/tulu-3-technical
+- https://analyticsweek.com/synthetic-data-privacy-bottleneck-2026/
+- https://apidog.com/blog/glm-5-2-vs-gpt-5-5-claude-opus-gemini/
+- https://appscale.blog/en/blog/hybrid-search-and-reranking-production-rag-bm25-dense-cross-encoder-2026
+- https://apxml.com/courses/llm-alignment-safety/chapter-5-adversarial-attacks-defenses-llms/input-output-filtering-defenses
+- https://arize.com/blog/evidence-based-prompting-strategies-for-llm-as-a-judge-explanations-and-chain-of-thought/
+- https://arize.com/blog/gepa-vs-prompt-learning-benchmarking-different-prompt-optimization-approaches/
+- https://arkenea.com/blog/rag-in-healthcare/
+- https://artificialanalysis.ai/articles/openai-gpt5-5-is-the-new-leading-AI-model
+- https://artificialanalysis.ai/speech-to-speech
+- https://artificialintelligenceact.eu/article/6/
+- https://arxiv.org/abs/2303.16634
+- https://arxiv.org/abs/2305.05862
+- https://arxiv.org/abs/2305.18290
+- https://arxiv.org/abs/2306.05685
+- https://arxiv.org/abs/2308.04014
+- https://arxiv.org/abs/2309.06180
+- https://arxiv.org/abs/2311.12908
+- https://arxiv.org/abs/2404.18796
+- https://arxiv.org/abs/2406.01375
+- https://arxiv.org/abs/2407.06204
+- https://arxiv.org/abs/2407.19584
+- https://arxiv.org/abs/2408.03314
+- https://arxiv.org/abs/2409.07431
+- https://arxiv.org/abs/2410.02736
+- https://arxiv.org/abs/2410.14257
+- https://arxiv.org/abs/2410.18588
+- https://arxiv.org/abs/2411.02355
+- https://arxiv.org/abs/2411.12946
+- https://arxiv.org/abs/2412.19437
+- https://arxiv.org/abs/2501.03035
+- https://arxiv.org/abs/2501.04961
+- https://arxiv.org/abs/2501.09136
+- https://arxiv.org/abs/2501.12948
+- https://arxiv.org/abs/2501.17161
+- https://arxiv.org/abs/2503.02844
+- https://arxiv.org/abs/2503.09516
+- https://arxiv.org/abs/2503.14476
+- https://arxiv.org/abs/2504.00441
+- https://arxiv.org/abs/2504.09687
+- https://arxiv.org/abs/2504.11168
+- https://arxiv.org/abs/2505.05410
+- https://arxiv.org/abs/2505.09577
+- https://arxiv.org/abs/2505.11821
+- https://arxiv.org/abs/2505.13348
+- https://arxiv.org/abs/2506.01937
+- https://arxiv.org/abs/2506.04301
+- https://arxiv.org/abs/2506.11425
+- https://arxiv.org/abs/2506.14245
+- https://arxiv.org/abs/2506.22316
+- https://arxiv.org/abs/2507.02076
+- https://arxiv.org/abs/2507.03226
+- https://arxiv.org/abs/2507.08794
+- https://arxiv.org/abs/2507.14843
+- https://arxiv.org/abs/2507.18071
+- https://arxiv.org/abs/2507.18071 — GSPO (July 2025)
+- https://arxiv.org/abs/2507.23159
+- https://arxiv.org/abs/2508.18669
+- https://arxiv.org/abs/2510.01631
+- https://arxiv.org/abs/2510.07745
+- https://arxiv.org/abs/2510.09665
+- https://arxiv.org/abs/2510.10649
+- https://arxiv.org/abs/2510.16657
+- https://arxiv.org/abs/2510.23845
+- https://arxiv.org/abs/2511.14846
+- https://arxiv.org/abs/2511.18397
+- https://arxiv.org/abs/2511.20733
+- https://arxiv.org/abs/2512.07611
+- https://arxiv.org/abs/2512.09329
+- https://arxiv.org/abs/2512.16912
+- https://arxiv.org/abs/2512.21487
+- https://arxiv.org/abs/2601.03267
+- https://arxiv.org/abs/2601.04603
+- https://arxiv.org/abs/2601.04720
+- https://arxiv.org/abs/2601.15161
+- https://arxiv.org/abs/2601.20088
+- https://arxiv.org/abs/2601.22607
+- https://arxiv.org/abs/2602.02400
+- https://arxiv.org/abs/2602.04056
+- https://arxiv.org/abs/2602.05088
+- https://arxiv.org/abs/2602.10367
+- https://arxiv.org/abs/2602.18583
+- https://arxiv.org/abs/2603.00077
+- https://arxiv.org/abs/2603.01162
+- https://arxiv.org/abs/2603.07379
+- https://arxiv.org/abs/2603.13985
+- https://arxiv.org/abs/2603.16140
+- https://arxiv.org/abs/2604.03455
+- https://arxiv.org/abs/2604.07666
+- https://arxiv.org/abs/2604.07776
+- https://arxiv.org/abs/2604.08226
+- https://arxiv.org/abs/2604.10739
+- https://arxiv.org/abs/2604.12086
+- https://arxiv.org/abs/2604.13602
+- https://arxiv.org/abs/2604.13977
+- https://arxiv.org/abs/2604.15149
+- https://arxiv.org/abs/2604.17931
+- https://arxiv.org/abs/2604.21406
+- https://arxiv.org/abs/2604.27470
+- https://arxiv.org/abs/2605.02964
+- https://arxiv.org/abs/2605.17849
+- https://arxiv.org/abs/2605.18796
+- https://arxiv.org/abs/2605.20279
+- https://arxiv.org/abs/2605.24229
+- https://arxiv.org/abs/2606.00093
+- https://arxiv.org/abs/2606.00975
+- https://arxiv.org/abs/2606.03238
+- https://arxiv.org/abs/2606.12402v1
+- https://arxiv.org/html/2401.00448v3
+- https://arxiv.org/html/2404.18796v1
+- https://arxiv.org/html/2406.01375v1
+- https://arxiv.org/html/2407.07263v1
+- https://arxiv.org/html/2409.06411
+- https://arxiv.org/html/2410.00037v2
+- https://arxiv.org/html/2410.14257v1
+- https://arxiv.org/html/2410.15595v3
+- https://arxiv.org/html/2410.16713v2
+- https://arxiv.org/html/2412.02980v1
+- https://arxiv.org/html/2412.11618v1
+- https://arxiv.org/html/2412.19437v1
+- https://arxiv.org/html/2501.17161v1
+- https://arxiv.org/html/2502.11034
+- https://arxiv.org/html/2502.19655
+- https://arxiv.org/html/2503.01840v1
+- https://arxiv.org/html/2503.06639v4
+- https://arxiv.org/html/2503.08311v2
+- https://arxiv.org/html/2504.00441v2
+- https://arxiv.org/html/2504.09687v1
+- https://arxiv.org/html/2504.19413v1
+- https://arxiv.org/html/2505.04842v2
+- https://arxiv.org/html/2506.00288v2
+- https://arxiv.org/html/2506.04301v2
+- https://arxiv.org/html/2506.08440v1
+- https://arxiv.org/html/2506.11425v1
+- https://arxiv.org/html/2506.14245v2
+- https://arxiv.org/html/2506.20920v1
+- https://arxiv.org/html/2506.22316v1
+- https://arxiv.org/html/2507.04136v1
+- https://arxiv.org/html/2507.06203v2
+- https://arxiv.org/html/2507.11181v2
+- https://arxiv.org/html/2507.17746v2
+- https://arxiv.org/html/2507.20534v1
+- https://arxiv.org/html/2508.02994v1
+- https://arxiv.org/html/2508.04325v2
+- https://arxiv.org/html/2508.05294v4
+- https://arxiv.org/html/2508.13141v1
+- https://arxiv.org/html/2509.06861v1
+- https://arxiv.org/html/2510.01346v1
+- https://arxiv.org/html/2510.01631v1
+- https://arxiv.org/html/2510.02393v4
+- https://arxiv.org/html/2510.05533v1
+- https://arxiv.org/html/2510.08049v3
+- https://arxiv.org/html/2510.14276v1
+- https://arxiv.org/html/2510.14300v1
+- https://arxiv.org/html/2510.16657v1
+- https://arxiv.org/html/2510.17472
+- https://arxiv.org/html/2510.26076v1
+- https://arxiv.org/html/2511.01490v3
+- https://arxiv.org/html/2511.16108v1
+- https://arxiv.org/html/2511.18397v1
+- https://arxiv.org/html/2511.18903v1
+- https://arxiv.org/html/2511.21101v1
+- https://arxiv.org/html/2512.02008v1
+- https://arxiv.org/html/2512.16912v3
+- https://arxiv.org/html/2512.19011v3
+- https://arxiv.org/html/2512.22066v1
+- https://arxiv.org/html/2601.04603v1
+- https://arxiv.org/html/2601.06007v2
+- https://arxiv.org/html/2601.07206v1
+- https://arxiv.org/html/2601.11252
+- https://arxiv.org/html/2601.17548v1
+- https://arxiv.org/html/2601.22607v1
+- https://arxiv.org/html/2602.03025v1
+- https://arxiv.org/html/2602.05125v1/
+- https://arxiv.org/html/2602.06932v2
+- https://arxiv.org/html/2602.09288
+- https://arxiv.org/html/2602.09305v1
+- https://arxiv.org/html/2602.10090v1
+- https://arxiv.org/html/2602.10367
+- https://arxiv.org/html/2602.10367v1
+- https://arxiv.org/html/2602.20117
+- https://arxiv.org/html/2603.00077v2
+- https://arxiv.org/html/2603.04445
+- https://arxiv.org/html/2603.04445v2
+- https://arxiv.org/html/2603.05399v1
+- https://arxiv.org/html/2603.11768v1
+- https://arxiv.org/html/2603.12646v1
+- https://arxiv.org/html/2603.18815v1
+- https://arxiv.org/html/2603.21341v1
+- https://arxiv.org/html/2603.21383
+- https://arxiv.org/html/2603.22582v1
+- https://arxiv.org/html/2603.29194v1
+- https://arxiv.org/html/2603.29403v2
+- https://arxiv.org/html/2604.00626v2
+- https://arxiv.org/html/2604.08304v1
+- https://arxiv.org/html/2604.09459v1
+- https://arxiv.org/html/2604.10739v1
+- https://arxiv.org/html/2604.12986v1
+- https://arxiv.org/html/2604.13602v1
+- https://arxiv.org/html/2604.13627v1
+- https://arxiv.org/html/2604.13977v1
+- https://arxiv.org/html/2604.14222v1
+- https://arxiv.org/html/2604.14228v1
+- https://arxiv.org/html/2604.14892
+- https://arxiv.org/html/2604.16004v1
+- https://arxiv.org/html/2604.16383v1
+- https://arxiv.org/html/2604.17337
+- https://arxiv.org/html/2604.17931v2
+- https://arxiv.org/html/2604.22154
+- https://arxiv.org/html/2604.23001v1
+- https://arxiv.org/html/2604.23178
+- https://arxiv.org/html/2604.23445
+- https://arxiv.org/html/2604.23775v1
+- https://arxiv.org/html/2604.25235
+- https://arxiv.org/html/2604.27470
+- https://arxiv.org/html/2604.27470v1
+- https://arxiv.org/html/2604.27859v2
+- https://arxiv.org/html/2605.02240v1
+- https://arxiv.org/html/2605.02964v1
+- https://arxiv.org/html/2605.02964v1 — Reward Hacking Benchmark (2026)
+- https://arxiv.org/html/2605.08366v1
+- https://arxiv.org/html/2605.10901
+- https://arxiv.org/html/2605.11032
+- https://arxiv.org/html/2605.12474
+- https://arxiv.org/html/2605.12474 — Reward Hacking in Rubric-Based RL (2026)
+- https://arxiv.org/html/2605.21266
+- https://arxiv.org/html/2605.28830
+- https://arxiv.org/html/2605.28830v1
+- https://arxiv.org/html/2606.02914v1
+- https://arxiv.org/html/2606.03238
+- https://arxiv.org/html/2606.03238v1
+- https://arxiv.org/html/2606.03238v1 — Mechanistic Taxonomy of Reward Hacking (2026)
+- https://arxiv.org/html/2606.04807
+- https://arxiv.org/html/2606.05468
+- https://arxiv.org/html/2606.10380
+- https://arxiv.org/html/2606.10493v1
+- https://arxiv.org/html/2606.11167
+- https://arxiv.org/html/2606.17104v1
+- https://arxiv.org/html/2606.19544
+- https://arxiv.org/pdf/2109.13137
+- https://arxiv.org/pdf/2305.18290
+- https://arxiv.org/pdf/2309.00267
+- https://arxiv.org/pdf/2309.00267 — RLAIF vs RLHF (2023)
+- https://arxiv.org/pdf/2311.03285
+- https://arxiv.org/pdf/2311.16079
+- https://arxiv.org/pdf/2402.02315
+- https://arxiv.org/pdf/2402.13228
+- https://arxiv.org/pdf/2403.08763
+- https://arxiv.org/pdf/2404.01413
+- https://arxiv.org/pdf/2404.06492
+- https://arxiv.org/pdf/2406.04836
+- https://arxiv.org/pdf/2406.14532
+- https://arxiv.org/pdf/2406.15126
+- https://arxiv.org/pdf/2407.00079
+- https://arxiv.org/pdf/2407.06204
+- https://arxiv.org/pdf/2407.07263
+- https://arxiv.org/pdf/2407.21783
+- https://arxiv.org/pdf/2409.04267
+- https://arxiv.org/pdf/2409.06411
+- https://arxiv.org/pdf/2409.07089
+- https://arxiv.org/pdf/2410.02736
+- https://arxiv.org/pdf/2410.05605
+- https://arxiv.org/pdf/2410.15595
+- https://arxiv.org/pdf/2410.18451
+- https://arxiv.org/pdf/2410.20297
+- https://arxiv.org/pdf/2410.21819
+- https://arxiv.org/pdf/2411.02355
+- https://arxiv.org/pdf/2411.05199
+- https://arxiv.org/pdf/2411.12946
+- https://arxiv.org/pdf/2411.14398
+- https://arxiv.org/pdf/2411.15124
+- https://arxiv.org/pdf/2412.04835
+- https://arxiv.org/pdf/2412.14689
+- https://arxiv.org/pdf/2412.21187
+- https://arxiv.org/pdf/2501.01880
+- https://arxiv.org/pdf/2501.02497
+- https://arxiv.org/pdf/2501.06458
+- https://arxiv.org/pdf/2501.06907
+- https://arxiv.org/pdf/2501.09706
+- https://arxiv.org/pdf/2501.12948
+- https://arxiv.org/pdf/2501.12948 — DeepSeek-R1 (Jan 2025)
+- https://arxiv.org/pdf/2501.14723
+- https://arxiv.org/pdf/2502.00943
+- https://arxiv.org/pdf/2502.01534
+- https://arxiv.org/pdf/2502.06387
+- https://arxiv.org/pdf/2502.06387 — preference annotator noise (2025)
+- https://arxiv.org/pdf/2502.08924
+- https://arxiv.org/pdf/2502.11475
+- https://arxiv.org/pdf/2502.12976
+- https://arxiv.org/pdf/2502.13458
+- https://arxiv.org/pdf/2502.17419
+- https://arxiv.org/pdf/2502.17421
+- https://arxiv.org/pdf/2502.18018
+- https://arxiv.org/pdf/2502.18770
+- https://arxiv.org/pdf/2503.01840
+- https://arxiv.org/pdf/2503.02844
+- https://arxiv.org/pdf/2503.04745
+- https://arxiv.org/pdf/2503.05592
+- https://arxiv.org/pdf/2503.08663
+- https://arxiv.org/pdf/2503.14476
+- https://arxiv.org/pdf/2503.20783
+- https://arxiv.org/pdf/2503.21295
+- https://arxiv.org/pdf/2503.23077
+- https://arxiv.org/pdf/2504.00869
+- https://arxiv.org/pdf/2504.04152
+- https://arxiv.org/pdf/2504.06095
+- https://arxiv.org/pdf/2504.09037
+- https://arxiv.org/pdf/2505.00949
+- https://arxiv.org/pdf/2505.02387
+- https://arxiv.org/pdf/2505.02390
+- https://arxiv.org/pdf/2505.02567
+- https://arxiv.org/pdf/2505.02686
+- https://arxiv.org/pdf/2505.08775
+- https://arxiv.org/pdf/2505.13480
+- https://arxiv.org/pdf/2505.17005
+- https://arxiv.org/pdf/2505.18822
+- https://arxiv.org/pdf/2505.19819
+- https://arxiv.org/pdf/2505.23419
+- https://arxiv.org/pdf/2506.02592
+- https://arxiv.org/pdf/2506.04078
+- https://arxiv.org/pdf/2506.05508
+- https://arxiv.org/pdf/2506.07127
+- https://arxiv.org/pdf/2506.09428
+- https://arxiv.org/pdf/2506.10408
+- https://arxiv.org/pdf/2506.11425
+- https://arxiv.org/pdf/2506.11425 — Agent-RLVR (2026)
+- https://arxiv.org/pdf/2506.13351
+- https://arxiv.org/pdf/2507.01352
+- https://arxiv.org/pdf/2507.07634
+- https://arxiv.org/pdf/2507.10532
+- https://arxiv.org/pdf/2507.11473
+- https://arxiv.org/pdf/2507.17746
+- https://arxiv.org/pdf/2507.17746 — Rubrics as Rewards (2025)
+- https://arxiv.org/pdf/2507.19457
+- https://arxiv.org/pdf/2507.21134
+- https://arxiv.org/pdf/2508.00669
+- https://arxiv.org/pdf/2508.09303
+- https://arxiv.org/pdf/2508.18076
+- https://arxiv.org/pdf/2509.01055
+- https://arxiv.org/pdf/2509.02547
+- https://arxiv.org/pdf/2509.07445
+- https://arxiv.org/pdf/2509.12235
+- https://arxiv.org/pdf/2509.21154
+- https://arxiv.org/pdf/2509.22041
+- https://arxiv.org/pdf/2509.22536
+- https://arxiv.org/pdf/2509.23657
+- https://arxiv.org/pdf/2509.24203
+- https://arxiv.org/pdf/2509.25358
+- https://arxiv.org/pdf/2510.00202
+- https://arxiv.org/pdf/2510.00237
+- https://arxiv.org/pdf/2510.00568
+- https://arxiv.org/pdf/2510.00977
+- https://arxiv.org/pdf/2510.01631
+- https://arxiv.org/pdf/2510.03222
+- https://arxiv.org/pdf/2510.04206
+- https://arxiv.org/pdf/2510.05137
+- https://arxiv.org/pdf/2510.05547
+- https://arxiv.org/pdf/2510.05858
+- https://arxiv.org/pdf/2510.06710
+- https://arxiv.org/pdf/2510.07048
+- https://arxiv.org/pdf/2510.07743
+- https://arxiv.org/pdf/2510.11570
+- https://arxiv.org/pdf/2510.11842
+- https://arxiv.org/pdf/2510.12083
+- https://arxiv.org/pdf/2510.13697
+- https://arxiv.org/pdf/2510.16657
+- https://arxiv.org/pdf/2510.20413
+- https://arxiv.org/pdf/2510.20548
+- https://arxiv.org/pdf/2510.22876
+- https://arxiv.org/pdf/2510.23845
+- https://arxiv.org/pdf/2510.24701
+- https://arxiv.org/pdf/2510.25889
+- https://arxiv.org/pdf/2510.26493
+- https://arxiv.org/pdf/2510.27569
+- https://arxiv.org/pdf/2511.00444
+- https://arxiv.org/pdf/2511.02302
+- https://arxiv.org/pdf/2511.03773
+- https://arxiv.org/pdf/2511.09586
+- https://arxiv.org/pdf/2511.15605
+- https://arxiv.org/pdf/2511.17602
+- https://arxiv.org/pdf/2511.18397
+- https://arxiv.org/pdf/2511.18397 — Natural emergent misalignment from reward hacking, Anthropic (Nov 2025)
+- https://arxiv.org/pdf/2511.20104
+- https://arxiv.org/pdf/2512.05107
+- https://arxiv.org/pdf/2512.13961
+- https://arxiv.org/pdf/2512.14744
+- https://arxiv.org/pdf/2512.17077
+- https://arxiv.org/pdf/2512.19691
+- https://arxiv.org/pdf/2512.21625
+- https://arxiv.org/pdf/2512.21919
+- https://arxiv.org/pdf/2512.22245
+- https://arxiv.org/pdf/2512.22560
+- https://arxiv.org/pdf/2512.24776
+- https://arxiv.org/pdf/2601.02144
+- https://arxiv.org/pdf/2601.03948
+- https://arxiv.org/pdf/2601.05111
+- https://arxiv.org/pdf/2601.06216
+- https://arxiv.org/pdf/2601.08430
+- https://arxiv.org/pdf/2601.11580
+- https://arxiv.org/pdf/2601.14269
+- https://arxiv.org/pdf/2601.16725
+- https://arxiv.org/pdf/2601.17003
+- https://arxiv.org/pdf/2601.17717
+- https://arxiv.org/pdf/2601.17833
+- https://arxiv.org/pdf/2601.20088
+- https://arxiv.org/pdf/2601.22511
+- https://arxiv.org/pdf/2601.22975
+- https://arxiv.org/pdf/2602.01086
+- https://arxiv.org/pdf/2602.02104
+- https://arxiv.org/pdf/2602.02204
+- https://arxiv.org/pdf/2602.03328
+- https://arxiv.org/pdf/2602.03442
+- https://arxiv.org/pdf/2602.04634
+- https://arxiv.org/pdf/2602.05765
+- https://arxiv.org/pdf/2602.06788
+- https://arxiv.org/pdf/2602.07845
+- https://arxiv.org/pdf/2602.09305
+- https://arxiv.org/pdf/2602.10090
+- https://arxiv.org/pdf/2602.10367
+- https://arxiv.org/pdf/2602.14093
+- https://arxiv.org/pdf/2602.15532
+- https://arxiv.org/pdf/2602.16179
+- https://arxiv.org/pdf/2602.16747
+- https://arxiv.org/pdf/2602.17547
+- https://arxiv.org/pdf/2602.18633
+- https://arxiv.org/pdf/2602.20710
+- https://arxiv.org/pdf/2602.22758
+- https://arxiv.org/pdf/2603.00729
+- https://arxiv.org/pdf/2603.00889
+- https://arxiv.org/pdf/2603.02041
+- https://arxiv.org/pdf/2603.03054
+- https://arxiv.org/pdf/2603.04191
+- https://arxiv.org/pdf/2603.04948
+- https://arxiv.org/pdf/2603.05818
+- https://arxiv.org/pdf/2603.06473
+- https://arxiv.org/pdf/2603.06594
+- https://arxiv.org/pdf/2603.07379
+- https://arxiv.org/pdf/2603.07915
+- https://arxiv.org/pdf/2603.08476
+- https://arxiv.org/pdf/2603.08747
+- https://arxiv.org/pdf/2603.11811
+- https://arxiv.org/pdf/2603.15594
+- https://arxiv.org/pdf/2603.15914
+- https://arxiv.org/pdf/2603.15957
+- https://arxiv.org/pdf/2603.16054
+- https://arxiv.org/pdf/2603.16177
+- https://arxiv.org/pdf/2603.16876
+- https://arxiv.org/pdf/2603.19335
+- https://arxiv.org/pdf/2603.21362
+- https://arxiv.org/pdf/2603.21465
+- https://arxiv.org/pdf/2603.24621
+- https://arxiv.org/pdf/2604.00997
+- https://arxiv.org/pdf/2604.04894
+- https://arxiv.org/pdf/2604.06628
+- https://arxiv.org/pdf/2604.07173
+- https://arxiv.org/pdf/2604.08304
+- https://arxiv.org/pdf/2604.08326
+- https://assets.anthropic.com/m/74342f2c96095771/original/Natural-emergent-misalignment-from-reward-hacking-paper.pdf
+- https://atlan.com/know/best-ai-agent-memory-frameworks-2026/
+- https://atlan.com/know/enterprise-rag-platforms-comparison/
+- https://atlan.com/know/how-to-evaluate-rag-systems-explained/
+- https://atlan.com/know/llm-evaluation-frameworks-compared/
+- https://atlan.com/know/what-is-rag/
+- https://averroes.ai/blog/synthetic-data-generation-tools
+- https://awesomeagents.ai/leaderboards/embedding-model-leaderboard-mteb-march-2026/
+- https://awesomeagents.ai/leaderboards/medical-llm-leaderboard/
+- https://awesomeagents.ai/leaderboards/swe-bench-coding-agent-leaderboard/
+- https://awesomeagents.ai/pricing/fine-tuning-costs-comparison/
+- https://aws.amazon.com/about-aws/whats-new/2026/02/amazon-bedrock-reinforcement-fine-tuning-openai/
+- https://aws.amazon.com/bedrock/guardrails
+- https://aws.amazon.com/bedrock/guardrails/
+- https://aws.amazon.com/blogs/aws/introducing-amazon-nova-2-sonic-next-generation-speech-to-speech-model-for-conversational-ai/
+- https://aws.amazon.com/blogs/aws/introducing-amazon-nova-forge-build-your-own-frontier-models-using-nova/
+- https://aws.amazon.com/blogs/machine-learning/build-real-time-conversational-ai-experiences-using-amazon-nova-sonic-and-livekit/
+- https://aws.amazon.com/blogs/machine-learning/overcoming-reward-signal-challenges-verifiable-rewards-based-reinforcement-learning-with-grpo-on-sagemaker-ai/
+- https://aws.amazon.com/blogs/machine-learning/p-eagle-faster-llm-inference-with-parallel-speculative-decoding-in-vllm/
+- https://aws.amazon.com/blogs/machine-learning/reinforcement-fine-tuning-on-amazon-bedrock-with-openai-compatible-apis-a-technical-walkthrough/
+- https://aws.amazon.com/nova/forge/
+- https://beancount.io/bean-labs/research-logs/2026/05/05/bloomberggpt-large-language-model-finance
+- https://belitsoft.com/bloomberggpt
+- https://benchlm.ai/agentic
+- https://benchlm.ai/llm-pricing
+- https://bentoml.com/llm/inference-optimization/kv-cache-offloading
+- https://bentoml.com/llm/inference-optimization/speculative-decoding
+- https://bigdataboutique.com/blog/fine-tuning-llms-when-rag-isnt-enough
+- https://biggo.com/news/202603280920_Gemini-Import-Memory-Feature-Launches
+- https://biohub.org/news/world-model-of-protein-biology/
+- https://bioinform.jmir.org/2026/1/e70708
+- https://bisi.org.uk/reports/claudes-new-constitution-ai-alignment-ethics-and-the-future-of-model-governance
+- https://bisi.org.uk/reports/claudes-new-constitution-ai-alignment-ethics-and-the-future-of-model-governance (Jan 2026)
+- https://blaxel.ai/blog/best-ai-agents
+- https://blog.alexewerlof.com/p/owasp-top-10-ai-llm-agents
+- https://blog.appther.com/blog/why-ai-voice-agents-fail-challenges-solutions-2026/
+- https://blog.bytebytego.com/p/how-openai-gemini-and-claude-use
+- https://blog.dailydoseofds.com/p/how-top-ai-labs-are-building-rl-agents
+- https://blog.google/innovation-and-ai/models-and-research/gemini-models/next-generation-gemini-deep-research/
+- https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-3-1-flash-live/
+- https://blog.google/innovation-and-ai/technology/developers-tools/file-search-gemini-api/
+- https://blog.imseankim.com/us-ai-chatbot-companion-regulation-98-bills-34-states-2026/
+- https://blog.jetbrains.com/pycharm/2026/06/top-agentic-frameworks-for-building-applications-2026/
+- https://blog.koiro.me/en/2026/04/30/rag-evaluation-metrics-2026/
+- https://blog.ml.cmu.edu/2025/12/09/validating-llm-as-a-judge-systems-under-rating-indeterminacy/
+- https://blog.pangeanic.com/direct-preference-optimization-dpo-a-practical-guide-for-enterprise-ai-alignment
+- https://blog.premai.io/how-to-generate-synthetic-training-data-for-llm-fine-tuning-2026-guide/
+- https://blog.premai.io/speculative-decoding-2-3x-faster-llm-inference-2026/
+- https://blog.robozaps.com/b/humanoid-robots-in-military-and-defense
+- https://blog.squeezebits.com/vllm-vs-tensorrtllm-8-kv-cache-quantization-35079
+- https://blogs.nvidia.com/blog/blackwell-inferencemax-benchmark-results/
+- https://blogs.nvidia.com/blog/inference-open-source-models-blackwell-reduce-cost-per-token/
+- https://blogs.nvidia.com/blog/mixture-of-experts-frontier-models/
+- https://bluegen.ai/how-does-the-eu-ai-act-affect-the-use-of-synthetic-data-for-ai-development/
+- https://bosio.digital/articles/agent-arms-race-openai-anthropic-google
+- https://build.nvidia.com/meta/llama-guard-4-12b
+- https://build.nvidia.com/meta/llama-guard-4-12b/modelcard
+- https://cacm.acm.org/news/the-collapse-of-gpt/
+- https://callsphere.ai/blog/llm-inference-optimization-quantization-speculative-decoding-2026
+- https://callsphere.ai/blog/mixture-of-experts-architecture-why-moe-dominates-2026-llms
+- https://callsphere.ai/blog/vw6g-microsoft-graphrag-knowledge-graph-2026
+- https://callsphere.ai/blog/vw7d-voice-agent-barge-in-turn-taking-2026
+- https://cameronrwolfe.substack.com/p/direct-preference-optimization
+- https://cameronrwolfe.substack.com/p/grpo
+- https://cameronrwolfe.substack.com/p/nano-moe
+- https://cameronrwolfe.substack.com/p/rubric-rl
+- https://cancer.jmir.org/2025/1/e65984
+- https://cartesia.ai/blog/sonic
+- https://cdn.openai.com/dd128428-0184-4e25-b155-3a7686c7d744/HealthBench-Professional.pdf
+- https://cdn.openai.com/pdf/bd7a39d5-9e9f-47b3-903c-8b847ca650c7/healthbench_paper.pdf
+- https://ceaksan.com/en/llm-agentic-failure-modes
+- https://checkmarx.com/learn/ai-security/top-12-ai-developer-tools-in-2026-for-security-coding-and-quality/
+- https://christian-schneider.net/blog/prompt-injection-agentic-amplification/
+- https://claude5.com/news/constitutional-ai-2-0-safety-alignment-breakthroughs-in-2026
+- https://cloud.google.com/blog/topics/developers-practitioners/how-to-use-gemini-live-api-native-audio-in-vertex-ai
+- https://codepick.dev/en/compare/voice-tools-global/
+- https://codersera.com/blog/best-open-source-llm-2026-llama-4-qwen-3-5-deepseek-v4-gemma-4-mistral/
+- https://codingfleet.com/blog/claude-opus-4-8-vs-gpt-5-5-comparison/
+- https://codysolutions.com/blog/what-is-agentic-rag
+- https://composio.dev/content/build-vs-buy-ai-agent-integrations
+- https://contracollective.com/blog/langchain-vs-llamaindex-llm-orchestration-2026
+- https://cresta.com/guides/decagon-vs-sierra
+- https://cssrs.columbia.edu/the-columbia-scale-c-ssrs/
+- https://dasroot.net/posts/2026/04/adversarial-distillation-regulation-ai-security-global-leadership/
+- https://dasroot.net/posts/2026/04/code-rag-llm-codebase-understanding/
+- https://datanucleus.dev/rag-and-agentic-ai/agentic-rag-enterprise-guide-2026
+- https://datasciencedojo.com/blog/what-is-context-engineering/
+- https://decagon.ai/
+- https://decagon.ai/blog/optimizing-gepa-for-production
+- https://decagon.ai/glossary/what-is-agentic-rag
+- https://decodethefuture.org/en/ai-agent-benchmarks-2026/
+- https://decodethefuture.org/en/rlhf-explained/
+- https://deepeval.com/blog/llm-as-a-judge
+- https://deepeval.com/guides/guides-llm-as-a-judge
+- https://deepfounder.ai/ai-reasoning-models-2026-o3-gemini-deepseek-claude/
+- https://deepgram.com/learn/best-voice-ai-agents-2026-buyers-guide
+- https://deepgram.com/learn/speech-to-speech-vs-cascade-voice-agent-architecture
+- https://deepinfra.com/blog/mixture-of-experts-llm-economics-price-drop
+- https://deepmind.google/models/gemini-diffusion/
+- https://deepsense.ai/blog/realtime-voice-ai-in-the-enterprise-overcoming-latency-with-native-audio-models/
+- https://deepwiki.com/deepseek-ai/DeepSeek-V3/4.4-multi-token-prediction-(mtp)
+- https://defensescoop.com/2024/12/06/palantir-anduril-consortium-ai-new-alliance-merge-capabilities/
+- https://defensescoop.com/2026/04/15/palantir-maven-smart-system-pentagon-program-transition-feinberg/
+- https://defensescoop.com/2026/06/16/data-from-half-a-million-hours-of-ukraine-conflict-drone-footage-now-available-to-train-ai/
+- https://deluair.com/consultancy/insights/frontier-ai-training-cost-2026
+- https://dev.to/chunxiaoxx/production-ai-agents-in-2026-observability-evals-and-the-deployment-loop-4aab
+- https://dev.to/monuminu/how-ai-coding-agents-finally-got-good-rlvr-targeted-textual-feedback-the-engineering-behind-the-18kp
+- https://dev.to/saurabh_naik_b213f3bbeafe/rlhf-in-2026-when-to-pick-ppo-dpo-or-verifier-based-rl-542o
+- https://dev.to/sienna/qwen3-coder-next-the-complete-2026-guide-to-running-powerful-ai-coding-agents-locally-1k95
+- https://dev.to/ultraduneai/eval-003-fine-tuning-in-2026-axolotl-vs-unsloth-vs-trl-vs-llama-factory-2ohg
+- https://developer.nvidia.com/blog/accelerating-llm-and-vlm-inference-for-automotive-and-robotics-with-nvidia-tensorrt-edge-llm/
+- https://developer.nvidia.com/blog/an-introduction-to-speculative-decoding-for-reducing-latency-in-ai-inference/
+- https://developer.nvidia.com/blog/build-next-gen-physical-ai-with-edge%e2%80%91first-llms-for-autonomous-vehicles-and-robotics/
+- https://developer.nvidia.com/blog/continued-pretraining-of-state-of-the-art-llms-for-sovereign-ai-and-regulated-industries-with-domyn-and-nvidia-dgx-cloud/
+- https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/
+- https://developer.nvidia.com/blog/introducing-nvidia-dynamo-a-low-latency-distributed-inference-framework-for-scaling-reasoning-ai-models/
+- https://developer.nvidia.com/blog/new-reward-model-helps-improve-llm-alignment-with-human-preferences/
+- https://developer.nvidia.com/blog/nvidia-dynamo-1-production-ready/
+- https://developer.nvidia.com/blog/scaling-large-moe-models-with-wide-expert-parallelism-on-nvl72-rack-scale-systems/
+- https://developers.openai.com/api/docs/guides/realtime
+- https://developers.openai.com/api/docs/guides/realtime-transcription
+- https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning
+- https://developers.openai.com/api/docs/guides/supervised-fine-tuning
+- https://developers.redhat.com/articles/2025/05/20/llm-semantic-router-intelligent-request-routing
+- https://developers.redhat.com/articles/2026/02/04/accelerating-large-language-models-nvfp4-quantization
+- https://devtk.ai/en/blog/self-hosting-llm-vs-api-cost-2026/
+- https://digitalstate.gov.ua/news/govtech/ukraine-moves-toward-a-sovereign-ai-model-national-llm-to-enter-beta-in-2026
+- https://discuss.vllm.ai/t/hiring-ml-infrastructure-engineer-llm-inference-focus-bay-area-preferred/876
+- https://dl.acm.org/doi/10.1145/3774904.3792551
+- https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html
+- https://docs.cloud.google.com/gemini-enterprise-agent-platform/blog/posts/from-research-to-production-accelerate-oss-llm-with-eagle-3-on-vertex
+- https://docs.cloud.google.com/kubernetes-engine/docs/concepts/about-gke-inference-gateway
+- https://docs.cloud.google.com/vertex-ai/docs/release-notes
+- https://docs.fireworks.ai/fine-tuning/fine-tuning-models
+- https://docs.livekit.io/agents/models/realtime/plugins/gemini/
+- https://docs.nvidia.com/dynamo/getting-started/introduction
+- https://docs.nvidia.com/nemo/guardrails/latest/user-guides/community/llama-guard.html
+- https://docs.sglang.io/advanced_features/expert_parallelism.html
+- https://docs.vllm.ai/projects/llm-compressor/en/latest/examples/quantization_w4a4_fp4/
+- https://doi.org/10.1002/psp4.70201
+- https://doit.software/blog/machine-learning-engineer-skills
+- https://dtsbourg.me/en/articles/predictions-embodied-ai
+- https://edgeaistack.ai/blog/edge-llm-runtime-stack-2026/
+- https://effloow.com/articles/agent-test-time-compute-scaling-context-ceiling-2026
+- https://effloow.com/articles/llm-fine-tuning-lora-qlora-guide-2026
+- https://effloow.com/articles/openai-realtime-audio-api-voice-agents-guide-2026
+- https://elevenlabs.io/blog/series-d
+- https://en.wikipedia.org/wiki/Crisis_Text_Line
+- https://en.wikipedia.org/wiki/Project_Maven
+- https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models
+- https://epoch.ai/data-insights/training-tokens-per-parameter
+- https://epoch.ai/publications/will-we-run-out-of-data-limits-of-llm-scaling-based-on-human-generated-data
+- https://eugeneyan.com/writing/llm-evaluators/
+- https://evolink.ai/blog/gpt-5-4-vs-claude-opus-4-6-vs-gemini-3-1-pro-2026
+- https://evolink.ai/blog/swe-bench-verified-2026-claude-vs-gpt
+- https://explainx.ai/blog/mercury-2-diffusion-llm-1000-tokens-per-second-inception-2026
+- https://explainx.ai/blog/openai-gpt-55-pricing-fine-tuning-api-wind-down-2026
+- https://fed-spend.com/blog/federal-ai-cybersecurity-contract-awards-2026
+- https://fintechmagazine.com/news/how-generative-ai-will-transform-financial-services-in-2026
+- https://fireworks.ai/blog/best-llm-api-providers
+- https://fortune.com/2026/03/19/andreessen-horowitz-ai-startups-deeptune-series-a/
+- https://forums.ohdsi.org/t/job-post-senior-clinical-data-engineer-omop-specialist-anywhere-us-or-mexico-city-mx/20213
+- https://freeacademy.ai/blog/agentic-rag-ai-agents-supercharge-retrieval-2026
+- https://futureagi.com/blog/best-healthcare-ai-guardrails-2026/
+- https://futureagi.com/blog/continued-llm-pretraining/
+- https://futureagi.com/blog/deterministic-llm-evaluation-metrics-2026/
+- https://futureagi.com/blog/evaluating-fine-tuned-llms-2026/
+- https://futureagi.com/blog/evaluating-llm-judge-bias-mitigation-2026/
+- https://futureagi.com/blog/llm-as-judge-best-practices-2026
+- https://futureagi.com/blog/llm-fine-tuning-techniques-i-ii/
+- https://futureagi.com/blog/synthetic-data-fine-tuning-llms/
+- https://futureagi.com/blog/ultimate-guide-llm-guardrails-2026/
+- https://futureagi.com/blog/voice-ai-barge-in-turn-taking-2026/
+- https://futureagi.com/blog/voice-load-testing-simulating-10000-calls-2026/
+- https://futureagi.com/blog/what-is-rag-evaluation-2026/
+- https://futureagi.com/glossary/llm-distillation/
+- https://galileo.ai/blog/beyond-golden-datasets-static-evals-failures
+- https://galileo.ai/blog/g-eval-metric
+- https://galileo.ai/blog/llm-model-training-cost
+- https://galtea.ai/blog/llm-evaluation-complete-guide
+- https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+- https://generalanalysis.com/guides/best-ai-guardrails
+- https://getmereferred.com/us/job-listing/agent-rl-infra-engineer-nvidia-uscasantaclara-2-to-5-years-experience-90d8fa4b-bfef-41d7-a6f6-c792ff69ca82
+- https://getperspective.ai/blog/ai-legal-intake-why-law-firms-are-replacing-forms-with-conversations-in-2026
+- https://getperspective.ai/blog/why-series-a-ai-startup-needs-fde-first-10-hires-2026
+- https://github.com/AIDASLab/Awesome-Diffusion-LLM
+- https://github.com/Ayanami0730/arag
+- https://github.com/CIntellifusion/VideoDPO
+- https://github.com/Dereck0602/Awesome_Test_Time_LLMs
+- https://github.com/LMCache/LMCache
+- https://github.com/NVIDIA-AI-Blueprints/data-flywheel
+- https://github.com/NVIDIA-NeMo/Curator
+- https://github.com/NVIDIA-NeMo/DataDesigner
+- https://github.com/Not-Diamond/awesome-ai-model-routing
+- https://github.com/OpenDriveLab/WholebodyVLA
+- https://github.com/PeterGriffinJin/Search-R1
+- https://github.com/PrimeIntellect-ai/prime-rl
+- https://github.com/RyanLiu112/Awesome-Process-Reward-Models
+- https://github.com/SafeAILab/EAGLE
+- https://github.com/VanillaCreamer/Awesome-Personalized-LLMs
+- https://github.com/Wang-ML-Lab/llm-continual-learning-survey
+- https://github.com/aidc-ai/awesome-unified-multimodal-models
+- https://github.com/gepa-ai/gepa
+- https://github.com/gretelai/gretel-synthetics
+- https://github.com/kennethleungty/finance-llms
+- https://github.com/kyutai-labs/moshi
+- https://github.com/langfengQ/verl-agent
+- https://github.com/llm-d/llm-d
+- https://github.com/lm-sys/RouteLLM
+- https://github.com/opendilab/awesome-RLVR
+- https://github.com/openrlhf/openrlhf
+- https://github.com/tencent-ailab/persona-hub
+- https://github.com/texttron/BrowseComp-Plus
+- https://github.com/tuva-health/tuva
+- https://github.com/verl-project/verl
+- https://github.com/withmartian/routerbench
+- https://github.com/xhwang22/Awesome-Reward-Hacking
+- https://github.com/zilliztech/claude-context
+- https://glasp.co/articles/context-rot-rag-long-context-hybrid
+- https://globallinklaw.com/healthcare-ai-regulation-what-developers-need-to-know-in-2026/
+- https://gradientflow.substack.com/p/emerging-ai-patterns-in-finance-what
+- https://gradium.ai/blog/semantic-vad
+- https://gradium.ai/content/turn-taking-voice-agents-vad
+- https://gun.io/news/2025/12/scale-ai-alternatives-for-enterprise-ai-teams/
+- https://hamming.ai/resources/best-voice-agent-stack
+- https://hamming.ai/resources/how-to-evaluate-voice-agents-2026
+- https://hamming.ai/resources/voice-agent-evaluation-metrics-guide
+- https://healthrex.github.io/PhysicianBench/
+- https://hitconsultant.net/2026/04/17/hippocratic-ai-front-door-nurse-co-pilot-voice-automation/
+- https://huggingface.co/blog/NormalUhr/deepseek-r1-explained
+- https://huggingface.co/blog/NormalUhr/grpo-to-dapo-and-gspo
+- https://huggingface.co/blog/cosmopedia
+- https://huggingface.co/blog/karina-zadorozhny/guide-to-llm-post-training-algorithms
+- https://huggingface.co/blog/llama-guard-4
+- https://huggingface.co/blog/nvidia/nemotron-personas
+- https://huggingface.co/blog/nvidia/nemotron-personas-japan
+- https://huggingface.co/blog/pref-tuning
+- https://huggingface.co/docs/trl/sft_trainer
+- https://huggingface.co/meta-llama/Llama-Guard-4-12B
+- https://hyscaler.com/insights/vision-language-action-vla-guide/
+- https://iclr.cc/virtual/2025/33850
+- https://inference.net/content/llm-evaluation-tools-comparison/
+- https://inferenceengineering.tech/learn/vllm-vs-sglang-vs-tensorrt-llm/
+- https://infini-ai-lab.github.io/MagicDec-part2/
+- https://innodatainc.recruitee.com/o/aiml-research-engineer-llm-post-training-evaluation
+- https://innovationscns.com/the-columbia-suicide-severity-rating-scale-c-ssrs-has-the-gold-standard-become-a-liability/
+- https://insiderllm.com/guides/fp4-inference-llamacpp-nvfp4-mxfp4/
+- https://instadeep.com/wp-content/uploads/2025/12/NT_v3.pdf
+- https://interactives.cnas.org/reports/sovereign-ai-index/
+- https://internet-pros.com/blog/vision-language-action-models-robotics-2026/
+- https://introl.com/blog/fp8-training-infrastructure-next-generation-precision-guide
+- https://introl.com/blog/inference-time-scaling-research-reasoning-models-december-2025
+- https://introl.com/blog/speculative-decoding-llm-inference-speedup-guide-2025
+- https://introl.com/blog/xai-colossus-2-gigawatt-expansion-555k-gpus-january-2026
+- https://intuitionlabs.ai/articles/ai-pharmacovigilance-adverse-event-detection-gvp
+- https://intuitionlabs.ai/articles/fda-ai-ml-samd-guidance-compliance
+- https://intuitionlabs.ai/articles/omop-common-data-model-ohdsi-real-world-data
+- https://intuitionlabs.ai/articles/pharma-real-world-data-platforms-comparison
+- https://intuitionlabs.ai/articles/rag-drug-discovery-eln-lims
+- https://intuitionlabs.ai/articles/reinforcement-learning-vs-rlhf
+- https://intuitionlabs.ai/articles/rlaif-healthcare-annotation-costs
+- https://intuitionlabs.ai/articles/rlhf-pipeline-clinical-llms
+- https://intuitionlabs.ai/articles/rwe-platform-architecture-guide
+- https://invisibletech.ai/blog/ai-training-in-2026-anchoring-synthetic-data-in-human-truth
+- https://inworld.ai/resources/best-speech-to-speech-apis
+- https://inworld.ai/resources/best-speech-to-speech-model
+- https://inworld.ai/resources/nvidia-b200-gpu-cloud
+- https://inworld.ai/resources/what-is-an-ai-router
+- https://inworld.ai/resources/what-is-semantic-vad
+- https://ised-isde.canada.ca/site/ised/en/canadian-sovereign-ai-compute-strategy
+- https://job-boards.greenhouse.io/anthropic/jobs/4938432008
+- https://job-boards.greenhouse.io/anthropic/jobs/5172245008
+- https://job-boards.greenhouse.io/xai/jobs/4959690007
+- https://jobs.nvidia.com/careers/job/893393884394
+- https://jobs.nvidia.com/careers/job/893393953033
+- https://jobs.weekday.works/addmein-llm-orchestration-engineer-(whatsapp-chatbot-mvp)
+- https://jobsbyculture.com/blog/agentic-rag-guide-2026
+- https://jobsbyculture.com/blog/ai-agent-orchestration-patterns-2026
+- https://jobsbyculture.com/blog/ai-engineer-researcher-salary-2026
+- https://jobsbyculture.com/blog/synthetic-data-engineering-guide-2026
+- https://karat.com/detect-ai-use-technical-interviews/
+- https://kevinmd.com/2026/01/fda-loosens-ai-oversight-what-clinicians-need-to-know-about-the-2026-guidance.html
+- https://kgi.georgetown.edu/wp-content/uploads/2026/02/Measuring-Risk_-What-EU-Risk-Assessments-and-US-Litigation-Reveal-About-Meta-and-TikTok-_KGI_2026.pdf
+- https://kili-technology.com/blog/domain-specific-llm-benchmarks-guide
+- https://kilo.ai/open-source-models
+- https://kyutai.org/Moshi.pdf
+- https://labelstud.io/blog/reinforcement-learning-from-verifiable-rewards/
+- https://labelyourdata.com/articles/llm-fine-tuning/pre-training-vs-fine-tuning
+- https://labs.scale.com/leaderboard/prbench-legal
+- https://lancelqf.github.io/note/llm_post_training/
+- https://langcopilot.com/posts/2025-09-17-rag-evaluation-101-from-recall-k-to-answer-faithfulness
+- https://latitude.so/blog/agent-first-comparison-guide-vs-braintrust
+- https://latitude.so/blog/best-llm-observability-tools-agents-latitude-vs-langfuse-langsmith
+- https://leehanchung.github.io/blogs/2026/03/21/rl-environments-for-llm-agents/
+- https://leetllm.com/blog/llm-inference-engine-comparison-2026
+- https://legal.thomsonreuters.com/blog/legal-ai-in-2026-why-cocounsel-thrives-while-others-fold/
+- https://legal.thomsonreuters.com/blog/legal-research-meets-generative-ai/
+- https://lemon.io/blog/rlhf-platforms/
+- https://lifebit.ai/blog/omop-complete-guide/
+- https://lilianweng.github.io/posts/2024-11-28-reward-hacking/
+- https://lilianweng.github.io/posts/2024-11-28-reward-hacking/ — Reward Hacking (Nov 2024)
+- https://link.springer.com/article/10.1007/s44336-026-00038-z
+- https://livekit.com/blog/turn-detection-voice-agents-vad-endpointing-model-based-detection
+- https://llm-d.ai/blog/production-grade-llm-inference-at-scale-kserve-llm-d-vllm
+- https://llm-stats.com/blog/research/post-training-techniques-2026
+- https://llm-stats.com/llm-updates
+- https://llmbase.ai/news/openai-gpt-5-system-card-reveals-unified-model-routing-architecture/
+- https://llms3.com/blog/when-memory-became-the-attack-surface-may-2026
+- https://lmcache.ai/tech_report.pdf
+- https://lmcouncil.ai/benchmarks
+- https://localaimaster.com/blog/qlora-fine-tuning-guide
+- https://localaimaster.com/blog/speculative-decoding-guide
+- https://logiciel.io/blog/llm-eval-harness-internal-build-2026
+- https://lumenalta.com/insights/9-llm-enterprise-applications-advancements-in-2026-for-cios-and-ctos
+- https://lumichats.com/blog/chatgpt-memory-vs-claude-memory-vs-gemini-personal-intelligence-2026-which-ai-actually-knows-you
+- https://lushbinary.com/blog/advanced-prompt-engineering-techniques-developer-guide/
+- https://lushbinary.com/blog/llm-gateway-model-routing-cost-optimization-guide/
+- https://lushbinary.com/blog/microsoft-mai-thinking-1-vs-claude-opus-gpt-5-5-gemini-comparison/
+- https://lushbinary.com/blog/rag-retrieval-augmented-generation-production-guide/
+- https://lyceum.technology/magazine/vllm-vs-tensorrt-llm-production-benchmark/index.html
+- https://machinelearning.apple.com/research/mirror
+- https://machinelearningmastery.com/introduction-to-small-language-models-the-complete-guide-for-2026/
+- https://magazine.sebastianraschka.com/p/state-of-llms-2025
+- https://mbrenndoerfer.com/writing/chinchilla-scaling-laws-compute-optimal-llm-training
+- https://mbreuss.github.io/blog_post_iclr_26_vla.html
+- https://medhelm.org/
+- https://medium.com/@Micheal-Lanham/the-model-routing-playbook-which-ai-model-to-use-for-what-in-february-2026-73061fb9d481
+- https://medium.com/@ThinkingLoop/latency-safe-guardrails-classifiers-policies-that-dont-slow-llms-283d38411052
+- https://medium.com/@adnanmasood/reward-hacking-the-hidden-failure-mode-in-ai-optimization-686b62acf408
+- https://medium.com/@adnanmasood/rlvr-explained-reinforcement-learning-with-verifiable-rewards-examples-risks-and-faqs-89815659bd76
+- https://medium.com/@adnanmasood/rubric-based-evals-llm-as-a-judge-methodologies-and-empirical-validation-in-domain-context-71936b989e80
+- https://medium.com/@arjun_shah/bloombergs-10m-data-experiment-8c552ca5c212
+- https://medium.com/@bijit211987/why-multi-agent-systems-fail-at-scale-and-why-simplicity-always-wins-7490f9002a9b
+- https://medium.com/@fahey_james/dpo-isnt-enough-the-modern-post-training-stack-simpo-orpo-kto-and-beyond-d82e52a1ee6c
+- https://medium.com/@gilinachum/llm-domain-adaptation-using-continued-pre-training-part-1-3-e3d10fcfdae1
+- https://medium.com/@instatunnel/agentic-memory-poisoning-how-long-term-ai-context-can-be-weaponized-7c0eb213bd1a
+- https://medium.com/@nikomao89/deconstructing-constitutional-ai-2-0-technical-changes-in-anthropics-post-pledge-architecture-6eba6e64479a
+- https://medium.com/@patnaik.sankar/guardrails-comparison-lakera-vs-aws-bedrock-vs-google-vertex-ai-vs-openai-safety-66ceb8a841c7
+- https://medium.com/@sahin.samia/crag-corrective-retrieval-augmented-generation-in-llm-what-it-is-and-how-it-works-ce24db3343a7
+- https://medium.com/@vinodkrane/chapter-8-agent-evaluation-for-llms-how-to-test-tools-trajectories-and-llm-as-judge-788f6f3e0d52
+- https://medium.com/data-science-collective/mid-training-the-vital-link-4e001f3337b4
+- https://medium.com/data-science-collective/prompt-engineering-is-dead-context-engineering-is-next-a6c5e1e6012c
+- https://medium.com/design-bootcamp/the-death-of-prompt-engineering-and-how-evals-are-rising-in-its-place-f8467871a815
+- https://medium.com/system-design-mastery-series/prompt-engineering-is-dead-long-live-context-engineering-ccd4f2da527f
+- https://mem0.ai/blog/ai-memory-benchmarks-in-2026
+- https://mem0.ai/blog/state-of-ai-agent-memory-2026
+- https://mem0.ai/research
+- https://mental.jmir.org/2026/1/e88435
+- https://metr.org/blog/2025-06-05-recent-reward-hacking/
+- https://mihup.ai/blog/in-car-voice-ai-in-2026-how-generative-ai-and-edge-computing-are-redefining-the-software-defined-vehicle
+- https://mindra.co/blog/multi-model-routing-llm-orchestration-2026
+- https://miraflow.ai/blog/kimi-k2-6-explained-moonshot-ai-open-source-model-ties-gpt-5-5-coding
+- https://mixpeek.com/curated-lists/best-embedding-models
+- https://mlengineersalary.com/
+- https://mlflow.org/articles/setting-up-llm-observability-pipelines-in-2026/
+- https://mlflow.org/blog/mlflow-prompt-optimization/
+- https://mlflow.org/top-5-agent-observability-tools/
+- https://mollyrosefoundation.org/wp-content/uploads/2025/01/DSA_Transparency_report_MRF-1.pdf
+- https://montecarlo.ai/blog-llm-as-judge/
+- https://myaskai.com/blog/intercom-fin-ai-agent-complete-guide-2026
+- https://myaskai.com/blog/sierra-ai-complete-guide-2026
+- https://naddod.medium.com/understanding-the-prefill-decode-disaggregation-in-llm-inference-optimization-5c11223a5360
+- https://natlawreview.com/article/novel-lawsuits-allege-ai-chatbots-encouraged-minors-suicides-mental-health-trauma
+- https://natolambert.substack.com/p/rewardbench-2-and-the-state-of-preference
+- https://nebius.com/blog/posts/moe-spec-decoding
+- https://neo4j.com/videos/nodes-ai-2026-agentic-graphrag-autonomous-knowledge-graph-construction-and-adaptive-retrieval-2/
+- https://nerdleveltech.com/chatgpt-dreaming-v3-memory-architecture
+- https://neuralcoretech.com/physical-ai-architecture-vla-robotics/
+- https://neuraltrust.ai/blog/owasp-top-10-for-agentic-applications-2026
+- https://neurons-lab.com/articles/agentic-ai-in-financial-services-2026/
+- https://news.mit.edu/2026/personalization-features-can-make-llms-more-agreeable-0218
+- https://newsletter.semianalysis.com/p/inferencex-v2-nvidia-blackwell-vs
+- https://newsletter.semianalysis.com/p/rl-environments-and-rl-for-science
+- https://newsletter.semianalysis.com/p/rl-systems-mind-the-gap-matching
+- https://newsletter.semianalysis.com/p/scaling-reinforcement-learning-environments-reward-hacking-agents-scaling-data
+- https://nextagile.ai/blogs/ai/graphrag-vs-rag/
+- https://nirmitee.io/blog/healthcare-llm-landscape-2026-medgemma-meditron-clinical-model-guide/
+- https://nstarxinc.com/blog/the-next-frontier-of-rag-how-enterprise-knowledge-systems-will-evolve-2026-2030/
+- https://nvidianews.nvidia.com/news/nvidia-announces-major-release-of-cosmos-world-foundation-models-and-physical-ai-data-tools
+- https://nvidianews.nvidia.com/news/nvidia-launches-bionemo-agent-toolkit-giving-ai-agents-the-tools-to-accelerate-scientific-discovery
+- https://nvidianews.nvidia.com/news/nvidia-launches-cosmos-3-the-open-frontier-foundation-model-for-physical-ai
+- https://nysba.org/avoiding-sanctions-in-the-gen-ai-era-practical-guardrails-for-lawyers/
+- https://ofox.ai/blog/claude-opus-4-7-production-reliability-fix-2026/
+- https://ohdsi.github.io/TheBookOfOhdsi/
+- https://ohdsi.github.io/TheBookOfOhdsi/DataQuality.html
+- https://ohdsi.github.io/TheBookOfOhdsi/NetworkResearch.html
+- https://ojs.bonviewpress.com/index.php/AIA/article/download/6620/1769/42293
+- https://omophub.com/blog/omop-vs-fhir
+- https://onlinelibrary.wiley.com/doi/10.1002/pds.70346
+- https://onlinelibrary.wiley.com/doi/10.1111/eci.70153
+- https://open-techstack.com/blog/rag-vs-long-context-2026/
+- https://openai.com/careers/research-engineer-frontier-evals-and-environments-san-francisco/
+- https://openai.com/careers/software-engineer-applied-evals-san-francisco/
+- https://openai.com/careers/software-engineer-model-inference-san-francisco/
+- https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/
+- https://openai.com/index/deliberative-alignment/
+- https://openai.com/index/healthbench/
+- https://openai.com/index/hebbia/
+- https://openai.com/index/introducing-gpt-5/
+- https://openai.com/index/introducing-gpt-oss-safeguard/
+- https://openai.com/index/introducing-gpt-realtime/
+- https://openai.com/index/openai-to-acquire-promptfoo/
+- https://openai.com/index/updating-model-spec-with-teen-protections/
+- https://openai.com/index/upgrading-the-moderation-api-with-our-new-multimodal-moderation-model/
+- https://openreview.net/forum?id=4NeiwxQ2Bp
+- https://openreview.net/forum?id=E58HNCqoaA
+- https://openreview.net/forum?id=Gk7gLAtVDO
+- https://openreview.net/forum?id=HwcwLBATQT
+- https://openreview.net/forum?id=IVXmV8Uxwh
+- https://openreview.net/forum?id=V727xqBYIW
+- https://openreview.net/forum?id=a13aYUU9eU
+- https://openreview.net/forum?id=fb0G86Dewb
+- https://openreview.net/forum?id=guUUlHPXRw
+- https://openreview.net/forum?id=u7L9FOgG7t
+- https://openreview.net/pdf?id=4exx1hUffq
+- https://openreview.net/pdf?id=HwCvaJOiCj
+- https://openrouter.ai/blog/insights/model-routing/
+- https://openrouter.ai/docs/guides/routing/routers/auto-router
+- https://opiniojuris.org/2026/02/26/the-pentagon-anthropic-clash-over-military-ai-guardrails/
+- https://orq.ai/blog/finetuning-vs-rag
+- https://orq.ai/blog/llm-juries-in-practice
+- https://ortemtech.com/blog/enterprise-rag-implementation-cost-2026
+- https://papers.nips.cc/paper_files/paper/2023/hash/a85b405ed65c6477a4fe8302b5e06ce7-Abstract-Conference.html
+- https://particula.tech/blog/ai-guardrails-compared-nemo-guardrails-ai-llama-guard
+- https://particula.tech/blog/sglang-vs-vllm-inference-engine-comparison
+- https://particula.tech/blog/vapi-vs-retell-vs-livekit-vs-pipecat-voice-agent-platform
+- https://pdpspectra.com/blog/llm-safety-guardrails-2026/
+- https://perplexityaimagazine.com/ai-news/chatgpt-safety-summaries-cross-conversation-risk-detection-2026/
+- https://perspectives.nvidia.com/real-cost-ai-scale-hyperscaler-accelerator-economics-2026/
+- https://pickaxe.co/post/build-vs-buy-ai-agents
+- https://picovoice.ai/blog/ai-voice-assistant-for-ios-powered-by-local-llm/
+- https://pinggy.io/blog/what_is_mixture_of_experts_in_llm_models/
+- https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC10646672/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC11958975/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12535588/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12547120/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12756489/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12770359/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12837895/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12878310/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12935678/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12986059/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC13014479/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC5961770/
+- https://pricepertoken.com/fine-tuning
+- https://pristren.com/blog/claude-opus-4-8-vs-gpt-5-5-gemini-3-1-june-2026/
+- https://pub.towardsai.net/meet-mimi-the-neural-audio-codec-powering-the-next-generation-of-speech-llms-22a77f3b9a38
+- https://pub.towardsai.net/prompt-engineering-is-dead-for-ai-agents-here-is-what-actually-works-541ceda072de
+- https://pubmed.ncbi.nlm.nih.gov/40380541/
+- https://pubs.rsc.org/en/content/articlelanding/2026/sc/d5sc09263a
+- https://pyimagesearch.com/2026/03/30/autoregressive-model-limits-and-multi-token-prediction-in-deepseek-v3/
+- https://pypi.org/project/livekit-plugins-aws/
+- https://pytorch.org/blog/torchspec-speculative-decoding-training-at-scale/
+- https://qubittool.com/blog/llm-landscape-may-2026-deepseek-qwen-llama-comparison
+- https://qwenlm.github.io/blog/gspo/
+- https://r2e-gym.github.io/
+- https://ragaboutit.com/5-root-causes-lurking-behind-enterprise-rag-hallucinations/
+- https://ragaboutit.com/9-rag-benchmarks-prove-67-hallucination-still-ships/
+- https://ragaboutit.com/query-adaptive-rag-routing-complex-questions-to-multi-hop-retrieval-while-keeping-simple-queries-fast/
+- https://rasa.com/blog/best-decagon-alternatives
+- https://redis.io/blog/model-distillation-llm-guide/
+- https://regolo.ai/inference-efficiency-and-gpu-cost-optimization-in-2026-how-to-cut-llm-serving-waste/
+- https://remangu.com/blog/gpu-infrastructure-ml-training/
+- https://research.contrary.com/company/harvey
+- https://research.crisistextline.org/what-we-learned-from-training-a-machine-learning-model-to-detect-suicidal-risk-2c65f1d4d9eb
+- https://research.nvidia.com/labs/adlr/personaplex/
+- https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf
+- https://research.nvidia.com/labs/nemotron/files/NVFP4-QAD-Report.pdf
+- https://research.nvidia.com/labs/nemotron/nemotron-qad/
+- https://resources.flatiron.com/press/flatiron-health-publishes-first-peer-reviewed-validation-framework-for-ai-extracted-real-world-oncology-data-in-journal-of-clinical-oncology
+- https://revenueexperts.ai/rag-build-or-buy-a-cost-framework-for-b2b-leaders/
+- https://rlhfbook.com/
+- https://rlhfbook.com/ — Nathan Lambert, The RLHF Book (2026)
+- https://rlhfbook.com/c/05-reward-models
+- https://rlhfbook.com/c/08-direct-alignment
+- https://rlhfbook.com/c/12-synthetic-data
+- https://rlhfbook.com/c/13-cai
+- https://rlhfbook.com/c/14-over-optimization
+- https://rlhfbook.com/c/15-synthetic
+- https://rlhfbook.com/course
+- https://robocloud-dashboard.vercel.app/learn/blog/vla-models-robotics-2025
+- https://rocm.blogs.amd.com/artificial-intelligence/multilingual-continued-pretraining/README.html
+- https://rocm.docs.amd.com/projects/ai-developer-hub/en/latest/notebooks/inference/mtp.html
+- https://rohitraj.tech/en/notes/open-source-ai-agent-memory-mem0-vs-zep-letta-2026
+- https://rwd.guide/computable-phenotyping.html
+- https://rxalmanac.com/articles/top-real-world-evidence-vendors/
+- https://sacra.com/c/surge-ai/
+- https://safina.ai/en/blog/gemini-3-1-flash-live-realtime-voice-ai/
+- https://sail.sea.com/blog/articles/62
+- https://sambanova.ai/blog/agentic-inference-needs-hybrid-hardware
+- https://saraswatmks.github.io/2026/02/rlhf-rlaif-rlvr.html
+- https://scale.com/careers/4629589005
+- https://scale.com/donovan/defense-llm
+- https://searchqualify.com/blog/what-does-a-prompt-engineer-actually-do-2026
+- https://sebastianraschka.com/llm-architecture-gallery/mtp/
+- https://semiengineering.com/silent-data-corruption-a-major-reliability-challenge-in-large-scale-llm-training-tu-berlin/
+- https://sesamedisk.com/quantization-techniques-ai-inference-2026/
+- https://sesamedisk.com/sebastian-raschka-llm-architecture-gallery-2026/
+- https://sfailabs.com/guides/the-ai-project-distillation-case-when-a-smaller-fine-tune-beats-a-bigger-model
+- https://sfstandard.com/2025/08/26/ai-crisis-hotlines-suicide-prevention/
+- https://sierra.ai/blog/enterprise-grade-agents
+- https://sightengine.com/self-harm-mental-health-suicide-moderation-guide
+- https://softcery.com/lab/ai-voice-agents-real-time-vs-turn-based-tts-stt-architecture
+- https://softteco.com/blog/ai-agent-development-cost
+- https://sourcegraph.com/blog/context-engineering
+- https://spendark.com/blog/machine-learning-cloud-cost/
+- https://squirro.com/squirro-blog/state-of-rag-genai
+- https://startup.jobs/research-engineer-rl-infra-prime-intellect-7888142
+- https://static.synthlabs.ai/preprints/Generative_Reward_Models.pdf
+- https://stocktwits.com/news-articles/markets/equity/nvidia-reportedly-buys-synthetic-data-firm-gretel-amid-ai-push/ch7kqyERb2N
+- https://stratechery.com/2025/deepseek-faq/
+- https://subhadipmitra.com/blog/2026/rlvr-beyond-math-code/
+- https://substack.jurgenappelo.com/p/building-versus-buying-ai-agents
+- https://sureprompts.com/blog/advanced-prompt-engineering-2026-claude-gpt5-gemini
+- https://talk.crisisnow.com/the-generative-ai-therapy-chatbot-will-see-you-now/
+- https://tech-insider.org/github-copilot-vs-cursor-2026-2/
+- https://techblog.lycorp.co.jp/en/techverse2026-60
+- https://techcrunch.com/2025/09/21/silicon-valley-bets-big-on-environments-to-train-ai-agents/
+- https://techcrunch.com/2025/12/19/openai-adds-new-teen-safety-rules-to-models-as-lawmakers-weigh-ai-standards-for-minors/
+- https://techcrunch.com/2026/02/04/elevenlabs-raises-500m-from-sequioia-at-a-11b-valuation/
+- https://techcrunch.com/2026/03/28/stanford-study-outlines-dangers-of-asking-ai-chatbots-for-personal-advice/
+- https://techcrunch.com/2026/05/07/openai-launches-new-voice-intelligence-features-in-its-api/
+- https://technode.com/2025/05/16/deepseek-reveals-cost-cutting-methods-for-v3-large-model-training-in-new-paper/
+- https://technosports.co.in/foundation-model-training-1500-breakthrough/
+- https://telnyx.com/resources/state-of-voice-ai-trust-execution-2026
+- https://tensoria.fr/en/blog/production-rag-failure-modes
+- https://testprepinsight.com/resources/how-ai-is-transforming-language-learning-in-2026/
+- https://testquality.com/llm-regression-testing-pipeline/
+- https://the-decoder.com/google-launches-deep-research-and-deep-research-max-agents-to-automate-complex-research/
+- https://the-decoder.com/language-models-can-overthink-and-get-stuck-in-endless-thought-loops/
+- https://the-decoder.com/openais-gpt-5-router-rollback-shows-why-ai-requires-unlearning-old-habits/
+- https://theaicareerlab.com/blog/agentic-ai-jobs-guide-2026
+- https://theaiengineer.substack.com/p/how-anthropic-built-multi-agent-deep
+- https://thenewstack.io/claude-code-vs-cursor-vs-codex-vs-antigravity-2026/
+- https://thenewstack.io/prompting-vs-rag-vs-fine-tuning-why-its-not-a-ladder/
+- https://thenewstack.io/rag-isnt-dead-but-context-engineering-is-the-new-hotness/
+- https://theorempath.com/topics/speculative-decoding-and-quantization
+- https://thetuvaproject.com/
+- https://tianpan.co/blog/2026-03-10-llm-latency-decomposition-ttft-vs-throughput
+- https://tianpan.co/blog/2026-04-09-long-context-vs-rag-production-decision-framework
+- https://tianpan.co/blog/2026-04-17-post-training-alignment-dpo-rlaif-product-engineers
+- https://tianpan.co/blog/2026-04-19-graphrag-vs-vector-rag-architecture-decision
+- https://tokenmix.ai/blog/self-host-llm-vs-api
+- https://toloka.ai/blog/reinforcement-learning-with-verifiable-rewards-unlocking-reliable-ai-reasoning/
+- https://toloka.ai/blog/what-is-rlhf/
+- https://toloka.ai/blog/what-is-rlhf/ — Llama 2 ~$8M annotation figure
+- https://tooldirectory.ai/tools/cerence
+- https://touchdown-labs.com/blog/kv-cache-memory-hierarchy-inference.html
+- https://towardsdatascience.com/agentic-rag-failure-modes-retrieval-thrash-tool-storms-and-context-bloat-and-how-to-spot-them-early/
+- https://towardsdatascience.com/agentic-rag-vs-classic-rag-from-a-pipeline-to-a-control-loop/
+- https://towardsdatascience.com/beyond-rag/
+- https://towardsdatascience.com/inference-scaling-test-time-compute-why-reasoning-models-raise-your-compute-bill/
+- https://trinetx.com/
+- https://trinetx.com/real-world-data/linked/
+- https://umesh-malik.com/blog/rag-vs-fine-tuning-llms-2026
+- https://v-chandra.github.io/on-device-llms/
+- https://vast.ai/article/the-future-of-ai-inference-in-2026
+- https://ve3.global/blog/inference-time-scaling-the-next-frontier-in-ai-performance
+- https://venturebeat.com/ai/from-static-classifiers-to-reasoning-engines-openais-new-model-rethinks
+- https://venturebeat.com/ai/why-googles-file-search-could-displace-diy-rag-stacks-in-the-enterprise
+- https://venturebeat.com/ai/with-nova-forge-aws-gives-companies-a-path-to-build-foundation-class-models
+- https://venturebeat.com/data/context-architecture-is-replacing-rag-as-agentic-ai-pushes-enterprise-retrieval-to-its-limits
+- https://venturebeat.com/technology/researchers-say-they-trained-a-foundation-model-from-scratch-for-about-1-500
+- https://vitalab.github.io/article/2025/02/11/DeepSeekV3.html
+- https://vllm.ai/blog/2026-03-13-p-eagle
+- https://vllm.ai/blog/2026-05-06-mooncake-store
+- https://vllm.ai/blog/2026-05-26-eagle-3-1
+- https://vllm.ai/blog/p-eagle
+- https://voxcloneai.com/blog/voice-ai-in-2026-the-companies-and-investments-defining-the-future-of-speech-technology
+- https://vrlatech.com/fp4-vs-fp8-vs-fp16-for-llm-inference-which-precision-should-you-use/
+- https://vrlatech.com/llm-quantization-explained-int4-int8-fp8-awq-and-gptq-in-2026/
+- https://weesperneonflow.ai/en/blog/2026-02-23-claude-ai-voice-mode-2026-features-vs-dedicated-dictation/
+- https://winbuzzer.com/2026/03/26/sierra-ghostwriter-self-service-ai-agent-builder-xcxwbn/
+- https://winbuzzer.com/2026/03/27/google-gemini-imports-chats-memory-chatgpt-claude-xcxwbn/
+- https://www-cdn.anthropic.com/827afa7dd36e4afbb1a49c735bfbb2c69749756e/measuring-faithfulness-in-chain-of-thought-reasoning.pdf
+- https://www.acams.org/en/opinion/world-elder-abuse-awareness-day-key-updates-elder-financial-abuse
+- https://www.adaline.ai/blog/llm-as-a-judge-reliability-bias
+- https://www.ai21.com/blog/rise-of-hybrid-llms/
+- https://www.ai21.com/blog/test-time-compute-swe-bench/
+- https://www.aicerts.ai/news/sovereign-ai-india-nation-readies-homegrown-model-by-february-2026/
+- https://www.ailoitte.com/blog/multimodal-rag-for-healthcare-a-complete-guide/
+- https://www.aipricingmaster.com/blog/self-hosting-ai-models-cost-vs-api
+- https://www.alephzerolabs.com/blog/on-device-ai-2026-sub-20ms/
+- https://www.alignmentforum.org/posts/7wFdXj9oR8M9AiFht/openai-detecting-misbehavior-in-frontier-reasoning-models
+- https://www.amazon.science/blog/amazon-nova-forge-open-training-paradigm-that-empowers-everyone-to-build-their-own-frontier-ai
+- https://www.analyticsvidhya.com/blog/2024/12/corrective-rag/
+- https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
+- https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+- https://www.anthropic.com/engineering/managed-agents
+- https://www.anthropic.com/engineering/multi-agent-research-system
+- https://www.anthropic.com/engineering/writing-tools-for-agents
+- https://www.anthropic.com/news/protecting-well-being-of-users
+- https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback
+- https://www.anthropic.com/research/constitutional-classifiers
+- https://www.anthropic.com/research/emergent-misalignment-reward-hacking
+- https://www.anthropic.com/research/next-generation-constitutional-classifiers
+- https://www.anthropic.com/research/teaching-claude-why
+- https://www.antino.com/blog/pre-training-vs-fine-tuning-vs-rag
+- https://www.appen.com/blog/rlvr
+- https://www.appen.com/blog/rlvr (2026)
+- https://www.appliedclinicaltrialsonline.com/view/overcoming-the-pitfalls-of-using-real-world-evidence-in-regulatory-submissions
+- https://www.army.mil/article/237580/
+- https://www.arturmarkus.com/anthropics-constitutional-classifiers-cut-jailbreak-success-rate-from-86-to-4-4-only-1-universal-jailbreak-found-in-bug-bounty-testing/
+- https://www.arunbaby.com/ai-agents/0102-credit-assignment-agentic-rl-decision-tree/
+- https://www.arunbaby.com/ai-security/0038-architecting-secure-agents-defense-stack/
+- https://www.assemblyai.com/blog/best-speech-to-speech-voice-agent-api
+- https://www.assemblyai.com/blog/orchestration-tools-ai-voice-agents
+- https://www.assemblyai.com/blog/the-voice-ai-stack-for-building-agents
+- https://www.augmentcode.com/guides/7-ai-agent-tactics-for-multimodal-rag-driven-codebases
+- https://www.augmentcode.com/guides/ai-model-routing-guide
+- https://www.auxiliobits.com/blog/rag-architecture-for-domain-specific-knowledge-retrieval-in-financial-compliance/
+- https://www.axios.com/2026/06/01/nvidia-ai-push-cosmos-3-world-model
+- https://www.bentoml.com/blog/the-complete-guide-to-deepseek-models-from-v3-to-r1-and-beyond
+- https://www.bestaiweb.ai/how-to-deploy-and-optimize-llm-inference-with-vllm-tensorrt-llm-and-sglang-in-2026/
+- https://www.blockchain-council.org/ai/parameter-efficient-fine-tuning-lora-qlora-adapters-explained/
+- https://www.braintrust.dev/articles/agent-observability-complete-guide-2026
+- https://www.braintrust.dev/articles/best-ai-observability-tools-2026
+- https://www.braintrust.dev/articles/best-human-in-the-loop-llm-evaluation-platforms-2026
+- https://www.braintrust.dev/articles/best-llm-routers-2026
+- https://www.braintrust.dev/articles/best-rag-evaluation-tools
+- https://www.braintrust.dev/articles/deepeval-alternatives-2026
+- https://www.braintrust.dev/articles/langsmith-vs-braintrust
+- https://www.braintrust.dev/articles/what-is-llm-as-a-judge
+- https://www.bsk.com/news-events-videos/countdown-to-data-privacy-day-2026-deepfakes-digital-replicas-and-synthetic-performers-privacy-risks-and-compliance-in-2026
+- https://www.buildfastwithai.com/blogs/mixture-of-experts-moe-explained
+- https://www.buildfastwithai.com/blogs/openai-gpt-realtime-2-voice-ai-models
+- https://www.buildmvpfast.com/blog/graphrag-vs-vector-rag-knowledge-graph-ai-2026
+- https://www.buildmvpfast.com/blog/synthetic-data-ai-training-generation-tools-2026
+- https://www.businesswire.com/news/home/20250313244480/en/H2O.ai-Launches-Enterprise-LLM-Studio-Fine-Tuning-as-a-Service-for-Domain-Specific-Models-on-Private-Data
+- https://www.bymachine.news/reasoning-models-overthinking-underthinking-balance
+- https://www.callstack.com/blog/rag-is-dead-long-live-context-engineering-for-llm-systems
+- https://www.cartesia.ai/launch/
+- https://www.casegen.ai/voice-ai-intake-lawyers/
+- https://www.castoredc.com/blog/fda-real-world-evidence-standards-2026/
+- https://www.cekura.ai/blogs/voice-ai-evaluation-metrics
+- https://www.ceramic.ai/blog/re-deepseek
+- https://www.cio.com/article/4137022/new-it-roles-emerge-to-tackle-ai-evaluation
+- https://www.claudeainews.com/news/anthropic-2026-agentic-coding-report
+- https://www.clawrouters.com/blog/best-llm-router-reddit
+- https://www.clinicaltrialvanguard.com/opinion/nature-medicines-june-2026-benchmark-study-reveals-general-purpose-llms-outperform-fda-cleared-clinical-ai-and-exposes-a-validation-gap-regulators-have-not-closed/
+- https://www.cnbc.com/2026/02/04/nvidia-backed-ai-startup-elevenlabs-11-billion-valuation.html
+- https://www.cnn.com/2025/09/19/business/deepseek-ai-training-cost-china-intl
+- https://www.cnn.com/2026/01/07/business/character-ai-google-settle-teen-suicide-lawsuit
+- https://www.cockroachlabs.com/blog/agentic-ai-costs-at-scale/
+- https://www.codeant.ai/blogs/swe-bench-scores
+- https://www.codersarts.com/post/llm-research-engineering-pods-a-new-model-for-post-training-capacity
+- https://www.comet.com/site/blog/llm-juries-for-evaluation/
+- https://www.confident-ai.com/blog/g-eval-the-definitive-guide
+- https://www.confident-ai.com/blog/llm-agent-evaluation-complete-guide
+- https://www.confident-ai.com/blog/why-llm-as-a-judge-is-the-best-llm-evaluation-method
+- https://www.confident-ai.com/knowledge-base/compare/best-ai-evaluation-tools-2026
+- https://www.confident-ai.com/knowledge-base/compare/best-ai-observability-tools-for-healthcare-companies-2026
+- https://www.confident-ai.com/knowledge-base/compare/best-llm-evaluation-tools
+- https://www.confident-ai.com/knowledge-base/compare/top-7-llm-observability-tools
+- https://www.cooley.com/news/insight/2024/2024-10-24-fda-finalizes-guidance-on-use-of-part-11-electronic-systems-records-and-signatures-in-clinical-investigations
+- https://www.corsound.ai/blog-posts/voice-trust-collapse-bank-authentication
+- https://www.cosmicjs.com/blog/claude-code-vs-codex-vs-cursor
+- https://www.coursera.org/articles/prompt-engineering-salary
+- https://www.coval.ai/blog/best-speech-to-text-providers-in-2026-independent-benchmarks-and-how-to-choose/
+- https://www.coval.ai/blog/speech-to-speech-vs-cascaded-voice-ai-which-architecture-should-you-deploy/
+- https://www.crisistextline.org/blog/2018/03/28/detecting-crisis-an-ai-solution/
+- https://www.cs.cmu.edu/~epxing/papers/2025/AIDO.Protein.pdf
+- https://www.cudocompute.com/blog/what-is-the-cost-of-training-large-language-models
+- https://www.cxtoday.com/security-privacy-compliance/the-voice-trust-collapse-and-deepfake-voice-fraud/
+- https://www.databricks.com/blog/rag-vs-fine-tuning
+- https://www.databricks.com/blog/what-is-medallion-architecture
+- https://www.datacamp.com/blog/claude-opus-4-5
+- https://www.datagravity.dev/p/rl-environments-for-agentic-ai-who
+- https://www.datavant.com/blog/3-data-trends-shaping-clinical-research-and-rwe-in-2026-and-beyond
+- https://www.datavant.com/blog/datavant-analysis-2025-trends-in-clinical-trial-tokenization-and-real-world-data-linkage
+- https://www.datavant.com/blog/privacy-preserving-record-linkage
+- https://www.datavant.com/real-world-data-rwd/datavant-analysis-2025-trends-in-clinical-trial-tokenization-and-real-world-data-linkage
+- https://www.dataxpower.com/blog/data-annotation-healthcare-medical-imaging
+- https://www.datologyai.com/blog/beyondweb
+- https://www.datologyai.com/blog/finetuners-fallacy
+- https://www.defenseadvancement.com/news/autonomy-in-defense-2026-advancing-trusted-ai-and-autonomous-capabilities-across-the-joint-force/
+- https://www.defensenews.com/industry/techwatch/2025/05/06/how-ai-voicebots-threaten-the-psyche-of-us-service-members-and-spies/
+- https://www.defenseone.com/technology/2026/04/startup-takes-different-approach-ai-assistants/412545/
+- https://www.digitalapplied.com/blog/agent-observability-platforms-langsmith-langfuse-arize-2026
+- https://www.digitalapplied.com/blog/ai-agent-eval-frameworks-testing-guide-2026
+- https://www.digitalapplied.com/blog/ai-build-vs-buy-2026-decision-framework-agency-stack
+- https://www.digitalapplied.com/blog/ai-content-moderation-2026-llm-trust-safety-guide
+- https://www.digitalapplied.com/blog/ai-developer-hiring-skills-that-matter-2026
+- https://www.digitalapplied.com/blog/context-engineering-agent-reliability-playbook-2026
+- https://www.digitalapplied.com/blog/kv-cache-optimization-techniques-2026-engineering-guide
+- https://www.digitalapplied.com/blog/llm-benchmark-methodology-2026-contamination-leaderboard-guide
+- https://www.digitalapplied.com/blog/llm-guardrails-production-safety-layers-reference-2026
+- https://www.digitalapplied.com/blog/llm-model-routing-2026-cost-quality-optimization-engineering-guide
+- https://www.digitalapplied.com/blog/moe-architecture-comparison-gpt-claude-deepseek-qwen
+- https://www.digitalapplied.com/blog/post-training-revolution-rl-new-moat-2026
+- https://www.digitalapplied.com/blog/post-training-revolution-rl-new-moat-2026 (2026)
+- https://www.digitalapplied.com/blog/synthetic-data-generation-llm-training-decision-guide-2026
+- https://www.digitalapplied.com/blog/voice-agent-infrastructure-stack-2026-reference
+- https://www.digitalapplied.com/blog/voice-ai-agents-business-elevenlabs-vapi-retell-bland
+- https://www.digitaldividedata.com/blog/enterprise-llm-training-services-build-buy-or-hybrid
+- https://www.digitalocean.com/blog/how-we-built-fastest-deepseek-minimax-qwen-on-blackwell-ultra
+- https://www.digitalocean.com/blog/llm-inference-tradeoffs
+- https://www.drugtargetreview.com/ai-in-drug-discovery-predictions-for-2026/1865962.article
+- https://www.edge-ai-vision.com/2025/10/nvidia-blackwell-the-impact-of-nvfp4-for-llm-inference/
+- https://www.edge-ai-vision.com/2026/01/on-device-llms-in-2026-what-changed-what-matters-whats-next/
+- https://www.edtechinnovationhub.com/news/openai-rolls-out-new-chatgpt-memory-system-to-keep-personalization-current
+- https://www.eesel.ai/blog/decagon-vs-sierra
+- https://www.eesel.ai/blog/together-ai-pricing
+- https://www.eff.org/deeplinks/2023/06/student-monitoring-tools-should-not-flag-lgbtq-keywords
+- https://www.elastic.co/search-labs/blog/context-engineering-vs-prompt-engineering
+- https://www.ema.europa.eu/en/documents/scientific-guideline/ich-m14-guideline-general-principles-planning-designing-analysing-reporting-non-interventional-studies-utilise-real-world-data-safety-assessment-medicines-step-5_en.pdf
+- https://www.emergentmind.com/topics/chain-of-continuous-thought-coconut
+- https://www.emergentmind.com/topics/deepseek-r1-zero
+- https://www.emergentmind.com/topics/deepseekmoe-models
+- https://www.emergentmind.com/topics/domain-specific-foundation-models
+- https://www.emergentmind.com/topics/fineweb-edu-dataset
+- https://www.emergentmind.com/topics/generative-reward-model-grm
+- https://www.emergentmind.com/topics/generative-reward-models-llm-as-a-judge
+- https://www.emergentmind.com/topics/group-sub-sequence-policy-optimization-gsspo
+- https://www.emergentmind.com/topics/healthbench
+- https://www.emergentmind.com/topics/llama-guard
+- https://www.emergentmind.com/topics/med-palm-2
+- https://www.emergentmind.com/topics/med-rlvr-framework
+- https://www.emergentmind.com/topics/multi-turn-group-relative-policy-optimization-mtgrpo
+- https://www.emergentmind.com/topics/rl-with-verifiable-rewards-rlvr
+- https://www.emergentmind.com/topics/rubric-based-reward-modeling-rubric-rm
+- https://www.emergentmind.com/topics/search-r1
+- https://www.emergentmind.com/topics/verbosity-bias-in-preference-models
+- https://www.emergentmind.com/topics/verifiable-reward-rlvr
+- https://www.emergentmind.com/topics/verifiable-rewards-rlvr
+- https://www.evohire.ai/post/how-to-tell-if-a-candidate-is-using-ai-in-your-interview
+- https://www.executivegov.com/articles/data-baseline-us-army-ngc2-palantir-anduril
+- https://www.explainx.ai/blog/ai-for-language-learning-complete-guide-2026
+- https://www.famulor.io/blog/realtime-vs-pipeline-voice-agent-architecture-guide-2026
+- https://www.famulor.io/blog/state-of-voice-ai-2026-voice-ai-moves-to-production
+- https://www.fcc.gov/988-suicide-and-crisis-lifeline
+- https://www.fda.gov/medical-devices/digital-health-center-excellence/request-public-comment-measuring-and-evaluating-artificial-intelligence-enabled-medical-device
+- https://www.fda.gov/news-events/press-announcements/fda-announces-major-steps-implement-real-time-clinical-trials
+- https://www.fda.gov/regulatory-information/search-fda-guidance-documents/real-world-data-assessing-electronic-health-records-and-medical-claims-data-support-regulatory
+- https://www.fda.gov/regulatory-information/search-fda-guidance-documents/use-real-world-evidence-support-regulatory-decision-making-medical-devices
+- https://www.federalregister.gov/documents/2025/12/18/2025-23252/use-of-real-world-evidence-to-support-regulatory-decision-making-for-medical-devices-guidance-for
+- https://www.fenwick.com/insights/publications/new-yorks-ai-companion-safeguard-law-takes-effect
+- https://www.fiercehealthcare.com/health-tech/datavant-acquires-real-world-evidence-company-aetion-boost-its-life-sciences-business
+- https://www.finastra.com/viewpoints/articles/future-of-ai-in-financial-services-2026
+- https://www.firecrawl.dev/blog/best-ai-coding-agents
+- https://www.firecrawl.dev/blog/best-llm-observability-tools
+- https://www.fluence.network/blog/designing-ai-gpu-workloads/
+- https://www.forasoft.com/blog/article/livekit-ai-agents-guide
+- https://www.fortunebusinessinsights.com/prompt-engineering-market-109382
+- https://www.frontiersin.org/journals/artificial-intelligence/articles/10.3389/frai.2026.1782405/full
+- https://www.frontiersin.org/journals/digital-health/articles/10.3389/fdgth.2026.1761624/full
+- https://www.frontiersin.org/journals/digital-health/articles/10.3389/fdgth.2026.1780700/full
+- https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2026.1736785/full
+- https://www.fsb.org/uploads/P101025.pdf
+- https://www.futurefeed.to/post/hybrid-llms-are-winning-here-s-the-2026-map
+- https://www.futuremarketinsights.com/reports/real-world-evidence-linkage-services-market
+- https://www.gblock.app/articles/eu-ai-act-august-2026-what-changes-privacy
+- https://www.genengnews.com/topics/artificial-intelligence/biohub-releases-protein-biology-world-model-to-address-disease/
+- https://www.getmaxim.ai/articles/building-a-golden-dataset-for-ai-evaluation-a-step-by-step-guide/
+- https://www.getmaxim.ai/articles/llm-guardrails-for-fintech-compliance-hallucination-prevention-and-audit-trails/
+- https://www.getmaxim.ai/articles/multi-agent-system-reliability-failure-patterns-root-causes-and-production-validation-strategies/
+- https://www.getmaxim.ai/articles/prompt-injection-defense-for-production-ai-agents-a-complete-2026-guide/
+- https://www.getmaxim.ai/articles/top-5-ai-guardrails-platforms-for-responsible-enterprise-ai-in-2026/
+- https://www.getmaxim.ai/articles/top-5-llm-evaluation-platforms-in-2026/
+- https://www.getmaxim.ai/articles/top-5-llm-router-solutions-in-2026/
+- https://www.getprosper.ai/blog/voice-ai-healthcare-guide
+- https://www.globenewswire.com/news-release/2026/04/28/3283008/0/en/truveta-unveils-truveta-intelligence-delivering-real-time-insights-from-real-world-data.html
+- https://www.gmicloud.ai/en/blog/fastest-llm-platform-compare
+- https://www.gmicloud.ai/en/blog/gpu-cloud-pricing-llm-inference-2026
+- https://www.gmicloud.ai/en/blog/llm-inference-cost-optimization-caching-batching-routing
+- https://www.gpunex.com/blog/ai-training-costs-2026/
+- https://www.harvey.ai/blog/ai-for-case-law-research
+- https://www.herohunt.ai/blog/the-ultimate-ai-data-labeling-industry-overview/
+- https://www.herohunt.ai/blog/top-10-data-annotators-for-ai-labs-2026-benchmark/
+- https://www.herohunt.ai/blog/top-10-human-data-providers-full-in-depth-review/
+- https://www.howtogeek.com/mercedes-benz-liquid-ai-voice-control-car-partnership/
+- https://www.hpcwire.com/aiwire/2026/06/01/nvidia-launches-cosmos-3-the-open-frontier-foundation-model-for-physical-ai/
+- https://www.ibm.com/think/insights/code-llm
+- https://www.ibm.com/think/topics/rag-vs-fine-tuning
+- https://www.inceptionlabs.ai/blog/introducing-mercury
+- https://www.insideprivacy.com/european-union-2/what-to-watch-in-2026-key-eu-privacy-cybersecurity-developments/
+- https://www.institutepm.com/knowledge-hub/constitutional-ai-rlaif-explained
+- https://www.interconnects.ai/p/deepseek-v3-and-the-actual-cost-of
+- https://www.interconnects.ai/p/frontier-post-training-recipe-review
+- https://www.interconnects.ai/p/olmo-3-americas-truly-open
+- https://www.interconnects.ai/p/olmo-3-americas-truly-open-reasoning
+- https://www.intersystems.com/resources/intersystems-omop/
+- https://www.interviewstack.io/blog/ai-engineer-vs-machine-learning-engineer-2026
+- https://www.iqvia.com/blogs/2026/01/fda-updates-guidance-on-real-world-evidence-for-medical-devices
+- https://www.issen.com/blog/best-ai-voice-tutors-language-learning
+- https://www.jahanzaib.ai/blog/agentic-rag-production-guide
+- https://www.jmir.org/2025/1/e76048
+- https://www.johnsnowlabs.com/the-age-of-agentic-ai-in-healthcare-data-automating-clinical-research-and-real-world-evidence-workflows/
+- https://www.julian.ac/blog/2025/11/13/alphaproof-paper/
+- https://www.k2view.com/blog/best-synthetic-data-generation-tools/
+- https://www.k2view.com/blog/prompt-engineering-techniques/
+- https://www.kai-waehner.de/blog/2026/04/06/enterprise-agentic-ai-landscape-2026-trust-flexibility-and-vendor-lock-in/
+- https://www.kalviumlabs.ai/blog/guardrails-for-llm-applications/
+- https://www.keepmyprompts.com/en/blog/1m-context-windows-trap-rag-decision-framework
+- https://www.kentucky.gov/Pages/Activity-stream.aspx?n=AttorneyGeneral&prId=1857
+- https://www.kore.ai/blog/ai-agents-in-healthcare-12-real-world-use-cases-2026
+- https://www.kore1.com/ai-engineer-salary-guide/
+- https://www.kore1.com/ai-engineer-vs-ml-engineer/
+- https://www.kore1.com/ai-ml-talent-map-2026/
+- https://www.kore1.com/defense-tech-hiring-2026/
+- https://www.kore1.com/healthcare-ai-hiring-2026/
+- https://www.kore1.com/hire-llm-engineers-2026/
+- https://www.kore1.com/hire-rag-engineers-2026/
+- https://www.kore1.com/how-to-hire-llm-engineer-2026/
+- https://www.kore1.com/how-to-hire-ml-engineer-2026/
+- https://www.kore1.com/llm-engineer-vs-ml-engineer/
+- https://www.kunalganglani.com/blog/prompt-injection-2026-owasp-llm-vulnerability
+- https://www.kyanhealth.com/post/ai-mental-health-tools-in-the-workplace-the-safety-questions-to-ask-in-2026
+- https://www.labellerr.com/blog/compare-reasoning-models/
+- https://www.langchain.com/blog/agentic-rag-with-langgraph
+- https://www.langchain.com/resources/ai-agent-frameworks
+- https://www.lasso.security/blog/rag-security
+- https://www.latent.space/p/realtime-api
+- https://www.lawfaremedia.org/article/sovereign-ai-in-a-hybrid-world--national-strategies-and-policy-responses
+- https://www.letta.com/blog/benchmarking-ai-agent-memory/
+- https://www.lewissilkin.com/insights/2026/05/29/eu-ai-act-guidance-on-classifying-high-risk-ai-systems-102mx9l
+- https://www.lindy.ai/blog/ai-voice-agents
+- https://www.linkedin.com/jobs/view/healthcare-data-integration-engineer-fhir-omop-at-john-snow-labs-4423303958
+- https://www.liveperson.com/syntrix/
+- https://www.llamaindex.ai/blog/the-cost-of-overthinking-why-reasoning-models-fail-at-document-parsing
+- https://www.lmsys.org/blog/2025-05-05-large-scale-ep/
+- https://www.lw.com/en/insights/ai-act-update-eu-resolves-to-change-rules-and-extend-deadlines
+- https://www.macrumors.com/guide/llm-siri/
+- https://www.manatt.com/insights/newsletters/health-highlights/manatt-health-health-ai-policy-tracker
+- https://www.marktechpost.com/2025/10/31/openai-releases-research-preview-of-gpt-oss-safeguard-two-open-weight-reasoning-models-for-safety-classification-tasks/
+- https://www.marktechpost.com/2026/05/10/best-vector-databases-in-2026-pricing-scale-limits-and-architecture-tradeoffs-across-nine-leading-systems/
+- https://www.marktechpost.com/2026/05/27/meet-eagle-3-1-the-speculative-decoding-algorithm-that-fixes-attention-drift-in-llm-inference/
+- https://www.marsdevs.com/guides/agentic-rag-2026-guide
+- https://www.mddionline.com/artificial-intelligence/how-large-language-models-are-reshaping-health-prediction-clinical-decision-making
+- https://www.mdpi.com/2079-9292/15/2/334
+- https://www.mdpi.com/2673-2688/6/9/226
+- https://www.mdpi.com/2673-5318/6/4/143
+- https://www.medrxiv.org/content/10.1101/2024.12.16.24319076.full.pdf
+- https://www.medrxiv.org/content/10.64898/2026.01.12.26343914.full.pdf
+- https://www.medrxiv.org/content/10.64898/2026.01.12.26343914v1
+- https://www.medrxiv.org/content/10.64898/2026.01.12.26343914v1.full
+- https://www.medrxiv.org/content/10.64898/2026.01.17.26344330.full.pdf
+- https://www.medrxiv.org/content/10.64898/2026.03.26.26349452v1.full
+- https://www.meilisearch.com/blog/rag-vs-long-context-llms
+- https://www.merative.com/blog/real-world-data-trends-2026-the-shift-to-quality-and-ai-precision
+- https://www.mercor.com/resources/experts/what-is-rlhf/
+- https://www.meta-intelligence.tech/en/insight-context-engineering
+- https://www.meta-intelligence.tech/en/insight-finetuning-data
+- https://www.meta-intelligence.tech/en/insight-llm-evaluation
+- https://www.meta-intelligence.tech/en/insight-reasoning-models
+- https://www.metacto.com/blogs/a-developer-s-guide-to-langgraph-building-stateful-controllable-llm-applications
+- https://www.microsoft.com/en-us/research/project/graphrag/
+- https://www.mindstudio.ai/blog/best-open-source-llms-agentic-coding-2026
+- https://www.mindstudio.ai/blog/gpt-5-5-review-developers-builders
+- https://www.mindstudio.ai/blog/grok-5-vs-gpt-55-vs-claude-opus-47-agi-comparison
+- https://www.mindstudio.ai/blog/openai-realtime-voice-api-3-new-models-builders-guide
+- https://www.mindstudio.ai/blog/real-time-ai-voice-models-compared-2025
+- https://www.mindstudio.ai/blog/what-is-inference-time-compute-ai-pivot-explained
+- https://www.miniloop.ai/blog/best-open-source-llms-2026
+- https://www.mirantis.com/blog/inference-costs/
+- https://www.mlaidigital.com/blogs/the-ultimate-guide-to-llm-as-a-judge-in-2026
+- https://www.mokahr.io/myblog/talent-culture-strategy-at-deepseek/
+- https://www.mordorintelligence.com/industry-reports/synthetic-data-market
+- https://www.morphllm.com/ai-coding-agent
+- https://www.morphllm.com/best-ai-coding-agents-2026
+- https://www.morphllm.com/best-ai-model-for-coding
+- https://www.morphllm.com/deepseek-v4
+- https://www.morphllm.com/gepa-prompt-optimization
+- https://www.morphllm.com/llm-guardrails
+- https://www.morphllm.com/llm-inference
+- https://www.morphllm.com/llm-inference-optimization
+- https://www.mykxlg.com/online_features/press_releases/aicc-report-enterprise-token-costs-drop-67-year-over-year-as-multi-model-ai-adoption/article_794d655c-f59b-5921-bbd0-33edb058b05e.html
+- https://www.nationaldefensemagazine.org/articles/2026/4/14/army-moving-toward-embedded-training-to-blend-live-simulated-exercises
+- https://www.nature.com/articles/s41467-024-52293-7
+- https://www.nature.com/articles/s41467-025-65823-8
+- https://www.nature.com/articles/s41586-025-09833-y
+- https://www.nature.com/articles/s41591-025-04151-2
+- https://www.nature.com/articles/s41591-026-04431-5
+- https://www.nature.com/articles/s41598-025-28704-0
+- https://www.nature.com/articles/s41598-026-41495-2
+- https://www.nature.com/articles/s41746-023-00951-3
+- https://www.nature.com/articles/s41746-025-02005-2
+- https://www.nature.com/articles/s41746-025-02112-0
+- https://www.nature.com/articles/s41746-025-02139-3
+- https://www.nature.com/articles/s41746-025-02234-5
+- https://www.nature.com/articles/s41746-026-02420-z
+- https://www.nature.com/articles/s43856-025-01337-0
+- https://www.nature.com/articles/s44184-025-00143-9
+- https://www.nbcnews.com/tech/security/anthropic-pentagon-us-military-can-use-ai-missile-defense-hegseth-rcna260534
+- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10679149/
+- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12084576/
+- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12457693/
+- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12871580/
+- https://www.newsletter.swirlai.com/p/state-of-context-engineering-in-2026
+- https://www.nexlaw.ai/blog/ai-hallucination-sanctions-2026/
+- https://www.nextgov.com/artificial-intelligence/2024/10/va-updating-its-ai-suicide-risk-model-reach-more-women/400377/
+- https://www.norwest.com/blog/the-rise-of-reinforcement-learning-gyms-and-the-future-of-agentic-ai/
+- https://www.notch.cx/learn/deep-dive-comparison-for-enterprise-ai-customer-support
+- https://www.notch.cx/post/customer-service-ai-metrics
+- https://www.npr.org/2026/05/05/nx-s1-5812861/characterai-chatbot-medical-advice-pennsylvania-lawsuit
+- https://www.nvidia.com/en-us/ai/cosmos/
+- https://www.nvidia.com/en-us/on-demand/session/gtc26-s82033/
+- https://www.nvidia.com/en-us/use-cases/synthetic-data-generation-for-agentic-ai/
+- https://www.nxcode.io/resources/news/gpt-5-4-api-developer-guide-reasoning-computer-use-2026
+- https://www.ohdsi.org/2025showcase-501/
+- https://www.ohdsi.org/data-standardization/
+- https://www.ohdsi.org/ohdsi2026-tutorials/
+- https://www.ohdsi.org/software-tools/
+- https://www.onesourcecloud.net/cms/2026-finance-llm-deployment.html
+- https://www.onhealthcare.tech/p/the-clinical-annotation-revolution
+- https://www.opentrain.ai/blog/rlaif-vs-rlhf-what-ai-feedback-can-and-cannot-replace/
+- https://www.palantir.com/platforms/aip/defense/
+- https://www.patsnap.com/resources/blog/articles/ai-protein-structure-prediction-landscape-2026/
+- https://www.patsnap.com/resources/blog/rd-blog/llm-quantization-compression-2026-patsnap-eureka/
+- https://www.pin.com/blog/ai-compensation-salary-guide/
+- https://www.pkgpulse.com/guides/portkey-vs-litellm-vs-openrouter-llm-gateway-2026
+- https://www.practical-devsecops.com/emerging-ai-security-roles/
+- https://www.prnewswire.com/news-releases/hippocratic-ai-launches-two-industry-firsts-ai-front-door-and-nurse-co-pilot-to-expand-clinical-care-and-access-302745186.html
+- https://www.prnewswire.com/news-releases/syntrix-launches-as-the-first-ai-agent-evaluation-and-live-agent-training-platform-for-enterprise-cx-302701938.html
+- https://www.promptfoo.dev/blog/rlvr-explained/
+- https://www.recruitingfromscratch.com/blog/ml-engineer-salary-at-ai-startups-in-2026
+- https://www.redhat.com/en/blog/solving-economics-llm-inference-speculative-decoding
+- https://www.redhat.com/en/topics/ai/rag-vs-fine-tuning
+- https://www.requesty.ai/blog/agentic-coding-tools-compared-2026-claude-code-cursor-aider
+- https://www.requesty.ai/blog/ai-agent-cost-optimization-how-to-cut-llm-spend-by-80-percent-with-routing
+- https://www.retellai.com/blog/10-best-hipaa-compliant-ai-voice-agents-for-healthcare-clinics
+- https://www.retellai.com/blog/ai-voice-agent-pricing-full-cost-breakdown-platform-comparison-roi-analysis
+- https://www.retellai.com/blog/best-voice-ai-providers
+- https://www.revelo.com/blog/dpo-human-data-llm-code-generation
+- https://www.salesforce.com/agentforce/
+- https://www.salesforce.com/blog/efficient-rl-training-agentic-era/
+- https://www.samhsa.gov/mental-health/988/faqs
+- https://www.science.org/doi/10.1126/science.aec8352
+- https://www.sciencedirect.com/science/article/pii/S0010482525000952
+- https://www.sciencedirect.com/science/article/pii/S0035378726004790
+- https://www.sciencedirect.com/science/article/pii/S2666521225001474
+- https://www.sdggroup.com/en-ae/insights/blog/the-evolution-of-prompt-engineering-to-context-design-in-2026
+- https://www.secondtalent.com/occupations/conversational-ai-engineer/
+- https://www.secondtalent.com/occupations/fine-tuning-engineer/
+- https://www.secondtalent.com/resources/global-ai-talent-shortage-statistics/
+- https://www.secondtalent.com/resources/most-in-demand-ai-engineering-skills-and-salary-ranges/
+- https://www.securance.com/blog/prompt-injection-the-owasp-1-ai-threat-in-2026/
+- https://www.securityweek.com/claude-code-gemini-cli-github-copilot-agents-vulnerable-to-prompt-injection-via-comments/
+- https://www.sidley.com/en/insights/newsupdates/2025/11/us-fda-and-cms-actions-on-generative-ai-enabled-mental-health-devices-yield-insights-across-ai
+- https://www.siliconflow.com/articles/en/best-open-source-text-to-speech-models
+- https://www.siliconflow.com/articles/en/the-lowest-latency-inference-api
+- https://www.sitepoint.com/ai-agent-memory-guide/
+- https://www.sitepoint.com/claude-code-vs-cursor-developer-benchmark-2026/
+- https://www.sitepoint.com/fine-tune-local-llms-2026/
+- https://www.skadden.com/insights/publications/2025/10/new-california-companion-chatbot-law
+- https://www.skadden.com/insights/publications/2026/05/ai-act-update
+- https://www.speechmatics.com/company/articles-and-news/de-risk-your-voice-agent-11-best-voice-agent-testing-platforms
+- https://www.sphereinc.com/blogs/best-enterprise-rag-platforms-2026
+- https://www.spheron.network/blog/ai-gateway-litellm-portkey-kong-gpu-cloud/
+- https://www.spheron.network/blog/ai-inference-cost-economics-2026/
+- https://www.spheron.network/blog/axolotl-vs-unsloth-vs-torchtune/
+- https://www.spheron.network/blog/b300-vs-b200-inference-cost-per-token/
+- https://www.spheron.network/blog/batch-llm-inference-gpu-cloud/
+- https://www.spheron.network/blog/continuous-pretraining-llm-gpu-cloud-domain-adaptation/
+- https://www.spheron.network/blog/deepseek-vs-llama-4-vs-qwen3/
+- https://www.spheron.network/blog/dpo-fine-tuning-gpu-cloud/
+- https://www.spheron.network/blog/dpo-vs-ppo-rlhf-algorithm-production-llm-alignment/
+- https://www.spheron.network/blog/eagle-3-speculative-decoding-gpu-cloud/
+- https://www.spheron.network/blog/fp4-quantization-blackwell-gpu-cost/
+- https://www.spheron.network/blog/how-to-fine-tune-llm-2026/
+- https://www.spheron.network/blog/inference-engineering-guide-2026/
+- https://www.spheron.network/blog/llm-inference-slo-ttft-itl-latency-budget-guide-2026/
+- https://www.spheron.network/blog/llm-serving-optimization-continuous-batching-paged-attention/
+- https://www.spheron.network/blog/moe-inference-optimization-gpu-cloud/
+- https://www.spheron.network/blog/mxfp4-microscaling-quantization-gpu-cloud/
+- https://www.spheron.network/blog/nvfp4-vs-mxfp4-gpu-cloud-4bit-quantization-guide/
+- https://www.spheron.network/blog/nvidia-dynamo-disaggregated-inference-guide/
+- https://www.spheron.network/blog/prefill-decode-disaggregation-gpu-cloud/
+- https://www.spheron.network/blog/rlhf-training-infrastructure-verl-openrlhf-trl-gpu-cloud/
+- https://www.spheron.network/blog/speech-to-speech-gpu-cloud-moshi-sesame-csm-hertz-dev/
+- https://www.spheron.network/blog/synthetic-data-generation-pipelines-gpu-cloud-distilabel-augmentoolkit-nemotron/
+- https://www.spheron.network/blog/tensorrt-model-optimizer-modelopt-quantization-guide/
+- https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/
+- https://www.springhealth.com/news/vera-mh-for-suicide-risk
+- https://www.sthambh.com/blog/rag-vs-fine-tuning-enterprise-2026/
+- https://www.sundeepteki.org/advice/the-complete-guide-to-post-training-llms-how-sft-rlhf-dpo-and-grpo-shape-llms
+- https://www.sundeepteki.org/advice/the-complete-guide-to-post-training-llms-how-sft-rlhf-dpo-and-grpo-shape-llms (2026)
+- https://www.superannotate.com/blog/llm-fine-tuning
+- https://www.superannotate.com/blog/rl-environments
+- https://www.swfte.com/blog/intelligent-llm-routing-multi-model-ai
+- https://www.syncsoft.ai/en/blog/speculative-decoding-eagle3-medusa-deepseek-mtp-chinese-chuhai-2026
+- https://www.synthlabs.ai/research/generative-reward-models
+- https://www.talkdesk.com/blog/bank-security-beyond-voice-biometric-authentication/
+- https://www.taskade.com/blog/context-engineering
+- https://www.taskade.com/blog/reasoning-models
+- https://www.taskmonk.ai/blogs/rlhf-data-annotation-platforms
+- https://www.teamday.ai/blog/frontier-ai-models-february-2026
+- https://www.techinterview.net/blog/rlvr-vs-rlhf-ai-reasoning
+- https://www.techinterview.org/post/3233460275/scale-ai-interview-guide-2026-data-infrastructure-rlhf-pipelines-and-ml-engineering/
+- https://www.techment.com/blogs/rag-architectures-enterprise-use-cases-2026/
+- https://www.techment.com/blogs/rag-in-2026/
+- https://www.techradar.com/ai-platforms-assistants/it-bothers-me-that-this-could-be-deployed-by-employers-your-boss-could-soon-know-youre-struggling-before-you-do-inside-the-rise-of-ai-mental-health-prediction-tools
+- https://www.techtimes.com/articles/317840/20260605/chatgpt-memory-dreaming-update-openai-rewrites-personalization-engine-limits-audit-trail.htm
+- https://www.techtimes.com/articles/317840/20260605/chatgpt-memory-dreaming-update.htm
+- https://www.techtimes.com/articles/318974/20260624/cursor-trains-first-frontier-model-scratch-colossus-15-trillion-parameters.htm
+- https://www.tericsoft.com/blogs/top-10-llm-rag-architectures-for-fintech-operations
+- https://www.the74million.org/article/gaggle-drops-lgbtq-keywords-from-student-surveillance-tool-following-bias-concerns/
+- https://www.themoonlight.io/en/review/legalagentbench-evaluating-llm-agents-in-legal-domain
+- https://www.theregister.com/2025/09/19/deepseek_cost_train/
+- https://www.thetechrecruiters.com/signal/ai-startup-hiring/complete-guide-to-building-an-ai-engineering-team-at-a-startup/
+- https://www.throughlinecare.com/
+- https://www.thundercompute.com/blog/supervised-fine-tuning-guide
+- https://www.tldl.io/resources/llm-api-pricing-2026
+- https://www.together.ai/blog/cache-aware-disaggregated-inference
+- https://www.together.ai/blog/deepswe
+- https://www.together.ai/blog/speculative-decoding-for-high-throughput-long-context-inference
+- https://www.tomsguide.com/ai/claude-just-unlocked-memory-that-syncs-with-chatgpt-heres-how-it-works
+- https://www.tonic.ai/blog/synthetic-data-generation-tools
+- https://www.totalum.app/blog/cursor-vs-claude-code-2026
+- https://www.traceloop.com/blog/automated-prompt-regression-testing-with-llm-as-a-judge-and-ci-cd
+- https://www.tredence.com/blog/prompt-engineering-skill-ai-professionals-2026
+- https://www.truefoundry.com/blog/llm-routing-cost-quality-aware-model-selection
+- https://www.trustsphere.ai/post/elder-financial-exploitation-the-silent-crisis-traditional-controls-cannot-see
+- https://www.trydeepteam.com/docs/frameworks-owasp-top-10-for-agentic-applications
+- https://www.turing.com/jobs/remote-llm-data-scientist
+- https://www.turingpost.com/p/ragtypes
+- https://www.vectara.com/blog/vectara-recognized-across-five-gartnerr-hype-cyclestm-for-2026
+- https://www.verdent.ai/guides/claude-opus-4-8-coding-agents
+- https://www.wing.vc/content/rl-environments-for-agentic-ai-who-will-win-the-training-verification-layer-by-2030
+- https://www.wing.vc/content/who-will-win-the-rl-environment-market--and-why
+- https://www.yottalabs.ai/post/best-llm-inference-engines-in-2026-vllm-tensorrt-llm-tgi-and-sglang-compared
+- https://www.yottalabs.ai/post/why-llm-inference-has-low-gpu-utilization-cpu-pcie-memory-bandwidth-and-kv-cache-bottlenecks
+- https://www.ziprecruiter.com/Jobs/Ai-Voice
+- https://www.ziprecruiter.com/Jobs/Clinical-Ai-Informatics
+- https://www.ziprecruiter.com/Jobs/Omop-Data-Analyst
+- https://zencoder.ai/blog/the-reality-of-self-hosting-llms-performance-cost-and-control-with-glm-4.5-fp8-white-paper
+- https://zylos.ai/en/research/2026-04-10-rl-posttraining-tool-using-agents-grpo-async-rl/
+- https://zylos.ai/research/2026-01-19-llm-context-management/
+- https://zylos.ai/research/2026-04-10-rl-posttraining-tool-using-agents-grpo-async-rl
+- https://zylos.ai/research/2026-04-12-indirect-prompt-injection-defenses-agents-untrusted-content/
+- introl.com, Inference-time scaling — https://introl.com/blog/inference-time-scaling-research-reasoning-models-december-2025 (Dec 2025)
+- invisibletech.ai — AI training in 2026: anchoring synthetic data in human truth
+- labellerr.com, Compare reasoning models — https://www.labellerr.com/blog/compare-reasoning-models/ (2026)
+- lmcouncil.ai benchmarks (June 2026) — https://lmcouncil.ai/benchmarks
+- m1: medical test-time scaling — https://arxiv.org/abs/2504.00869 (2025)
+- meta-intelligence.tech, Reasoning models insight — https://www.meta-intelligence.tech/en/insight-reasoning-models (2026)
+- morphllm.com, Claude benchmarks (June 2026)
+- npj Digital Medicine (nature.com/articles/s41746-025-02112-0); Bon View Press hallucination-risk study; ScienceDirect S2666521225001474
+- tldl.io, LLM API pricing 2026 — https://www.tldl.io/resources/llm-api-pricing-2026 (2026)

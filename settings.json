@@ -44,5 +44,10 @@
     "backend-api-security@claude-code-workflows",
     "data-engineering@claude-code-workflows",
     "machine-learning-ops@claude-code-workflows"
-  ]
+  ],
+  "permissions": {
+    "allow": [
+      "Bash(bash scripts/db-probe.sh:*)"
+    ]
+  }
 }

@@ -89,6 +89,22 @@ if src_plugins:
             seen.add(p)
     merged["enabledPlugins"] = dest_plugins
 
+# permissions.allow: order-preserving union nested under the permissions
+# object. Dest's existing allow rules are kept first, then any source rules
+# not already present. Other permissions keys (deny, ask,
+# additionalDirectories) and any dest-only fields are preserved untouched.
+src_allow = src.get("permissions", {}).get("allow", [])
+if src_allow:
+    dest_perms = dict(merged.get("permissions", {}))
+    dest_allow = list(dest_perms.get("allow", []))
+    seen = set(dest_allow)
+    for rule in src_allow:
+        if rule not in seen:
+            dest_allow.append(rule)
+            seen.add(rule)
+    dest_perms["allow"] = dest_allow
+    merged["permissions"] = dest_perms
+
 # Source's $comment documents the template, not the user's config: never
 # propagate it. (Any pre-existing dest $comment is preserved untouched.)
 
@@ -98,7 +114,8 @@ with open(tmp_path, "w", encoding="utf-8") as f:
 
 mkt_count = len(merged.get("extraKnownMarketplaces", {}))
 plugin_count = len(merged.get("enabledPlugins", []))
-print(f"{mkt_count} {plugin_count}")
+allow_count = len(merged.get("permissions", {}).get("allow", []))
+print(f"{mkt_count} {plugin_count} {allow_count}")
 PY
 )"; then
   echo "Error: merge failed." >&2
@@ -106,8 +123,7 @@ PY
   exit 1
 fi
 
-MKT_COUNT="${COUNTS% *}"
-PLUGIN_COUNT="${COUNTS#* }"
+read -r MKT_COUNT PLUGIN_COUNT ALLOW_COUNT <<<"$COUNTS"
 
 # Atomically move the rendered file into place.
 mv "$TMP" "$TARGET"
@@ -124,7 +140,7 @@ if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))
   exit 1
 fi
 
-echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins"
+echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules"
 echo
 echo "Activation: restart Claude Code OR run /reload-plugins in an open session"
 echo "for the always-on tier to take effect. ecc and superpowers remain one"

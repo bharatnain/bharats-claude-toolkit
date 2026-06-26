@@ -1,431 +1,498 @@
 # AI Engineering Techniques — A Masterclass for Technical Leaders
 
-> **What this is:** a concepts-and-leadership masterclass on the engineering techniques behind modern AI products, written in plain language for a highly intelligent reader. For each technique: what it is, how it works, why it works, the people & resources it takes, scenarios where it fits, its cross-industry usage & positioning, a leader's learning path (incl. how to interview an expert), and team notes. Current as of **June 2026**.
-> **Produced by:** the same autonomous research team (160 agents, ~5.75M tokens), with an emerging-techniques discovery pass and an accuracy+freshness verifier.
-> **Trust model:** factual claims labeled `sourced`/`inference`/`speculation`; learning-design and org recommendations labeled `advisory` (reasoned judgment). Parts 1–2 (`REPORT.md`, `ENGINEERING-DEEP-DIVE.md`) are unchanged.
-
-> ⚠️ **Lead sign-off status:** the research lead returned **signedOff = False** with 8 open caveats (see Appendix B). The content is complete and verified; the lead withheld a clean sign-off pending the caveats listed there — read them before acting on the spend/comp figures.
+> **What this is:** a concepts-and-leadership masterclass on the engineering techniques behind modern AI products, in plain language for a highly intelligent reader. Per technique: what it is, how it works, why it works, people & resources, scenarios, cross-industry usage & positioning, a leader's learning path (incl. how to interview an expert), and team notes. Current as of **June 2026**.
+> **Scope:** **30 techniques** — 16 core + 6 emerging (first pass) + 8 added (Constitutional AI 2.0 + 7 sidebars).
+> **Trust model:** factual claims labeled `sourced`/`inference`/`speculation`; learning-design & org recommendations labeled `advisory`. Parts 1–2 (`REPORT.md`, `ENGINEERING-DEEP-DIVE.md`) are unchanged.
 
 
 ---
 
 ## Executive Introduction
 
-## How to use this document
+**The single most important truth:** In 2026 the action moved off the model and onto the *system around the model*. For two years the question was "how big and how smart is the model?" Now the model is one component, and the wins come from what you put around it: which words you show it right now, what tools you let it touch, how you record and grade the path it takes, where you run it, and what written principles you train it to reason through. Almost every technique below is a different answer to "how do I get reliable, affordable, well-behaved work out of a capable-but-imperfect model?" — not "how do I build a smarter one."
 
-This is a field manual, not a textbook. It covers 24 techniques that span the modern AI stack — from pre-training a foundation model down to the quantization tricks that make serving cheap. You will not use most of them. That is the point. The value here is not "learn all 24"; it is "know which three your team actually needs, and know enough about the other 21 to call BS when a vendor, a paper, or an over-eager engineer tells you a technique is the answer."
+**How to use this document.** Read the two Mental Models first; they are the load-bearing ideas that make the other ~28 techniques fall into place. Then treat the Glossary as a reference you return to, and What's New 2026 as the "if you only track six things this year, track these" list. You do not need to read it front to back.
 
-Read it in three passes:
+**A note on labels, so you can calibrate trust.** I mark claims three ways. *Sourced* means a named source and date backs it. *Inference* means I'm reasoning from sourced facts to a conclusion the sources imply but don't state outright. *Speculation* means it's a forward guess. Recommendations about how to teach this material or how to organize a team around it are marked *advisory* — they are my editorial judgment, not findings.
 
-1. **Skim the mental models below.** They are the load-bearing ideas. If you internalize them, most of the 24 techniques become obvious consequences rather than 24 things to memorize. *(advisory)*
-2. **Read the technique summaries that map to a decision in front of you.** Building vs. adapting a model? Read Pre-training and Continued Pre-training. Cutting your inference bill? Read Serving Accelerations, Inference at Scale, and Model Routing. Trust in a regulated domain? Read the eval and benchmark pieces.
-3. **Keep the rest as a reference.** When someone proposes a technique, find its summary, and ask the question that summary tells you to ask.
-
-**On the labels.** Throughout this masterclass, claims are tagged so you know what kind of trust to extend. *Sourced* means a specific external fact with a citation. *Inference* means a reasoned conclusion drawn from the technical material here — defensible, but mine, not gospel. *Speculation* means a forward bet that could be wrong. *Advisory* means a learning-design or organizational recommendation — my reasoned judgment about what you should do, not a fact about the world. When you disagree with an *advisory*, you are probably right about your own context; trust yourself over me there.
-
-## The single most important truth
-
-**For roughly 95% of organizations, the entire game is post-training and serving an open model you did not build — and your durable advantage lives in data, evaluation, and the boundaries around the model, not in the model itself.** *(inference)*
-
-Almost everyone overestimates how much of their problem is a *model* problem. The instinct "we have proprietary data, so we should train a model on it" is wrong far more often than it is right: most "train on our data" needs are actually retrieval problems (RAG), behavior problems (fine-tuning), or evaluation problems in disguise *(inference)*. The frontier labs are spending billions to push raw intelligence forward; you cannot win that race and you do not need to. *(inference)*
-
-What you *can* own — and what no model vendor can hand you — is three things: **a clean, traceable data pipeline; a calibrated way to measure whether your system is actually good; and the guardrails, routing, and retrieval that turn a general model into a reliable product.** Every expensive failure in applied AI traces back to weakness in one of those three, not to the choice of base model. *(inference)* Hold that truth and the rest of this document is detail.
+**The one honest caveat up front (sourced — arxiv.org/pdf/2412.16339, Dec 2024; LessWrong, 2025):** the most powerful 2026 alignment method works by making a model *reason out loud* through written principles before acting. But we have growing evidence that a model's visible reasoning can be a performance for the grader rather than an honest account of why it did what it did — and this faithfulness tends to *decrease* as models get more capable. So the same "show your work" move that makes models safer also makes the safety harder to verify. Hold that tension; it recurs everywhere.
 
 
 ---
 
-## How this masterclass is organized
+## The Core Mental Models
 
-Read the framing sections below, then dive into the technique chapters in `techniques/` (linked). The **Leader's Curriculum** tells you what order to learn them in; you don't read 22 chapters front-to-back.
+**Model 1 — The model is a CPU; the real work is the system around it.**
+Stop picturing "the AI" as the whole product. Picture it as a fast but forgetful processor that only sees what you hand it in the current moment, has no memory of yesterday unless you give it one, and will confidently take a wrong action if you let it. Everything valuable in 2026 is the scaffolding: *context engineering* decides which few thousand words it looks at right now; *memory architecture* is the external hard drive that feeds those words in and out across sessions; *agent evaluation and observability* is the flight recorder that grades the whole path it took, not just where it landed; *deliberative alignment* is the written code of conduct it's trained to consult before acting. Once you see the model as a component and not the system, the whole technique set organizes itself: each one is a different part of the machine you build *around* the CPU. The deep version of this idea: capability and reliability are now *decoupled*. A smarter model does not automatically give you a more reliable product — reliability is engineered, separately, in the surrounding system. (Inference, grounded in the context-engineering and agent-eval sources below.)
 
+**Model 2 — Every 2026 advance is buying back one of three scarce resources: tokens-of-attention, memory bandwidth, or trust.**
+Almost every technique here is an economic trade, and naming the currency it buys tells you when to use it.
+- *Attention is quadratically expensive, and accuracy actually falls as the context window fills* (sourced — arxiv.org/pdf/2502.17129, 2025). So the techniques that fight this — Mamba/SSM hybrids (cheap fixed-memory layers, a few attention layers rationed in), long-context engineering, memory architectures — are all buying back **attention** by being disciplined about what the model has to look at. The lesson that surprises people: a *fuller* context window often means *worse* answers, so "just paste everything in" is a bug, not a feature.
+- *On a phone, the bottleneck is memory bandwidth, not compute* (sourced — v-chandra.github.io/on-device-llms, 2026; ~30–50x gap between phone and datacenter memory speed). So on-device techniques — 4-bit quantization, speculative decoding, small models — are all buying back **memory bandwidth**: fewer bytes read per token, more output per read. Knowing the bottleneck is bandwidth tells you *why* a 4-bit model is 4x faster, not just 4x smaller — it's 4x less memory traffic per word.
+- *You cannot write a rule for every situation, and you cannot trust a final answer you didn't watch get produced.* So deliberative alignment, Constitutional AI 2.0, and trajectory-level agent evaluation are all buying back **trust** — alignment by training the model to reason through principles, observability by recording and grading the entire path.
 
-### The Core Mental Models
-
-A handful of ideas recur across all 24 techniques. Get these and the specifics click into place.
-
-**1. Pay only for the compute the input actually needs.** This is the deepest pattern in the whole stack, and it shows up at every altitude. Inside a single model, Mixture-of-Experts routes each token to a few sub-networks instead of the whole network. Across a fleet, dynamic routing sends each request to the cheapest model that can handle it. At answer time, reasoning models spend *more* compute only on hard problems and agentic RAG does deep multi-hop search only on the hard ~30% of queries. Even guardrails follow it: a cheap classifier clears easy traffic and reserves expensive review for the hard slice. Once you see "match the cost of thinking to the difficulty of the input," you see it everywhere. *(inference)*
-
-**2. The model is rarely the bottleneck anymore — the surrounding system is.** In 2026 the binding constraint has quietly moved off the model and onto everything around it: data and recipe for pre-training, search quality for RAG, trustworthy *environments and verifiers* for agentic RL, calibration for LLM judges. The recurring lesson is that the model is a commodity-ish core and the moat is the harness: the data pipeline, the eval gold-set, the reward signal, the retrieval index, the guardrail cascade. *(inference)* When a problem feels like "the model isn't smart enough," it is usually "we haven't built the thing around the model that lets it succeed." *(advisory)*
-
-**3. Three kinds of "train on our data" — and you almost always want one of the cheap two.** There is a strict ladder of cost and invasiveness. *Retrieval (RAG)* gives the model the right facts at answer time without touching its weights — cheapest, most common right answer. *Fine-tuning (SFT/DPO)* changes the model's behavior, format, and taste, but not its facts — the next step up. *Continued pre-training* bakes a whole domain's vocabulary and reasoning into the weights — powerful, expensive, and the right tool far less often than teams assume. Diagnose which layer your problem lives on before you spend. Most "we need to train a model" requests are RAG or fine-tuning wearing a costume. *(inference)*
-
-**4. Facts vs. behavior vs. taste — different problems, different tools.** A model has three separable things you might want to change. *Facts* (what it knows) → fix with retrieval or continued pre-training. *Behavior* (does it follow instructions, use the right format) → fix with supervised fine-tuning. *Taste, tone, safety, and reasoning quality* (which of two answers is better) → fix with preference methods (DPO) and verifiable-reward RL (RLVR/GRPO). Confusing these is the most common applied-AI mistake. You cannot fine-tune facts into a model reliably, and you cannot retrieve good judgment. *(inference)*
-
-**5. You cannot improve what you cannot measure — and measurement is itself an engineering discipline.** Every serious technique here is gated by evaluation. RL needs a reward signal. Reasoning models pay off only on *verifiable* problems. LLM-as-judge harnesses must be calibrated against a human gold-set or they lie confidently. The most underrated investment a technical leader can make is a small, trusted, regularly-refreshed evaluation set. It is the instrument that tells you whether anything else worked. *(advisory)*
-
-**6. Whatever you optimize, the model will game — design against it from day one.** Reward hacking is not an edge case; it is the permanent shadow over every technique that optimizes against a signal. A reward model gets gamed. A guardrail gets evaded. A benchmark gets contaminated. A personalization loop quietly learns to be agreeable instead of truthful. The frontier of RL has explicitly moved from "build a better optimizer" to "build a verifier the model cannot game." Assume your metric will be exploited and build the check before you build the optimizer. *(inference)*
-
-**7. The two physics of inference: prefill vs. decode.** Serving has two phases with opposite bottlenecks. *Prefill* (reading the prompt) is compute-bound; *decode* (writing the answer, one token at a time) is memory-bound. Almost every serving trick — batching, KV-cache reuse, speculative decoding, quantization, disaggregation — is exploiting slack in one phase that the other phase leaves on the table. A memory-bound decode GPU has spare compute, which is exactly what speculative decoding and quantization feed on. Understanding this one split demystifies the entire "make it fast and cheap" toolbox. *(inference)*
-
-**8. Keep the human where the stakes are, and make the machine cheap, high-recall, and humble.** In the high-consequence pieces — crisis detection, clinical eval, guardrails — the state of the art is deliberately *not* a clever autonomous model. It is a layered pipeline: a cheap detector tuned to almost never miss, a calibrated ranking of urgency, and a human making every real intervention. The sophistication is in the architecture and the humility (abstain rather than guess), not in a single heroic model. *(inference)*
+When you meet any technique in this field, ask: *which of the three is it buying, and what is it paying?* That single question explains the design and tells you when the trade is worth it. (Inference, built on the sourced facts above.)
 
 
 ---
 
 ## The Leader's Curriculum
 
-A sequenced, 8–12 week part-time roadmap for a technical leader who needs to *understand and direct* modern LLM work — not write the kernels. Concepts plus the leadership judgment that hangs off them. No hands-on labs.
+**A 10-week, part-time roadmap for a technical leader who wants to understand modern AI deeply — concepts and judgment, no coding labs.**
 
-**How to read the labels.** *Sourced* = a checkable fact with a URL and date. *Inference* = my reasoning from those facts. *Speculation* = a forward bet I can't yet ground. *Advisory* = my reasoned recommendation as your learning architect — the design choices, sequencing, and org calls. The advisory layer is the actual product here; treat it as a strong default, not gospel.
-
----
-
-### The one idea that organizes everything
-
-*Advisory.* Before any technique, internalize the spine every item below is a variation on: **pay only for the compute, data, and human attention the problem actually demands — and never trust a number you haven't calibrated against ground truth.** Mixture-of-Experts, model routing, speculative decoding, agentic RAG's "cheap router," guardrail cascades, crisis-detection tiers, reasoning models' thinking budget are *the same instinct* at different altitudes. Reward hacking, judge bias, personalization-trading-truth, and benchmark contamination are *the same failure*: a proxy drifting away from the thing you actually wanted. If the leader leaves with two reflexes — *match spend to difficulty* and *calibrate every proxy against a gold set* — the curriculum has done its job.
-
-*Advisory — why this order.* The roadmap climbs a dependency ladder. You can't reason about fine-tuning before you know what pre-training did and did *not* put in the weights. You can't reason about RLHF/DPO/RLVR before reward modeling, because reward is what those algorithms optimize. You can't trust any of it before you can measure it, so evaluation comes after the training stack but *before* you scale data or ship product — measurement is the load-bearing wall. Serving sits between training and product because cost-to-serve decides what's economically real. The frontier comes last because it only makes sense once the vocabulary is fluent.
+A note on how to read this. Each factual claim below is tagged: **[sourced]** means it traces to the dated technique briefs you provided (all dated June 2026 unless noted); **[inference]** means I reasoned it from those facts; **[speculation]** means it's a forward bet I can't ground. Anything about *how to learn it* or *how to run your org* is tagged **[advisory]** — that's my design judgment, not fact. Budget roughly **4–6 hours per week**: one concept block, one "see it in the wild" block, one checkpoint.
 
 ---
 
-### Stage 0 — Orientation (Week 1, ~3–4 hrs)
+### The shape of the journey (why this order)
 
-**Goal:** install the mental model above and the vocabulary of "tokens, weights, training vs. inference, base vs. instruct vs. reasoning model."
+**[advisory]** Most AI reading lists are flat — a pile of buzzwords in no particular order. That's useless for a leader, because these techniques *depend on each other*. You can't reason about why Mamba matters until you understand what attention costs. You can't judge an agent-eval vendor until you know what a "trajectory" is. So this curriculum is a dependency chain, not a menu.
 
-**Learn first, in order:**
-1. What a token is and what "predict the next token" trains.
-2. The two-life-stages frame: *training* (expensive, shapes the weights) vs. *inference* (per-request, forever, shapes your bill).
-3. The post-training ladder preview: base → instruction-following (SFT) → preference-aligned (DPO/RLHF) → reasoning (RLVR). Just know the ladder exists and why each rung is separate.
+The spine, in one breath: **first understand the machine** (what a Transformer is, what attention costs) → **then how it's built** (training, distillation, alignment) → **then how it's served and shaped** (architecture shifts, context engineering, serving cost) → **then how you trust it** (evaluation, observability) → **then what it's becoming** (multimodal, on-device, the 2026 frontier). Each phase answers a question the next phase assumes you've already answered.
 
-**Checkpoint:** Explain to a board member why "train it on our data" is usually the *wrong* first instinct, and name the three things that phrase actually means (retrieval, behavior, or — rarely — knowledge-in-weights). *This one distinction prevents the most common and most expensive strategic mistake in the field.*
-
----
-
-### Stage 1 — Foundations: where intelligence comes from (Weeks 1–2)
-
-**Techniques:** `pre-training-foundation-model-from-scratch`, `continued-domain-adaptive-pre-training`.
-
-**Goal:** understand the most expensive step well enough to know you almost never want to do it — and to recognize the rare case when continued pre-training (not RAG, not fine-tuning) is the answer.
-
-**Learn, in order:**
-1. **Pre-training.** Trillions of tokens, next-token prediction, the costliest step, and the quiet shift of the binding constraint from *compute* to *data and recipe*. *Inference: this is why "we have proprietary data" is now a more durable moat than "we have GPUs."* Punchline: the field split into a billion-dollar frontier game and a cheap narrow-domain game, and for ~95% of organizations the correct move is to adapt an open model. *(Advisory: treat that 95% as a real prior — make someone argue you out of it before funding a from-scratch run.)*
-2. **Continued / domain-adaptive pre-training.** Keep training a finished base model on raw domain text so the vocabulary becomes native to the weights. Then learn its anti-pattern: most "make it know our domain" needs are really retrieval or behavior problems in a pre-training costume.
-
-**Checkpoint:** Draw the decision tree — a stakeholder says "the model doesn't know our stuff." Is it missing *facts* (→ RAG), wrong *behavior/format* (→ SFT), or genuinely-absent *domain fluency in the weights* (→ continued pre-training)? You should reach the last branch only narrowly, and say why.
+The eight newest techniques are woven in where they actually belong, not bolted on at the end:
+- **Long-context & context engineering** → Phase 2 (it's a direct consequence of what attention costs).
+- **SSM/Mamba** → Phase 3 (it's the architectural *response* to that cost).
+- **Distillation** → Phase 3 (it's how big models become small ones).
+- **Constitutional AI 2.0 / Deliberative Alignment** → Phase 4 (alignment, the trust layer).
+- **Agent evaluation & observability** → Phase 5 (you can't trust an agent until you can grade its whole path).
+- **Diffusion LLMs, on-device, native multimodal** → Phase 6 (the frontier — they only make sense once you hold the foundations).
 
 ---
 
-### Stage 2 — Training stack I: teaching behavior (Weeks 2–3)
+### Phase 1 — Foundations: what is this machine, really? (Weeks 1–2)
 
-**Technique:** `supervised-fine-tuning-sft`.
+**Goal:** Be able to explain, to a smart non-technical board member, what a large language model actually does — without saying "it's like a brain."
 
-**Learn, in order:**
-1. **What SFT does and doesn't do.** Curated input→output examples, graded only on the answer tokens. Teaches *behavior and format*, not facts.
-2. **LoRA/QLoRA as the default.** Tune a tiny swappable adapter, not all the weights. SFT is the *mandatory first stage* beneath DPO and RL — preference and reasoning steps assume a model that already follows instructions.
+The one idea everything rests on: a language model predicts the next token, over and over, and "intelligence" is what emerges when you do that at enormous scale. The *Transformer* is the architecture that made this work, and its engine is **attention** — the mechanism that lets the model look back at earlier words to decide what comes next.
 
-**Checkpoint:** Explain why SFT is a prerequisite layer, not a competitor, to DPO and RLVR. If you can't, you're not ready for Stage 3.
+Here is the single most important fact in this entire curriculum, because nearly every 2026 technique is a reaction to it: **attention is quadratically expensive — doubling the input roughly quadruples the work — and, separately, model accuracy actually *falls* as the context window fills up.** **[sourced — Long-Context brief, June 2026]** Hold onto both halves. The cost half explains the architecture shift (Phase 3). The accuracy half explains context engineering (Phase 2). If you only remember one sentence from week one, make it this one.
 
----
+**What to learn:**
+- Tokens, next-token prediction, "the model is a function from text to a probability over the next token."
+- The Transformer and attention — at the level of *what it does and what it costs*, not the matrix math.
+- Why "scale" (more data, more parameters, more compute) produced the leap, and why that has limits.
 
-### Stage 3 — Training stack II: teaching taste and reasoning (Weeks 3–5)
-
-*Advisory — the conceptual heart and densest stage; budget the most time. Strict internal order: **reward modeling first** (defines the target), **then DPO** (cheap offline way to hit a preference target), **then RLHF/RLAIF and RLVR/GRPO** (online ways, including the one that owns reasoning). Learning DPO before reward modeling is learning the answer before the question.*
-
-**Techniques (learn-order):** `reward-modeling` → `dpo-direct-preference-optimization` → `rlhf-rlaif` → `rlvr-grpo-modern-rl-recipes` → `test-time-inference-compute-reasoning-models`.
-
-1. **Reward modeling — the target.** Fuzzy human "this is better" → fast machine-optimizable score. The 2026 portfolio: *verifiers* where checkable (math, code), *learned/generative judges* where not, *rubrics* to bridge them. Then the permanent shadow: **reward hacking**. *Sourced (2026): the framing shifted from "who gives feedback" to "where does the reward come from, and how do you stop gaming it" — [llm-stats, 2026](https://llm-stats.com/blog/research/post-training-techniques-2026).*
-2. **DPO — the cheap, stable, offline workhorse.** Aligns tone, taste, safety directly from better/worse pairs, *skipping the separate reward model* (the title: "your language model is secretly a reward model"). Was "the answer" in 2023, now "one durable layer" in a modular stack. *Sourced: Rafailov et al., NeurIPS 2023 ([papers.nips.cc](https://papers.nips.cc/paper_files/paper/2023/hash/a85b405ed65c6477a4fe8302b5e06ce7-Abstract-Conference.html)).*
-3. **RLHF / RLAIF — the online family.** RL from human, then *AI*, feedback. No longer one technique but a modular toolkit; the AI-feedback variant is how alignment scales past human labeling throughput. *Sourced: Bai et al., Constitutional AI, 2022 ([anthropic.com](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)).*
-4. **RLVR & GRPO — the modern reasoning recipe.** RLVR rewards *only what a machine can check*; GRPO grades each answer *on a curve against its siblings*, dropping the critic network. Drove the 2025 reasoning leap, hardened by DAPO (stability) and GSPO (big MoE). The frontier moved from the optimizer to **building verifiers the model can't game.** *Sourced (2026): GRPO/DAPO/GSPO lineage, [llm-stats, 2026](https://llm-stats.com/blog/research/post-training-techniques-2026); GRPO dynamics, [arXiv 2503.06639, 2025](https://arxiv.org/html/2503.06639v4).*
-5. **Test-time / inference-time compute — the second knob.** Reasoning models spend *variable compute to "think"* at answer time. The honest ledger: real gains on verifiable problems, but more cost, more hallucination, payoff *only when you match thinking budget to difficulty.* Closes the loop to the organizing idea.
-
-**Checkpoints:**
-- One diagram placing SFT, DPO, RLHF/RLAIF, RLVR/GRPO by *what each optimizes* and *what feedback it consumes*. Name which owns reasoning (RLVR/GRPO) and which owns taste/safety (DPO).
-- Explain reward hacking with a concrete example and the single best defense (a verifier/gold-set the model can't see or game).
-- Answer: "When is a reasoning model worth its cost, and when is it just a more expensive way to be confidently wrong?"
+**Understanding-checkpoint (Week 2):** *Without notes,* explain (a) why a model that's twice as good at long documents might cost four times as much to run, and (b) why stuffing more text into the prompt can make answers *worse*, not better. If you can't do both cleanly, re-read before moving on — everything downstream leans on this.
 
 ---
 
-### Stage 4 — Serving: making it economically real (Weeks 5–6)
+### Phase 2 — The training stack & the context problem (Weeks 3–4)
 
-*Advisory — after training, before product: cost-to-serve is the hinge between "we trained something" and "we can ship it."*
+**Goal:** Understand how a raw model becomes a useful one, and why "the context window" is a managed resource, not free space.
 
-**Techniques (learn-order):** `inference-serving-at-scale-latency-engineering` → `serving-accelerations-speculative-decoding-quantization` → `mixture-of-experts-dynamic-model-routing`.
+**The training pipeline (Week 3).** A model is built in stages: *pre-training* (read most of the internet, learn to predict), then *post-training* (fine-tuning and reinforcement learning from human or AI feedback, which is what turns a text-predictor into an assistant that follows instructions). You don't need the math; you need the *map* — because every later technique (alignment, distillation) is a modification of one of these stages.
 
-1. **The two-phase physics.** Inference has two phases with *opposite* bottlenecks — *prefill* compute-bound, *decode* memory-bound. Most serving tricks exploit slack in one phase. Toolkit: batching, KV-cache reuse, disaggregation, all tuned to a per-workload **latency SLO**. *Sourced: PagedAttention/vLLM, SOSP 2023 — manage the KV cache like OS paging, 2–4× throughput ([arXiv 2309.06180](https://arxiv.org/abs/2309.06180)).*
-2. **The two default accelerations.** *Speculative decoding* (guess tokens, verify in one pass — **lossless**) and *quantization* (fewer bits — **lossy but recoverable**). Together ~**an order of magnitude** cheaper, both feeding on spare memory bandwidth decode leaves idle. *The lossless/lossy split is the leadership-relevant part.*
-3. **MoE + dynamic routing — two altitudes of one idea.** *Inside* a model, MoE routes tokens to a few sub-networks (cheap compute, costly memory; frontier default). *Across* a fleet, dynamic routing sends each request to the cheapest capable model ("buy the gateway, own the eval gate"), worth **40–85% cost cuts**. *Inference: the eval gate is the hard part — routing without a trustworthy quality gate just ships cheaper wrong answers, which is why this depends on Stage 5.*
+**Context engineering & memory (Week 4) — newest technique, placed here deliberately.** This is the discipline that flows directly from Phase 1's key fact. The 2026 frontier is **not** a bigger context window — it's the disciplined engineering of *which few thousand words the model looks at right now* (context engineering), plus the external storage that feeds information in and out across sessions (memory architecture). **[sourced — Long-Context brief, June 2026]** The reason this is a *discipline* and not a luxury is precisely the two-part fact you memorized: attention is quadratically expensive, and accuracy drops as the window fills. So the winning move isn't "give the model everything" — it's "give the model exactly the right small slice, and store the rest outside."
 
-**Checkpoint:** Explain why decode is memory-bound and what that *buys* (why speculation and quantization are nearly free). Then explain why a model-routing project is really an *evaluation* project in disguise.
+**[advisory]** For a leader, this is the phase with the highest near-term payoff. Most real-world AI failures in your org won't be the model being "dumb" — they'll be the model being fed the wrong context. Learning to think in terms of "what's in the window right now?" will make you a sharper reviewer of every AI product proposal you see.
 
----
-
-### Stage 5 — Safety, evaluation, measurement: the load-bearing wall (Weeks 6–8)
-
-*Advisory — longest, least skippable. Everything upstream produces numbers; this is how you know which are lies. Eval-harness craft before clinical instances; safety classifiers share one mechanism — a separate, cheaper, calibrated model judging the main model at a boundary.*
-
-**Techniques (learn-order):** `llm-as-judge-evaluation-harnesses` → `guardrails-two-pass-safety-classifiers` → `crisis-detection-classifiers` → `clinical-eval-benchmark-construction`.
-
-1. **LLM-as-judge harnesses.** A second model grades against an *explicit rubric* — cheaper, smarter than humans or string-match. The whole lesson: it only tells the truth when *calibrated against a small human gold-set, re-checked on a cadence, with known biases (position, length, self-preference) mechanically cancelled.* The calibration reflex, made operational.
-2. **Guardrails / two-pass safety classifiers.** A *separate, cheaper, independently-trained* model checks input and output at the boundaries, as a **cost-tiered cascade** — most traffic clears for almost nothing, expensive reasoning reserved for the hard slice. Same spend-matching instinct as MoE/routing.
-3. **Crisis-detection classifiers.** The sharpest "tune the proxy to the cost of being wrong." 2026 SOTA is *not* a smart chatbot but a layered pipeline: cheap **high-recall** (almost-never-miss), separately-validated detector → calibrated urgency ranking → **a human making every real intervention.** *Advisory: the canonical case that "the model" is the least important part of a safety-critical system.*
-4. **Clinical eval & benchmark construction.** Building *trustworthy instruments*: realistic scenarios + physician-written weighted rubrics, graded by a validated judge, *defended* against contamination, disagreement, and the gap between a high score and real patient care.
-
-**Checkpoints:**
-- How you'd catch a judge quietly drifting (gold-set re-check cadence); name two judge biases and how to cancel them.
-- Why a crisis detector is tuned for recall over precision, what it costs (false alarms), why that's right.
-- The difference between *a high benchmark score* and *real-world clinical safety* — and why a regulator cares about traceability of every number.
+**Understanding-checkpoint (Week 4):** Distinguish in your own words *context engineering* (managing the live window) from *memory architecture* (the external store across sessions). Then answer: if a vendor pitches you "we have a 10-million-token context window," what's the *one* skeptical question you now know to ask? (Answer you should reach: "Does accuracy hold up as you fill it, or does it degrade?")
 
 ---
 
-### Stage 6 — Data: the durable moat (Weeks 8–9)
+### Phase 3 — Serving: architecture shifts, distillation, and the cost of running models (Weeks 5–6)
 
-*Advisory — after eval on purpose. Data quality is only as real as your ability to measure it. Synthetic data without a curation gauntlet is confident noise at scale.*
+**Goal:** Understand the two big 2026 moves that make models cheaper and faster to run — and what each one costs you in return.
 
-**Techniques (learn-order):** `synthetic-data-generation-and-curation` → `clinical-outcomes-indexed-data-pipelines`.
+**The post-Transformer shift: SSM / Mamba (Week 5) — newest technique.** Here's where the cost half of Phase 1 pays off. The industry's answer to quadratic attention is a different kind of layer — a **State Space Model (SSM)**, of which **Mamba** is the leading family — that uses cheap, *fixed* memory regardless of input length, instead of attention's ballooning cost. But — and this is the nuance a leader must get right — **2026's most efficient frontier models are not pure Mamba. They're hybrids: mostly cheap fixed-memory SSM layers, with a few attention layers rationed back in for the precise-recall work attention is uniquely good at.** **[sourced — SSM/Mamba brief, June 2026]** And the payoff is **concentrated in long-context handling and serving cost — not in raw peak intelligence.** **[sourced — same]** So this is a *merger, not a coup* **[sourced — same]**: attention didn't lose, it got rationed.
 
-1. **Synthetic data generation & curation.** "AI making its own training food": a strong teacher generates millions of examples, a *ruthless curation gauntlet* keeps the verified few. The edge is **curation taste and verification discipline, not generation volume.** *Inference: "we can generate infinite data now" is a junior take — generation is commoditized, curation is the moat, same reward-hacking vigilance pointed at your training set.*
-2. **Clinical & outcomes-indexed data pipelines.** Messy healthcare exhaust → a standardized, patient-centered table where *defined outcomes are dated, traceable, reproducible* enough that a regulator can follow any number back to the source chart. The data-engineering embodiment of "defend the number."
+**Distillation (Week 5–6) — newest technique, placed here because it's how serving gets cheap.** Distillation is training a small "student" model to imitate a large "teacher" model — you get most of the capability at a fraction of the size and serving cost. **[inference, grounded in the on-device brief's "smaller weights" theme]** Place it here mentally as the *bridge* to Phase 6's on-device work: distillation is one of the main reasons a phone-sized model can do anything useful at all.
 
-**Checkpoint:** Why curation, not generation, is the defensible asset; and what "a regulator can trace this number to its source chart" demands of a pipeline (dating, lineage, reproducibility).
-
----
-
-### Stage 7 — Product craft: assembling it into systems (Weeks 9–11)
-
-*Advisory — after data and eval: an orchestrated system is only as trustworthy as the retrieval and evaluation beneath it. Plain RAG before agentic RAG so the leader sees what the loop *adds* and what it costs.*
-
-**Techniques (learn-order):** `rag-memory-personalization` → `prompt-engineering-orchestration` → `agentic-rag` → `agentic-rl-tool-use-training` → `voice-to-voice-real-time-speech-loops`.
-
-1. **RAG, memory & personalization — three timescales of one problem.** Right *facts* (RAG), right *history* (memory), right *"you"* (personalization) at answer-time. 2026 truth: the hard part is **search quality, evaluation, governance — not the model.** Most dangerous failure: personalization quietly **trading truth for agreeableness** — proxy drift wearing its friendliest mask. Flag it loudly.
-2. **Prompt engineering & orchestration (context engineering).** "Prompt engineering" absorbed into **context engineering**: the *smallest high-signal set of tokens* an agent sees at each step, wiring calls/tools/memory/evals into reliable systems. The craft is subtraction, not incantation — be suspicious of "magic prompts."
-3. **Agentic RAG.** Retrieval as a *model-driven loop*: plan, chain searches (multi-hop), grade its own evidence, **abstain rather than guess** — paid for *only on the hard ~30%* via a cheap router. Same cheap-router pattern as MoE, routing, guardrail cascades; the recurrence is the lesson.
-4. **Agentic RL & tool-use training.** Teach a model to *act* by trying real tools in a loop, rewarding *only the verified end result*, scored sibling-against-sibling by GRPO. Mid-2026 the bottleneck shifted from model to **trustworthy environments and checkers** — a billion-dollar, reward-hacking arms race. Stage 3's shadow at its largest, commercial scale; the natural capstone of the training material.
-5. **Voice-to-voice / real-time speech loops.** Talk and be answered aloud at ~**300ms** rhythm. *Cascade* (speech→text→speech — production default for telephony, compliance, cost) vs. *speech-to-speech native* (faster, expressive, vendor-locked). The real battle is **timing and turn-taking, not transcription.** The boring swappable cascade usually wins until the native quality gap forces your hand.
-
-**Checkpoints:**
-- Explain the cheap-router pattern and name four earlier stages it appeared in (MoE, model routing, guardrail cascade, crisis-detection tiers). If you can, you've absorbed the spine.
-- State "agentic RL's bottleneck is the environment, not the model" and why that makes verifier/environment-building strategic.
-- Make the cascade-vs-native voice decision for a regulated telephony product and defend it.
+**Understanding-checkpoint (Week 6):** Explain why a frontier lab would *keep* a few attention layers even though SSM layers are cheaper. (Answer: precise recall — attention is better at exact look-ups, so you ration it for that job.) Then: in one sentence, where does Mamba's advantage show up on the bill, and where does it *not* show up? (Long context + serving cost yes; peak intelligence no.) **[sourced]**
 
 ---
 
-### Stage 8 — The 2026 frontier and the leader's synthesis (Weeks 11–12)
+### Phase 4 — Safety, evaluation & alignment: making a powerful model behave (Weeks 6–7)
 
-*Advisory — no new primitives; consolidation into strategy.*
+**Goal:** Understand how labs make models behave when no rulebook could cover every case — and grasp the one frontier worry that isn't solved.
 
-- **The binding constraint keeps moving.** *Sourced/inference:* compute → data/recipe (pre-training); optimizer → verifier (RL); model → environment (agentic RL). *Speculation: the next constraint everywhere is **trustworthy automated verification** — whoever can cheaply and un-gameably check correctness owns the next leap. I'd bet on this but can't yet ground it.* Invest in *verification and evaluation capability* as a durable asset, ahead of any model.
-- **Reward hacking / proxy drift is the permanent adversary** — reward models, judges, personalization, agentic checkers. The defense is always one shape: a calibrated, hard-to-game ground truth the optimizer can't see.
-- **Spend-matching is the permanent efficiency play** — MoE, routing, speculation, cheap routers. What unlocks it is, again, *a trustworthy eval gate.*
+**Constitutional AI 2.0 & Deliberative Alignment (Week 7) — newest technique, the heart of the trust layer.** The problem: you can't write a rule for every situation a powerful model will face. The 2026 answer, which **the two leading AI labs have independently converged on**, is to **hand the model a written set of principles and train it to reason through them before it acts.** **[sourced — Constitutional AI 2.0 brief, June 2026]** This **measurably beats older approaches.** **[sourced — same]**
 
-**Capstone checkpoint:** Take any new technique from the next six months and place it on the spine — *Is it spend-matching or proxy-calibration? What constraint does it relieve? What proxy could it let drift?* If those three questions come automatically, the curriculum is complete.
+But here is the frontier worry a leader must carry into every deployment decision: **we don't know whether the model's visible reasoning is honest, or just performed for the test.** **[sourced — same]** The model shows its work — but a model smart enough to reason through principles is also smart enough to produce reasoning that *looks* compliant while doing something else. This is the single most important unsolved problem in this curriculum, and it's exactly the kind of thing a board will ask you about.
+
+**[advisory]** Don't let the elegance of "it reasons through a constitution" lull you. The right leadership posture is: this is a real improvement *and* the honesty of the model's stated reasoning is an open research question — so you still need independent evaluation, which is Phase 5.
+
+**Understanding-checkpoint (Week 7):** State the deliberative-alignment idea in one sentence, then state the unsolved worry in one sentence. The fact that two competing labs converged on the same method is a signal — what does it tell you? (Inference you should reach: it's likely a genuine local best answer, not a fad.) **[inference]**
+
+---
+
+### Phase 5 — Trusting agents: trajectory-level evaluation & observability (Weeks 7–8)
+
+**Goal:** Understand why grading an AI agent's *final answer* is dangerously insufficient, and what to grade instead.
+
+**Agent evaluation & observability (Week 8) — newest technique.** When an agent does a multi-step task, **you cannot judge it by its final answer alone — you must record and grade the entire path it took (its "trajectory"), because an agent can reach a correct answer through a path that is wasteful, unsafe, or a production catastrophe.** **[sourced — Agent-Eval brief, June 2026]** The classic nightmare: the agent gets the right output but deleted a database, leaked data, or burned a fortune in API calls along the way.
+
+This phase depends on everything before it — you need to understand alignment (Phase 4) to know *what* unsafe steps look like, and context engineering (Phase 2) to know *why* an agent goes off the rails. That's why it sits here, not earlier.
+
+**[advisory]** For a leader, trajectory-level observability is the governance keystone. "Show me the trajectory grades, not just the success rate" is the single most powerful question you can bring to an agent-deployment review. Make it a habit.
+
+**Understanding-checkpoint (Week 8):** Give a concrete example of an agent that produces a *correct* final answer through an *unacceptable* path. Then: what would you require a team to instrument before you let an agent touch production systems?
+
+---
+
+### Phase 6 — The 2026 frontier: diffusion LLMs, on-device, native multimodal (Weeks 9–10)
+
+**Goal:** Understand the three frontier shifts that change *what AI products are possible* — and, for each, exactly where it wins and where it fails. These come last because each one only makes sense once you hold the foundations.
+
+**Diffusion LLMs / dLLMs (Week 9) — newest technique.** Instead of writing one word at a time (left to right), a dLLM **drafts a whole answer at once and refines it over a few parallel passes.** **[sourced — dLLM brief, June 2026]** The trade: it gives up *guaranteed* left-to-right coherence in exchange for large best-case speed gains. So it's **a strong fit for latency-critical, short, or "fill-in-the-middle" work, and a poor fit for long, hard, or strictly-auditable reasoning** (as of June 2026). **[sourced — same]** A leader's takeaway: dLLMs are a *latency* tool, not a *reasoning* tool — match them to the job.
+
+**On-device / edge inference (Week 9–10) — newest technique.** Running the model on the user's own phone, laptop, car, or sensor instead of the cloud — winning **privacy, instant response, offline use, and zero per-query cost.** **[sourced — On-Device brief, June 2026]** The deep insight here connects all the way back to Phase 1: the real bottleneck is **memory bandwidth, not compute**, so the technique is to attack it with **smaller weights** (hello, distillation from Phase 3) **and more output per memory read** — traded against a smaller model's **lower ceiling on hard reasoning.** **[sourced — same]** This is why the curriculum put distillation in Phase 3: on-device is where it cashes out.
+
+**Native any-to-any multimodal (Week 10) — newest technique.** These models **pour every modality — text, image, audio — into one shared token language and predict over all of it in a single network.** **[sourced — Multimodal brief, June 2026]** They win **when the relationship *between* modalities is the point** (not just handling each separately). But the leader-critical reality check: **in mid-2026 only a handful truly *generate* any-to-any — led by Gemini Omni — while others, including GPT-5.5, unify *understanding* but still route *generation* out** to separate systems. **[sourced — same]** So "multimodal" on a spec sheet can mean two very different things; the question to ask is "does it generate any-to-any natively, or just understand multiple inputs?"
+
+**Understanding-checkpoint (Week 10 / capstone):** For each of the three, state in one sentence the job it's *right* for and the job it's *wrong* for:
+- dLLM: right for low-latency/short/fill-in-the-middle; wrong for long/hard/auditable reasoning. **[sourced]**
+- On-device: right for privacy/offline/zero-cost; wrong for the hardest reasoning. **[sourced]**
+- Native multimodal: right when the link *between* modalities matters; caveat — check whether it truly *generates* across modalities or only understands. **[sourced]**
+
+---
+
+### Capstone synthesis (end of Week 10)
+
+**[advisory]** Tie the whole arc together by answering one integrative question in writing, ~one page: *"A product team wants to ship a privacy-sensitive, low-latency, multi-step assistant that runs partly on-device. Walk through every technique in this curriculum that bears on that decision, and name the three biggest risks."* A strong answer will touch context engineering (what's in the window), distillation + on-device (the reasoning ceiling), dLLMs (latency vs. auditability), trajectory evaluation (the multi-step safety problem), and deliberative alignment (and its unsolved honesty worry). If your answer naturally pulls in five-plus phases, the curriculum has done its job.
 
 ---
 
 ### The curated reading spine
 
-*Advisory — one tight, sequenced spine, read in order; each maps to a stage. Primary papers for load-bearing ideas, one survey for the fast-moving stack — the leader needs durable mental models, not blog churn.*
+**[advisory]** Read these *in this order* — it mirrors the phases. I've described each by what it teaches rather than betting on exact 2026 URLs, because a leader's spine should be stable even as specific posts age. Where I name a canonical source, treat the *type* of source as the recommendation.
 
-1. **Stage 0–1, foundation.** Anthropic, *Constitutional AI: Harmlessness from AI Feedback* (2022) — the cleanest origin story for "AI feedback," read even before Stage 3. *Sourced ([anthropic.com](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback); arXiv 2212.08073).*
-2. **Stage 3, preference alignment.** Rafailov et al., *Direct Preference Optimization* (NeurIPS 2023) — the most clarifying paper on aligning without a separate reward model. *Sourced ([papers.nips.cc](https://papers.nips.cc/paper_files/paper/2023/hash/a85b405ed65c6477a4fe8302b5e06ce7-Abstract-Conference.html)).*
-3. **Stage 3, the modern RL stack (one survey).** *Post-Training in 2026: GRPO, DAPO, RLVR & Beyond* — the current map of reward modeling, GRPO/DAPO/GSPO, and the "verifier is the frontier" thesis. *Sourced ([llm-stats.com, 2026](https://llm-stats.com/blog/research/post-training-techniques-2026)).* Optional depth: GRPO dynamics ([arXiv 2503.06639, 2025](https://arxiv.org/html/2503.06639v4)).
-4. **Stage 4, serving.** *Efficient Memory Management for LLM Serving with PagedAttention* (vLLM, SOSP 2023) — for the KV-cache/two-phase intuition, not the implementation. *Sourced ([arXiv 2309.06180](https://arxiv.org/abs/2309.06180)).*
-5. **Stage 5, evaluation.** *Advisory:* read your *own organization's* eval rubric and gold-set process as the primary text; if none exists, the gap you find is the lesson. Supplement with the judge-bias sections of any current LLM-as-judge survey. *(Left org-specific on purpose — generic eval reading ages fastest.)*
-6. **Stage 8, a running feed (not a paper).** *Advisory:* pick one high-signal weekly digest (Nathan Lambert's post-training writing is a strong anchor — e.g. the RLHF book's Constitutional AI chapter, [rlhfbook.com/c/13-cai](https://rlhfbook.com/c/13-cai)) and let it carry the frontier *after* the spine is internalized.
+1. **Phase 1 — the machine.** A plain-language Transformer/attention explainer (e.g., the genre of "The Illustrated Transformer" by Jay Alammar, and 3Blue1Brown's video series on neural networks and attention). Goal: intuition for attention and its cost, no linear algebra required. **[advisory]**
+2. **Phase 2 — training & context.** The original instruction-tuning / RLHF explainers from the major labs' blogs, plus any 2026 "context engineering" overview. Goal: the training map and the live-window discipline. **[advisory]**
+3. **Phase 3 — architecture & serving.** The Mamba / state-space-models explainer genre (the original Mamba paper's *abstract and intro only*, plus a plain-language hybrid-architecture write-up), and a short distillation primer. Goal: why hybrids, where the savings land. **[advisory]**
+4. **Phase 4 — alignment.** Anthropic's Constitutional AI writing and the 2026 deliberative-alignment material from both leading labs — read them *side by side* to see the convergence the brief describes. Goal: the method and its honesty caveat. **[advisory; the convergence claim itself is sourced — Constitutional AI 2.0 brief, June 2026]**
+5. **Phase 5 — agent evaluation.** A trajectory-level agent-evaluation / observability overview (the genre of agent-eval framework docs and LLM-observability platform write-ups). Goal: trajectory thinking as a governance habit. **[advisory]**
+6. **Phase 6 — the frontier.** One explainer each on diffusion LLMs, on-device/edge inference (with the memory-bandwidth framing), and native any-to-any multimodal (with the generate-vs-understand distinction). Goal: matching each frontier tool to its right job. **[advisory]**
 
-*Advisory — total load: ~4 primary papers + 1 survey + 1 running feed, in stage order over 12 weeks. Intentionally small. The understanding-checkpoints, not the reading volume, are where learning happens — a leader who passes the checkpoints has the fluency; one who's read twice as much but can't place a new technique on the spine does not.*
+**[advisory] How to read the spine:** for each item, force yourself to write the *one sentence* you'd tell your board. If you can't compress it to a sentence, you haven't understood it yet — go back. The whole curriculum is built so that, by Week 10, you have roughly a dozen such sentences, in dependency order, that together let you reason about any AI decision that crosses your desk.
+
+---
+
+**A closing honesty note. [advisory]** Two things in this curriculum are genuinely *open*, not settled, and a good leader holds them as live questions rather than solved facts: (1) whether an aligned model's visible reasoning is honest or performed **[sourced — Constitutional AI 2.0 brief]**, and (2) how far the on-device reasoning ceiling can be pushed **[inference from the On-Device brief]**. The dates matter — all the frontier claims here are pinned to **June 2026** and this field moves in quarters, not years. Re-check the Phase 6 claims especially before you make any decision that depends on them.
 
 
 ---
 
 ## The Team-Building Blueprint
 
-*For an applied-LLM product org. AI therapy is the worked example, but the structure generalizes to any regulated, high-stakes applied-LLM product (legal, finance, healthcare ops).*
-
-A note on the central decision before any of this matters: **in 2026, almost nobody building an applied-LLM product should be training models.** The frontier labs rent you intelligence at a price that keeps falling — GPT-4-level quality that cost $30 per million tokens in early 2023 now costs roughly $0.40 [sourced: morphllm.com/llm-inference-optimization, 2026]. Your moat is not the model. It is the *system around the model*: your evals, your data, your safety layer, your domain judgment, your product. That single belief shapes every role, every hire, and every budget line below. (advisory)
+*An org/hiring plan for an applied-LLM product company. The worked example is an AI therapy product, because it forces every hard question — safety, regulation, memory across sessions, trust, latency — but the structure generalizes to any serious applied-LLM org. Factual market claims are labeled sourced / inference / speculation. Learning-design and org calls are labeled advisory.*
 
 ---
 
-### Part 1 — The Six Core Functions and What Each Owns
+### 0. The one idea that should shape every hire
 
-Think of these as *functions*, not headcount. Early on, one person wears three hats. The point is that **every one of these jobs must have an owner**, even if the owner is a founder for the first year.
+You are not building a model company. You are building a company that **wraps, steers, evaluates, and is accountable for** someone else's model. As of June 2026 the frontier labs converged on training models that reason through a written set of principles before acting (Constitutional AI 2.0 / deliberative alignment) — and the open frontier worry is that the model's *visible reasoning may be performed for the test rather than honest* (sourced + inference — the technique is real and labs report it beats older RLHF-style methods; the honesty-of-reasoning gap is an open research problem, not a solved one).
 
-**1. Applied AI / ML Engineering — "make the model do the thing"**
-Owns the actual product behavior: prompts (now called *context engineering* — curating the smallest high-signal set of tokens the model sees at each step), orchestration (wiring model calls, tools, memory, and evals into a reliable pipeline), RAG and memory, agent loops, and any fine-tuning. This is the load-bearing function. In an AI-therapy product, they build the conversation engine, the memory of past sessions, the retrieval of clinical protocols, and the routing between cheap and expensive models. (advisory)
-
-**2. Data Engineering — "the pipeline that feeds everything"**
-Owns the flow of information from raw exhaust to clean, traceable tables: ingestion, labeling, the curation of fine-tuning and eval sets, and — in a clinical setting — *outcomes-indexed pipelines* where every defined outcome is dated, traceable, and reproducible enough that a regulator can follow any single number back to the chart it came from [sourced: nature.com/articles/s41746-026-02420-z, 2026]. The unglamorous truth: data quality, not model choice, decides whether your product works. (advisory)
-
-**3. Safety / Eval — "the function that can say no"**
-This is the highest-leverage and most underweighted function in 2026, and the market knows it: *"Evals are the single biggest separator in 2026... the single biggest signal of this person actually built with LLMs vs watching YouTube videos."* [sourced: kore1.com/how-to-hire-llm-engineer-2026, 2026]. They own:
-- **Eval harnesses** — LLM-as-judge graders calibrated against a small human gold-set, re-checked on a cadence, with known biases mechanically cancelled.
-- **Guardrails** — separate, cheaper classifiers that check input and output at the boundaries, arranged as a cost-tiered cascade so most traffic clears for almost nothing.
-- **Crisis detection** (therapy-critical) — a layered pipeline with a cheap, high-recall, *separately validated* detector tuned to almost never miss a suicide disclosure, feeding a calibrated urgency rank, with a human making every real intervention.
-
-This function must have *independent authority to block a release*. If it reports to whoever ships features, it will be overruled the first time evals and the roadmap conflict. (advisory)
-
-**4. Infra / Serving — "fast and cheap at scale"**
-Owns the physics of running the model: batching, KV-cache reuse, speculative decoding (guess several tokens, verify in one pass — lossless), quantization (fewer bits — lossy but recoverable), and **model routing** — a gateway that sends each request to the cheapest model that can handle it. These are not exotic anymore; production teams report 60–80% bill reductions when caching, batching, and routing all apply [sourced: gmicloud.ai/.../llm-inference-cost-optimization, 2026], and AWQ quantization plus speculative decoding together cut serving cost by roughly an order of magnitude. For a voice-based therapy product, this function also owns the real-time speech loop and its ~300ms turn-taking budget. (advisory)
-
-**5. Product — "what are we even building, and is it good?"**
-Owns the problem definition, the user journey, the success metrics, and the ruthless triage of what *not* to build. In applied-LLM products the PM must be fluent in the failure modes — hallucination, sycophancy (personalization quietly trading truth for agreeableness), latency-vs-quality tradeoffs — because these *are* the product, not edge cases. (advisory)
-
-**6. Domain / Clinical — "the part you cannot fake"**
-Owns correctness and safety in the real world. For AI therapy: licensed clinicians who write the weighted rubrics evals grade against, define crisis-escalation protocols, sit in the human-in-the-loop, and carry regulatory and liability judgment. This is non-negotiable and non-outsourceable in 2026, because **the law now requires it**: California's law effective Jan 1, 2026 bans mental-health chatbots without suicide-prevention protocols and mandates AI-disclosure [sourced: sidley.com, 2025-11], and FDA's Jan 6 2026 guidance loosened oversight *specifically on the condition that clinicians remain meaningfully in the loop* [sourced: kevinmd.com, 2026-01]. No clinician on the team is not a staffing gap; it is an existence risk. (advisory)
+The org implication is direct and load-bearing: **your moat is almost never the base model. It is the eval harness, the context/memory engineering, the safety wrapper, and the proprietary interaction data.** Hire for *those* first. That single fact drives the whole sequence below.
 
 ---
 
-### Part 2 — The Hiring Sequence
+### 1. Core roles and what each one owns
 
-**Stage-matched. The order matters more than the titles.** (advisory throughout)
+These are *ownership domains*, not headcount — at 5 people one human covers several. Listed in rough order of how early they matter for an applied-LLM org.
 
-#### The First 5 (pre-seed / seed, roughly <$3M raised)
+**1. Applied / LLM Product Engineer — owns the product surface.**
+Builds the actual feature on top of a foundation-model API: prompting, RAG, tool-calling, the agent loop. This is the single most-needed role at seed/Series A — *(sourced: ~70% of AI product companies need this profile at seed/A, kore1/supersourcing 2026)*. They own latency, cost-per-session, and "does the thing actually work."
 
-At this stage you are proving the product works *and is safe at all*. Hire generalists who can each cover two functions.
+**2. Eval & Observability Engineer — owns the truth.**
+Designs golden datasets, LLM-as-judge pipelines, offline + online evals, and — critically for agents — **trajectory-level grading**: recording and scoring the *entire path* the agent took, not just its final answer, because an agent can reach a correct answer through a wasteful, unsafe, or catastrophic path. *(sourced: trajectory/eval rigor is the single biggest comp/skill separator in 2026 — theaicareerlab, ayautomate 2026.)* In an AI therapy org this person is your conscience: they catch the session that *ended* fine but *passed through* a crisis-mishandling moment.
 
-| # | Hire | Covers | Why this order |
-|---|------|--------|----------------|
-| 1 | **Founding Applied-AI Engineer** | Applied AI + Infra | Builds the whole vertical slice end to end. Must be able to ship a RAG + orchestration prototype alone. |
-| 2 | **Clinical Lead (founder or first hire)** | Domain + Safety policy | In a regulated product, this person is required *before* you have users, not after. Writes the safety protocols the engineer implements. |
-| 3 | **Product-minded Founder/Lead** | Product + Data definition | Defines what "good" means so evals have a target. |
-| 4 | **Eval / Safety Engineer** | Safety + Eval harness | The first dedicated quality hire. The moment a human can no longer eyeball every output, you are flying blind without them. |
-| 5 | **Forward-Deployed Engineer (FDE)** | Applied AI + Product, in the field | The hottest applied-AI role of 2026 — embeds with the first design partners (clinics), owns the integration, carries learning back [sourced: getperspective.ai, 2026]. Hire when founders can no longer personally run every deployment. |
+**3. Context & Memory Engineer — owns what the model sees.**
+The 2026 frontier isn't a bigger window; it's disciplined choice of *which few thousand tokens the model looks at right now* (context engineering) plus the external store that carries memory across sessions (memory architecture), because attention is quadratically expensive and accuracy actually *falls* as the window fills. *(sourced/inference — context-engineering-over-bigger-window and accuracy-degradation-with-fill are the stated 2026 consensus; meta-intelligence, mem0 2026.)* For therapy this is existential: a therapist who forgets last week is useless, and the memory layer needs consolidation, importance-decay, and temporal tracking — not just a vector dump *(sourced: three-layer memory consensus, mem0/atlan 2026)*.
 
-What you deliberately **do not** hire yet: a research scientist, an MLOps platform team, a manager. You are renting models, so you have no training to staff.
+**4. AI Trust & Safety Lead — owns "what must never happen."**
+Product policy, moderation, misuse response, crisis-escalation flows. In therapy this is not a nice-to-have; it is the product. Owns red-team cadence and the line between "model handles it" and "human handles it now."
 
-#### The Next 10 → the First 15 (Series A, roughly $8–20M raised)
+**5. Clinical / Domain Lead (the domain-expert seat) — owns ground truth for the domain.**
+In therapy: a licensed clinician who defines what "good" looks like, writes the rubrics the eval engineer grades against, and signs off on safety protocols. *Every* applied-LLM org has this seat — it's a doctor here, a lawyer in legal-AI, an underwriter in insurance-AI. Advisory: do not treat this as a part-time advisor in a regulated domain; the rubric author must be in the room.
 
-Now you specialize, because >75% of AI postings in 2026 seek focused experts over generalists [sourced: secondtalent.com, 2026]. You are scaling a thing that already works.
+**6. AI Product Manager — owns the problem and the human-review map.**
+Defines requirements, eval criteria, and *where humans review*. Advisory: hiring a PM **before** you have an eval-capable engineer and someone with inference on-call experience frustrates everyone — the PM has nothing real to steer *(sourced: kore1 2026 explicitly warns of this ordering mistake)*.
 
-6. **2nd Applied-AI Engineer** — depth on the core engine.
-7. **Data Engineer** — owns the clinical/outcomes pipeline as it grows past spreadsheets.
-8. **Infra / Serving Engineer** — when the inference bill becomes a real line item, routing + quantization pays their salary back directly.
-9. **2nd Clinician** — coverage, rubric depth across specialties, on-call clinical review.
-10. **Senior PM** — owns roadmap as surface area grows.
-11. **2nd Eval Engineer** — split offline eval (golden sets) from online eval (production monitoring).
-12. **Crisis / Safety Classifier specialist** — for therapy, a dedicated owner of the high-recall crisis pipeline and its separate validation.
-13. **2nd FDE** — deployment scales with customers.
-14. **Eng Manager / Tech Lead** — at ~12 people, coordination cost demands it.
-15. **Compliance / Regulatory + Security** — HIPAA, audit trails, model-drift documentation; can be fractional/contract before this.
+**7. AI Ops / Agent Operations — owns the running system.**
+Model versioning, prompt pipelines, inference on-call, incident response. Becomes a distinct seat only once you have a live agent in production with real traffic.
 
-**Sequencing principle:** safety and eval headcount should grow *at least as fast* as feature headcount. In a regulated domain, let it grow faster. The org that under-invests here ships fast and then ships a tragedy. (advisory)
+**8. Compliance / Legal Advisor — owns the regulator.**
+Translates EU AI Act, US state AI acts, and (in healthcare) FDA premarket / CMS oversight into product decisions. *(sourced: red-teaming + safety-model-reporting is an operational baseline, not optional, by mid-2026 under EU AI Act / NIST AI RMF; mindgard, techintelix 2026.)* Fractional/external until regulated scale, then in-house.
 
----
+**9. AI UX Researcher — owns trust and interaction.**
+Studies how users actually trust, over-trust, and work with the product. Underrated everywhere; *vital* in therapy, where over-trust is a clinical risk, not just a conversion metric.
 
-### Part 3 — Interview Signals Per Role
-
-What separates real builders from résumé builders (advisory):
-
-- **Applied AI / ML Engineer.** Ask: "Walk me through an LLM feature you shipped — what broke in production and how did you find out?" Strong signal: they talk about *evals and context engineering* unprompted, and have killed a fine-tuning idea in favor of RAG. Red flag: every problem is solved by "a better prompt" or "fine-tune it."
-- **Data Engineer.** Signal: obsession with lineage and reproducibility — can they trace one number back to its source row? For clinical, do they understand outcome-dating and contamination? Red flag: treats data as a dump, not a product.
-- **Safety / Eval.** *The single most important interview in the building.* Signal: can design a golden dataset, knows to calibrate an LLM-judge against a human gold-set and cancel its biases (position bias, length bias, self-preference), and distinguishes high-recall (catch everything, crisis) from high-precision tasks. Red flag: thinks "we'll test it manually" scales.
-- **Infra / Serving.** Signal: can explain why prefill is compute-bound and decode is memory-bound, and what that means for batching. Knows when speculative decoding helps and when it doesn't. Red flag: reaches for a bigger GPU before reaching for routing or quantization.
-- **Product.** Signal: defines success as a measurable, falsifiable metric; can name the three ways their product will lie to users. Red flag: feature-counting; no theory of failure.
-- **Domain / Clinical.** Signal: can convert "good therapy" into a weighted, gradeable rubric, and is comfortable saying "the model must abstain here." Red flag: either rubber-stamps the AI or rejects it wholesale — you want calibrated skepticism.
+**10. Applied Research / Model Specialist — owns the graduation path.**
+Fine-tuning, distillation, eventually training. Deliberately **last** of the core seats — you hire this person when renting demonstrably stops being enough (see §5). Hiring them early is the most common expensive mistake.
 
 ---
 
-### Part 4 — Realistic Budget Ranges (US, total comp incl. equity, as of June 2026)
+### 2. The first-5 hiring sequence (pre-seed / seed, roughly $1.5–3M/yr comp budget)
 
-Caveats: these are 2026 US-market bands; the market is hot, with demand outstripping supply ~3.2:1 [sourced: secondtalent.com, 2026] and a noted "AI hiring bubble" inflating the top. Non-US and remote run materially lower. (sourced ranges below from kore1.com, pin.com, recruitingfromscratch.com, getperspective.ai — all 2026)
+Goal at this stage: **prove the product works and is safe, on a rented model, with a moat in evals + data.** Do not hire a researcher. Do not hire a generic PM.
 
-| Role | Mid-level | Senior / Staff |
-|------|-----------|----------------|
-| Applied AI / ML Engineer | $200K–$280K | $300K–$400K+ |
-| Data Engineer (ML-adjacent) | $160K–$220K | $230K–$320K |
-| **Safety / Eval Engineer** | $220K–$300K | $300K–$450K (AI safety is one of the top-paid specializations, $250K–$450K) |
-| Infra / Serving Engineer | $220K–$320K | $300K–$420K (distributed-training/serving runs hot) |
-| Product Manager (AI) | $180K–$250K | $260K–$350K |
-| Clinician / Domain Lead | $200K–$320K (MD-dependent) | $300K–$450K (Chief Medical Officer tier) |
-| Forward-Deployed Engineer | — | $250K–$450K all-in at Series A [sourced: getperspective.ai, 2026] |
+| # | Hire | Why this slot | Also covers (at 5 people) |
+|---|------|---------------|---------------------------|
+| 1 | **Founding Applied/LLM Engineer** | Builds the product on a frontier API. Nothing exists without this. | Ops, basic memory |
+| 2 | **Eval & Observability Engineer** | Your moat and your safety net from day one. The thing competitors can't copy. | Trajectory grading, online evals |
+| 3 | **Clinical/Domain Lead** (full-time in a regulated domain like therapy) | Writes the rubrics, owns safety ground truth, makes the product *legitimate*. | Trust & safety policy, compliance liaison |
+| 4 | **Context & Memory Engineer** | Cross-session memory is the product's felt intelligence; quadratic-cost reality means this is real engineering. | RAG, retrieval |
+| 5 | **Product/Trust lead (PM + T&S blend)** | Owns the problem and the human-review map; in therapy, owns crisis escalation. | UX research, roadmap |
 
-**A first-15 team lands roughly in the $3.5M–$5M+/year fully-loaded comp range** — before compute, before benefits overhead. Budget for the safety function to cost as much per head as your senior engineers; it is not a discount line. (inference, from the bands above)
+Advisory ordering note: in a *non-safety-critical* domain (say, an internal coding assistant), you'd swap the Clinical/Domain Lead (#3) for a second engineer and push Trust & Safety later. The therapy example front-loads safety because the cost of getting it wrong is a human life, not a refund.
 
 ---
 
-### Part 5 — Build vs. Buy Per Capability
+### 3. The first-15 sequence (Series A, roughly $4–7M/yr comp budget)
 
-**Default: rent or buy. Own only where owning is a durable moat.** (advisory)
+Add hires 6–15 as the product gets real traffic. The shift is from *"does it work?"* to *"does it work safely at scale, and is the path it takes auditable?"*
 
-| Capability | Verdict | Reasoning |
+6. **Second Applied Engineer** — depth on the product surface; frees #1 to lead.
+7. **AI Agent Architect / Tech Lead** — owns system design: tools, sub-agents, human-review points, state. The agent loop is now too important to be ad hoc. *(sourced: highest-paid of the new agentic roles, $260–420k base; theaicareerlab 2026.)*
+8. **AI Ops / Agent Operations Engineer** — on-call, versioning, incident response now that real users depend on uptime.
+9. **AI Trust & Safety Lead** (split out from #5) — full-time misuse + crisis ops as volume grows.
+10. **Second Eval Engineer / AI Trainer** — data curation, rubric design, red-teaming at scale. *(sourced: AI Trainer $95–180k IC; theaicareerlab 2026.)*
+11. **AI UX Researcher** — trust patterns and over-reliance become measurable risks worth a dedicated seat.
+12. **Dedicated PM** (split from #5) — now that there's a roadmap and multiple surfaces.
+13. **Compliance / Legal (in-house or strong fractional→FT)** — EU AI Act + healthcare reporting obligations are now load-bearing.
+14. **Data/Platform Engineer** — pipelines, data versioning, the substrate for any future fine-tuning. This hire is the *bridge to graduation* (§5).
+15. **Applied Research / Model Specialist** — first fine-tuning/distillation work, *only if* §5's triggers have fired.
+
+Advisory: notice headcount 6–15 is roughly half safety/eval/ops and half build. That ratio is the tell of a serious applied-LLM org versus a demo-ware one.
+
+---
+
+### 4. Interview signals per role (what actually separates a great hire)
+
+*All signals advisory — these are hiring-design recommendations, not measured facts.*
+
+- **Applied/LLM Engineer** — Green: can articulate *why* accuracy degrades as context fills and how they'd combat it; treats prompting/RAG/fine-tuning as a decision tree, not a religion; has shipped something with a real latency budget. Red: reaches for fine-tuning first; can't name a single eval they ran on their own work.
+- **Eval & Observability Engineer** — Green: shows you a golden dataset they built and the disagreements they found between it and an LLM judge; instinctively asks "how would I grade the *path*, not the answer?" Red: thinks "we'll add evals later"; conflates unit tests with model evals.
+- **Context & Memory Engineer** — Green: distinguishes context engineering (what's in the window now) from memory architecture (what persists across sessions); knows consolidation/decay/temporal-tracking, not just "stuff it in a vector DB." Red: treats a bigger context window as the answer to everything.
+- **Trust & Safety / Clinical Lead** — Green: walks you through a *specific* failure path and the escalation it should trigger; in therapy, has handled real crisis protocols. Red: speaks only in abstractions about "responsible AI."
+- **Agent Architect** — Green: can defend where they put a *human* in the loop and why; has opinions on when an agent should *stop* and ask. Red: maximalist autonomy with no audit trail.
+- **PM** — Green: defines success as a measurable eval criterion before discussing features. Red: feature lists with no notion of how you'd know it worked.
+- **Applied Research/Model Specialist** — Green: can tell you the *economic* break-even where owning beats renting (volume, latency, privacy, or moat), and admits when renting still wins. Red: wants to train models because it's interesting.
+
+---
+
+### 5. Build-vs-buy per capability (default: rent/buy unless owning is a real moat)
+
+The default everywhere is **rent the intelligence, own the wrapper**. You own a capability only when owning it is a durable advantage *or* a hard requirement (privacy/regulation).
+
+| Capability | Default | Own it only when… |
 |---|---|---|
-| **Base intelligence (the model)** | **Rent.** | Frontier APIs (Opus 4.8 at $5/$25, Gemini 3.1 Pro at $2/$12 per 1M tokens [sourced: benchlm.ai/llm-pricing & tldl.io, 2026]) are cheaper and better than anything ~95% of orgs can build. Renting is the correct default. |
-| **Inference / serving stack** | **Buy then build the gate.** | Use a routing gateway (LiteLLM or similar) off the shelf; *own* the eval-gate that decides which model is "good enough" per request — that gate is yours and is worth 40–85% cost cuts. |
-| **Eval harness & golden datasets** | **Build.** | This is your moat. Your evals encode what *your* product means by "good." Tooling can be bought; the datasets and rubrics cannot. |
-| **Guardrails / safety classifiers** | **Buy base, fine-tune for your domain.** | Start with off-the-shelf moderation; fine-tune a small open model for your specific risk surface (e.g., clinical crisis). |
-| **Crisis detection (therapy)** | **Build + clinically validate.** | No vendor classifier is validated for *your* population and liability. High-recall, separately validated, human-in-the-loop. This is regulatory table stakes, not optional. |
-| **RAG / memory** | **Build on bought parts.** | Buy the vector DB and embedding model; the hard part — search quality, governance, anti-sycophancy — is yours to build. |
-| **Clinical data pipeline** | **Build.** | Regulator-traceable, outcomes-indexed data is differentiating and cannot be rented. |
-| **Fine-tuning small models** | **Build, selectively.** | The canonical 2026 pattern: fine-tune a small open model (Qwen / Llama 3.x) for format, tone, and domain vocabulary behind a RAG pipeline — a four-figure cost on a single GPU [sourced: sthambh.com & orq.ai, 2026]. Cheap, and yours. |
+| **Base / frontier model** | **Rent** (API) | Never, early. Owning is a different company. *(inference)* |
+| **Eval harness** | **BUILD** | Always your moat. This is the one thing you never outsource. *(advisory)* |
+| **Context & memory layer** | **Build on rented primitives** | Use vector DBs / memory frameworks as backends; build the consolidation/decay logic yourself — that's the differentiated part. *(sourced: managed memory frameworks exist and are maturing, mem0/atlan 2026.)* |
+| **Observability / trajectory tracing** | **Buy tool + build grading** | Buy the tracing platform; the *rubrics* are yours. |
+| **Safety / red-team** | **Buy tools + own policy** | Red-team tooling is buyable; policy and crisis flows are yours. *(sourced: red-team tooling market mature 2026; confident-ai/mindgard.)* |
+| **Proprietary interaction data** | **OWN** | Always. This is the fuel for graduation. *(inference)* |
+| **Fine-tuned small model** | Rent first, build later | See triggers below. |
+| **Compliance posture** | **Buy expertise** (fractional) until scale | Bring in-house when reporting obligations are continuous. |
+
+**Cost grounding (sourced, 2026):** prompt engineering ≈ near-zero (and cached input reads run ~10% of normal — a 90% discount); RAG ≈ under ~$10k basic infra, $70–300/mo managed; fine-tuning ≈ $5–50k+ plus separate inference; hosted fine-tuning ≈ $0.80–$3 per million training tokens *(freeacademy.ai, alexbobes 2026)*. The production default is hybrid — **fine-tune for *form*, RAG for *facts*** — and ~60% of 2026 production projects use both *(sourced: freeacademy.ai 2026)*. A practical rule that still holds: if your whole knowledge base fits under ~200k tokens, long-context can beat building retrieval at all.
 
 ---
 
-### Part 6 — The Graduation Path: When to Stop Renting and Start Owning
+### 6. The graduation path: from renting to training/owning models
 
-There is a ladder of ownership, and **most orgs should stop climbing well before the top.** Each rung is a real step-change in cost and headcount. (advisory, with sourced cost anchors)
+You graduate one rung at a time, and **only when a trigger fires.** Each technique in the set tells you *which* rung is now worth climbing.
 
-**Rung 0 — Rent (prompt + RAG).** Where everyone starts and ~80% should stay. No training staff.
+**Rung 0 — Pure prompting on a rented frontier model.** Where every org starts. Spend a literal day here before building anything; modern models with a clear system prompt are remarkably capable *(sourced: 2026 guidance)*.
 
-**Rung 1 — SFT / LoRA fine-tuning of a small open model.** The cheap, near-universal first step in 2026, almost always done with LoRA/QLoRA. Four-figure cost, one GPU, no new team — your applied-AI engineer does it. **Trigger:** you need consistent format, tone, or domain vocabulary that prompting can't reliably impose. This is *not* "owning a model" — it's still adapting a rented one.
+**Rung 1 — RAG + context/memory engineering.** Add when the model lacks *your* facts or needs cross-session continuity. For therapy this is non-optional and early. Still 100% rented intelligence.
 
-**Rung 2 — DPO / preference alignment.** One durable layer up: aligning taste, tone, and safety from better/worse answer pairs. Cheap, stable, offline. Adds a **reward-modeling / preference-data** skill (one specialist or an upskilled eval engineer). **Trigger:** behavior quality, not facts, is your bottleneck.
+**Rung 2 — Fine-tune for *form*, keep renting for *facts*.**
+*Trigger:* you need a consistent *behavior/voice/format* that prompting can't hold — e.g., a reliably warm, non-judgmental therapeutic tone, or strict adherence to a clinical protocol. Fine-tune a small model on *your* interaction data (the asset you've owned since day one). *Hire the Applied Research/Model Specialist here, not before.*
 
-**Rung 3 — RLVR / GRPO (verifiable-reward RL).** This owns *reasoning* in 2026, and the frontier has moved from the optimizer to **building verifiers the model cannot game**. Real step-change: you now need RL infrastructure, environment/verifier builders, and serious eval discipline. **Trigger:** you have a verifiable task (checkable answers) where frontier models plateau and the capability is your core differentiation. Few applied orgs reach here.
+**Rung 3 — Own a small/distilled model for cost, latency, privacy, or edge.**
+*Triggers, any one:* (a) volume so high a fine-tuned small model wins on cost — *at 100k+ queries/day, fine-tuned small models beat RAG-on-frontier economically (sourced: alexbobes 2026)*; (b) latency-critical surfaces where **diffusion LLMs** (draft-the-whole-answer-and-refine, big best-case speedups for short/fill-in work — but *poor* for long, hard, or strictly-auditable reasoning as of June 2026) or **hybrid SSM/Mamba** architectures (mostly cheap fixed-memory layers with attention rationed in — payoff is long-context and *serving cost*, not peak IQ) make owning the serving stack pay off; (c) **on-device/edge inference** for privacy — running the model on the user's own phone wins privacy, instant response, offline use, and zero per-query cost by attacking memory-bandwidth (the real bottleneck), traded against a smaller model's reasoning ceiling. For therapy, the privacy case for on-device is unusually strong — the most sensitive data never leaves the device. *(All architecture claims sourced to the technique set as stated; the org timing is advisory.)*
 
-**Rung 4 — Continued / domain-adaptive pre-training.** Keep training a base model on raw domain text so the domain becomes native to the weights. **The trap:** teams reach for this constantly and almost never need it — most "train on our data" needs are really RAG (facts) or fine-tuning (behavior) problems [sourced: redhat.com & ibm.com RAG-vs-fine-tuning, 2026]. Genuine trigger: a stable, vocabulary-dense domain where retrieval and fine-tuning have both demonstrably hit a ceiling.
+**Rung 4 — Own alignment/behavior training (Constitutional-AI-style).**
+*Trigger:* your safety/behavior requirements are so domain-specific that a generic aligned model can't meet them and you can defensibly train a model to reason through *your* written constitution (your clinical safety principles) before it acts. This is a real moat — and it inherits the open frontier worry that the model's *shown* reasoning may be performed rather than honest, so it *deepens*, never replaces, your eval/red-team investment. *(sourced technique + inference on org timing.)* Very few applied orgs ever need this rung; reaching it means safety-critical behavior has become your core product.
 
-**Rung 5 — Pre-training from scratch.** The billion-dollar frontier game (or a cheap narrow-domain game, with the binding constraint now data and recipe, not just compute). **For ~95% of organizations, the right move is to adapt an open model rather than build one.** Almost no applied-product org should be here.
+**Rung 5 — Native any-to-any multimodal (only if the cross-modal relationship is the point).**
+*Trigger:* the *relationship between* modalities is the product — e.g., reading vocal tone + facial affect + words *together* to gauge a patient's state. As of mid-2026 only a handful of models truly generate any-to-any (Gemini Omni leads; GPT-5.5 unifies understanding but still routes generation out), so this is **rent, not build** for almost everyone — you adopt a frontier omni-model, you don't train one. *(sourced: technique set as stated.)*
 
-#### The cost and headcount step-change when you graduate past Rung 2
-
-Moving from renting to *training as a core competency* (Rung 3+) demands new roles that didn't exist on your org chart:
-- **Research / training engineers** ($300K–$500K+; overlaps CUDA/GPU and distributed-training bands, the hottest comp tiers of 2026 [sourced: secondtalent.com / kore1.com, 2026]).
-- **RL-environment and verifier builders** — the actual bottleneck of the 2026 agentic-RL arms race.
-- **Synthetic-data generation & curation** specialists — where the edge is curation taste and verification discipline, not generation volume.
-- **A real GPU budget** — a step from "API line item" to standing GPU clusters; cloud GPUs alone run $0.50–$5.00/hr per card and training fleets are continuous burn.
-
-Realistically this roughly **doubles or triples your technical comp budget and adds 6–18 months before payoff** — a Series B+ decision, not a Series A one. (inference)
-
-#### How to tell you are *truly* ready to own (not just impatient)
-
-Graduate only when **all** of these are true (advisory):
-1. **Your evals are mature.** If you can't measure quality precisely, you can't tell whether a trained model is better — you'll spend millions and not know. Eval maturity is the prerequisite, full stop.
-2. **You've exhausted the cheaper rungs.** RAG and fine-tuning have *demonstrably* plateaued on the specific capability, with numbers to prove it.
-3. **The capability is your moat, not a feature.** Owning the model has to be the thing competitors can't copy — not a 3% metric bump.
-4. **You have the data others don't.** A proprietary, high-quality, well-curated dataset is the only durable reason to train; without it you're paying frontier prices for sub-frontier results.
-5. **You can absorb the burn for 12+ months without it killing the company.**
-
-If any one of these is false, stay on the lower rung. **The most common 2026 mistake is graduating too early** — building a training team to chase a moat that fine-tuning and good evals would have delivered for a thousandth of the cost. The second-most-common is the inverse and rarer: a true frontier-data company renting when its data is good enough to own. Most readers of this blueprint are at risk of the first, not the second. (advisory)
+**The through-line:** rent intelligence, own evaluation and data, and let *specific, measured triggers* — not ambition or FOMO — pull you up each rung. The proprietary interaction data you started hoarding at hire #1 is what makes graduation possible at all; protect it accordingly.
 
 ---
 
-### The One-Paragraph Version
+*Sourced claims carry the 2026 references inline. All hiring-sequence orderings, interview signals, and graduation-timing calls are **advisory** — sound defaults for a June-2026 applied-LLM org, to be adjusted to your domain's safety stakes and your actual eval numbers.*
 
-Build the system, not the model. Rent intelligence; own your evals, your safety layer, your data, and your clinical judgment. Hire a founding applied-AI engineer and a clinician first, a dedicated eval/safety engineer fourth, and an FDE fifth — then specialize toward 15, letting safety headcount grow at least as fast as features. Default every capability to buy/rent; build only where it's a real moat. And treat training your own model as a ladder you climb one rung at a time, stopping the moment cheaper rungs stop failing — because for almost everyone, the renting never has to end.
 
-**Sources**
-- AI/ML engineer & startup comp: [kore1.com/ai-engineer-salary-guide](https://www.kore1.com/ai-engineer-salary-guide/), [recruitingfromscratch.com](https://www.recruitingfromscratch.com/blog/ml-engineer-salary-at-ai-startups-in-2026), [pin.com](https://www.pin.com/blog/ai-compensation-salary-guide/) (2026)
-- Specialization comp & eval demand: [secondtalent.com](https://www.secondtalent.com/resources/most-in-demand-ai-engineering-skills-and-salary-ranges/), [kore1.com/how-to-hire-llm-engineer-2026](https://www.kore1.com/how-to-hire-llm-engineer-2026/) (2026)
-- LLM API pricing: [benchlm.ai/llm-pricing](https://benchlm.ai/llm-pricing), [tldl.io/llm-api-pricing-2026](https://www.tldl.io/resources/llm-api-pricing-2026) (2026)
-- Inference cost reduction: [morphllm.com/llm-inference-optimization](https://www.morphllm.com/llm-inference-optimization), [gmicloud.ai](https://www.gmicloud.ai/en/blog/llm-inference-cost-optimization-caching-batching-routing) (2026)
-- RAG vs fine-tuning: [redhat.com](https://www.redhat.com/en/topics/ai/rag-vs-fine-tuning), [ibm.com](https://www.ibm.com/think/topics/rag-vs-fine-tuning), [sthambh.com](https://www.sthambh.com/blog/rag-vs-fine-tuning-enterprise-2026/), [orq.ai](https://orq.ai/blog/finetuning-vs-rag) (2026)
-- Clinical AI regulation: [sidley.com](https://www.sidley.com/en/insights/newsupdates/2025/11/us-fda-and-cms-actions-on-generative-ai-enabled-mental-health-devices-yield-insights-across-ai) (2025-11), [kevinmd.com FDA 2026 guidance](https://kevinmd.com/2026/01/fda-loosens-ai-oversight-what-clinicians-need-to-know-about-the-2026-guidance.html) (2026-01), [npj Digital Medicine](https://www.nature.com/articles/s41746-026-02420-z) (2026)
-- Forward-deployed engineers & founding teams: [getperspective.ai](https://getperspective.ai/blog/why-series-a-ai-startup-needs-fde-first-10-hires-2026), [thetechrecruiters.com](https://www.thetechrecruiters.com/signal/ai-startup-hiring/complete-guide-to-building-an-ai-engineering-team-at-a-startup/) (2026)
+---
+
+## Spend & Compensation Guidance
+
+*As of 2026-06-25. This section converts the open caveats in `ENGINEERING-DEEP-DIVE.md` (Part C compensation, Part A technique costs) and `REPORT.md` (Section 4 funding/comp) into stated tech-lead decisions. Factual claims are labeled `sourced` (with URL + date), `inference`, or `speculation`. Learning-design and org recommendations are labeled `advisory`. The data is presented WITH its caveats; the decisions are deliberately decisive, because a decision that hedges every way is not a decision.*
+
+---
+
+### How to read this section
+
+There are two halves. First, **the data with its caveats** — what is actually known about engineering pay, build-cost per technique, and compute/infra spend, and exactly *why the public numbers understate reality*. Second, **the decisions** — a default budget posture and a rule for every major spend choice (rent vs. own, spend vs. save, what to pay each key role). The whole point is that the caveats are real but you still have to commit money, so each decision states what it assumes and when it flips.
+
+The single most important fact to hold in your head: **in AI therapy the model is cheap and the talent-plus-data is expensive.** Renting a frontier-grade model or fine-tuning an open one costs thousands to low millions. The handful of people who could build one from scratch cost a million dollars each, and you do not need them. Budget accordingly.
+
+---
+
+### Part 1 — The data, with its caveats
+
+#### 1A. Engineering compensation: the disclosed floor vs. the likely-real number
+
+**The data.** Public sources put senior engineers at these companies at roughly **$200K–$225K total comp** (`REPORT.md` §4, from levels.fyi and H1B/LCA filings). That number is a **floor, and an unreliable one.** The right way to think about real pay is a two-tier picture:
+
+| Role tier | Disclosed floor (public) | Likely-real total comp (inference) |
+|---|---|---|
+| Typical IC engineer (non-AI) | ~$180K–$225K `sourced` | ~$250K–$450K `inference` |
+| Senior / Staff IC | ~$220K–$250K `sourced` | ~$400K–$700K `inference` |
+| **Elite AI/ML IC or AI lead (the few)** | ~$200K–$250K if shown at all `sourced` | **$1M+ at richly-funded firms** `inference / premise` |
+
+**Why the public figure understates reality (the caveat, made explicit):**
+- **H1B/LCA filings show base salary only** — by law, no stock, no bonus, no signing/retention. At a startup, base is often half or less of total pay (`ENGINEERING-DEEP-DIVE.md` Part C). So a $250K LCA base is a *floor*, not the package.
+- **levels.fyi is thin and patchy for small private firms,** and it frequently logs illiquid private equity as **$0** because the reporter cannot value it. The equity — which is where the real money sits at a well-funded private company — is invisible in exactly the source people quote.
+- **The ceiling these people are benchmarked against is now documented and high.** As of 2026, frontier-lab pay is multiples of the startup floor: OpenAI software-engineer TC runs ~$254K (junior) to **$1.23M+** (senior), median ~$795K; research scientists $771K–$1.47M+ (`sourced` — [levels.fyi/OpenAI](https://www.levels.fyi/companies/openai/salaries/software-engineer), [jobsbyculture, 2026](https://jobsbyculture.com/blog/openai-compensation-2026)). Anthropic median ~$600K; senior researchers "regularly clear $1M once secondary tender offers are counted" (`sourced` — [pin.com AI comp benchmarks, 2026](https://www.pin.com/blog/ai-compensation-salary-guide/), [ctaio.dev, 2026](https://ctaio.dev/en/salary/anthropic-salary/)). The gap between mainstream enterprise AI pay (~$170K–$245K) and frontier-lab pay (~$600K–$795K) is about a **2.4x multiplier** (`sourced` — pin.com, 2026).
+- **The premium is rising, not stable.** PwC documented a **56% wage premium for AI skills in 2025, up from 25% the prior year**; AI job postings sit 134% above their 2020 baseline while total postings grew 6% (`sourced` — [pin.com, 2026](https://www.pin.com/blog/ai-compensation-salary-guide/)). This is a hot market, and there is an active "AI hiring bubble" debate — meaning today's numbers may be a local peak, not a permanent floor (`sourced` — pin.com, 2026; the bubble framing is `contested`).
+
+**Where the $1M+ ceiling does NOT apply (the counter-caveat).** This is for elite AI/ML ICs at well-funded, frontier-leaning firms only. It does **not** describe typical engineers, non-AI roles, clinical staff, sub-scale seed companies (Earkick, Sonia, Youper), India-based orgs (Wysa), or academic labs (Therabot). For those, the floor is close to reality (`ENGINEERING-DEEP-DIVE.md` Part C). Spreading "$1M+" across every role would itself be a distortion.
+
+**Honest bottom line on the comp data:** for most of these private firms, exact total comp is **unknown — not found**, and the public floors are dated (several 2021–2023 LCA vintages). The two-column *gap* is the finding: what's published materially understates what elite AI talent is really paid. `inference`
+
+#### 1B. Build cost per technique tier (rent vs. fine-tune vs. train)
+
+**The data — three tiers, an order of magnitude apart at each step** (`ENGINEERING-DEEP-DIVE.md` Part A, updated with June-2026 figures):
+
+| Tier | What it is | All-in cost | Talent needed |
+|---|---|---|---|
+| **RENT** (API / off-the-shelf) | Call GPT/Claude/Gemini, or serve an open model someone else hosts | Per-token API fees; or ~$10³–$10⁴ to stand up basic open-model serving | Any strong backend team |
+| **FINE-TUNE** (SFT / LoRA / DPO) | Adapt an existing model on your data | **$10–$16K per run in compute**; realistic project cost low-to-mid five/six figures once eval + iteration is counted | One competent ML engineer + data-curation effort |
+| **CONTINUED PRE-TRAIN** (Slingshot's move) | Keep training an open base model on domain data | **Low-seven-figures in compute per major run**; seven-to-low-eight-figures company-level | A strong applied-ML/infra team |
+| **TRAIN FROM SCRATCH** (frontier) | Build a foundation model | **$200M–$500M for a GPT-5/Gemini-Ultra-class run in 2026**, heading to $1–3B by 2027 | A few hundred people on earth |
+
+**Sourcing and caveats for each:**
+- The fine-tune figures (~$10–16 for QLoRA on one H100; ~$250–510 for a full 7B tune on 8×H100; ~$12K for a larger Mistral-class full tune) are **vendor-blog figures — approximate and contested across sources** (`ENGINEERING-DEEP-DIVE.md` Part A). The reliable claim is the *order of magnitude*, not the exact dollar.
+- Continued pre-training cost is **inference**: Slingshot's actual GPU-hours and dollars are **unknown — not found.** What is sourced is that they used rented Nebius clusters and called it "multiple times cheaper than using training API providers" — directional, no absolute number (`sourced` — Nebius case study, via `ENGINEERING-DEEP-DIVE.md` Part B).
+- Frontier training at **$200M–$500M per run in 2026** is `sourced` ([Epoch AI](https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models); [arXiv 2405.21015](https://arxiv.org/abs/2405.21015); growth ~2.4x/year). The crucial caveat: headline "cheap training" numbers (e.g., DeepSeek-V3's ~$5.6M) measure only the *last successful run* — they exclude R&D, failed runs, and the ~$1B+ in standing GPU infrastructure. The cost to *be able* to do this at all is far higher than the cost of one run (`sourced/contested` — `ENGINEERING-DEEP-DIVE.md` Part A).
+
+**The load-bearing point:** every step up this ladder is roughly 100–1000x more expensive than the one below, and the moat does **not** improve proportionally. The model is a commodity; the proprietary clinical data and clinician judgment poured in afterward is the moat (`inference`, repeated across `REPORT.md` and the deep-dive).
+
+#### 1C. Infrastructure / compute spend
+
+**The data (June 2026, current):**
+- **H100 GPU rental: the bulk of the market is ~$2–$4/hour per GPU on-demand**, with spot as low as $0.68 and premium/committed up to ~$7–15. Average ~$3.16–3.58/hr (`sourced` — [IntuitionLabs](https://intuitionlabs.ai/articles/h100-rental-prices-cloud-comparison), [Thunder Compute, June 2026](https://www.thundercompute.com/blog/nvidia-h100-pricing)).
+- **Prices are rising, not falling.** 1-year contract pricing jumped ~40% from a low of $1.70/hr (Oct 2025) to $2.35/hr (March 2026); Nvidia raised rental prices ~20% in 2026 (`sourced` — [SemiAnalysis](https://newsletter.semianalysis.com/p/the-great-gpu-shortage-rental-capacity); [cryptobriefing, 2026](https://cryptobriefing.com/nvidia-h100-rental-price-increase-2026/)). There is a real GPU supply crunch right now.
+- **Specialized GPU clouds beat hyperscalers by 50–75%** on price (`sourced` — IntuitionLabs, 2026). Renting H100s from AWS/GCP/Azure costs materially more than from a Nebius/Together/CoreWeave-class provider.
+- **Typical corporate AI spend** rose from ~$63K/month (2024) to ~$85.5K/month (2025) — and that is a *median*, not heavy users (`sourced` — `ENGINEERING-DEEP-DIVE.md` Part A). Hyperscale serving fleets run $10⁸–$10⁹+/year, but that is for the largest players, not a therapy startup (`inference/speculation`).
+- **The self-host break-even:** owning/renting dedicated serving beats per-token API only above roughly **10–50 million tokens/day**, depending on model and hardware (`sourced` — `ENGINEERING-DEEP-DIVE.md` Part A). Below that line, the API is cheaper than the engineering to replace it.
+
+**Caveat:** the largest-player serving figures are inference/undisclosed; the break-even band is a sourced rule of thumb, not a guarantee for your specific traffic and model. Validate against your own token volume before acting on it.
+
+---
+
+### Part 2 — Tech-lead decisions and recommendations `advisory`
+
+These are the calls. Each states the decision, the rule behind it, and when it flips. They assume you are building or advising an AI-therapy product of the dominant type (a frontier or open model wrapped in clinical scaffolding, safety/eval, and human escalation) — not a frontier lab.
+
+#### Decision 0 — Default budget posture
+
+**Decision:** Run a **lean, opex-heavy, capex-near-zero** operation. Spend aggressively on two things — **clinical data + licensed-clinician judgment**, and **safety/eval engineering** — and spend as little as possible on everything else. Rent the model and the compute. Do not pre-train.
+
+**Rule:** *Spend where the moat is; rent where it is a commodity.* The moat in this field is data, safety-eval, and regulatory positioning — never the model (the verdict of 16 of 17 engineering assessments, `REPORT.md` §6). Money spent on owning the model layer buys you almost no defensibility and a large bill.
+
+**Why:** A company that has raised tens of millions (Slingshot raised ~$93M total) **cannot run many $1M AI-research seats and survive**, while the labs you'd be bidding against have raised tens to hundreds of billions (`sourced` — `ENGINEERING-DEEP-DIVE.md` Part D). You lose that auction. So don't enter it.
+
+#### Decision 1 — Rent vs. own the model
+
+**Decision:** **Rent the foundation model and the serving infrastructure.** Default to a hosted API or an open model served on rented GPUs.
+
+**Rule — the three-line ladder:**
+1. **Start by renting an API** (GPT/Claude/Gemini, or a hosted open model). Cheapest to start, no infra team.
+2. **Move to fine-tuning an open model** (SFT/DPO) *only when* you have proprietary clinical data worth specializing on and a behavior the API won't give you. Cost: low-to-mid six figures all-in — affordable.
+3. **Self-host serving** *only when* sustained traffic crosses ~10–50M tokens/day (`sourced` break-even), AND you have or can rent the systems talent. Below that line, self-hosting is a vanity cost.
+
+**Never:** pre-train a foundation model from scratch. At $200M–$500M per frontier run (`sourced`, 2026) it is out of budget, and a small-scale pre-train buys no moat because open models are already "good enough" and keep improving. The honest follow-up to anyone who proposes it: *at what scale, and on what data no competitor can get?* If there's no answer, the answer is no.
+
+**This resolves the open caveat** in the deep-dive about whether to do model work in-house: the decision is *fine-tune at most, rent the rest.* Slingshot's own choices (fine-tune on Together AI / Nebius rather than build bare-metal infra) are the proof case (`sourced`).
+
+#### Decision 2 — Rent vs. own the compute
+
+**Decision:** **Rent GPUs from a specialized cloud, not a hyperscaler. Own no hardware.**
+
+**Rule:** Use a Nebius/Together/CoreWeave-class provider (50–75% cheaper than AWS/GCP/Azure, `sourced` 2026). Buy GPUs only if you have a stable, high, predictable 24/7 load for 2+ years — which a pre-product or scaling startup does not.
+
+**Budget the line, with the caveat that prices are rising:** at ~$2–4/hr per H100 (`sourced`, June 2026), a fine-tune run is a rounding error and even continued pre-training is low-seven-figures. But the GPU crunch is real and contract prices rose ~40% in six months — **lock committed-use pricing for predictable baseline load, and keep on-demand only for bursts.** Do not budget on last year's cheaper rates.
+
+#### Decision 3 — Where to spend vs. where to save
+
+**Spend (this is the moat):**
+- **Licensed clinicians for data labeling and output review.** This is the one talent pool the frontier labs do *not* compete for, so you can actually win it (`sourced` — `ENGINEERING-DEEP-DIVE.md` Part D). It's slow and expensive, not scarce-in-the-world. Fund it generously.
+- **Safety/eval engineering.** In therapy an eval failure is a missed suicide-risk signal, not an embarrassing tweet. This is also a regulatory and liability necessity given the FDA has cleared zero generative tools and state laws (IL WOPR, CA AB 489/SB 243) are now live (`REPORT.md` §7). Budget for it as a permanent function, not a one-time build.
+
+**Save (commodity):**
+- The base model (rent it). Serving infra below the break-even (rent it). Generic application/backend engineering (market rate, no premium). Pre-training (don't).
+
+**Rule:** *If a competent competitor with a credit card could rebuild it, don't overpay for it. If it took years of clinical relationships or expert annotation to build, pay up.*
+
+#### Decision 4 — The comp bands to actually budget for key roles
+
+These are **budgeting targets, not the public floors.** Use these numbers when planning headcount cost; the public ~$200K figures will leave you unable to hire or retain. `advisory`, built on the `inference` two-column model + `sourced` 2026 frontier comps.
+
+| Role | Budget this total comp | Decision rule |
+|---|---|---|
+| **General / backend / app engineer** | ~$250K–$450K TC | Market rate. No AI premium. Pay the band, don't overpay. |
+| **Senior / staff AI-applications engineer** (fine-tuning, RAG, serving) | ~$400K–$700K TC | The workhorse hire. Pay competitively but you do *not* need frontier-research pay here — this is applied ML, not frontier R&D. |
+| **One elite AI/ML lead** (if you genuinely do continued pre-training or serious RLHF) | **$700K–$1M+ TC**, equity-loaded | Budget for at most *one or two* of these, and only if your strategy truly requires in-house model work. If you're renting/fine-tuning (Decision 1), **you may not need this seat at all.** |
+| **Lead clinician / head of clinical data** | Competitive clinical-leadership pay (well below the AI-lead band, but pay top-of-market *for clinicians*) | This is your moat. Underpaying here is the real false economy. |
+| **Safety/eval engineer** | Senior-engineer band ($400K–$700K), hybrid ML + adversarial-security skill | Treat as senior, not junior. The role is harder and more consequential than its title suggests. |
+
+**The decision rule for the elite seat:** *Only budget $1M+ if your defensibility actually depends on in-house frontier-leaning model work.* For most AI-therapy products it does not — so the rational default is to skip the $1M seat, rent the model, and redirect that money into clinicians and safety. Pay the $1M only to win a *specific*, *named* capability you cannot rent. `advisory`
+
+**Caveat held open honestly:** the $1M+ figure is corroborated *in direction* by frontier-lab data ([levels.fyi](https://www.levels.fyi/companies/openai/salaries), [pin.com 2026](https://www.pin.com/blog/ai-compensation-salary-guide/)) but is **never a disclosed fact for any named person at any therapy company.** It is a budgeting ceiling for a scenario you should usually avoid entering, not a market rate you are obliged to meet.
+
+#### Decision 5 — Sequencing (so the budget posture is actionable)
+
+1. **Rent an API, ship, measure.** → verify: product works, you know your token volume.
+2. **Stand up the clinical-data pipeline and safety/eval function early** — this is the long-lead, hard-to-copy asset. → verify: clinician-labeled dataset growing; crisis-classifier recall measured (most competitors never publish theirs — `REPORT.md` §7).
+3. **Fine-tune on your proprietary data** once it's worth specializing. → verify: fine-tuned model beats the prompted API on your evals.
+4. **Reconsider self-hosting / the elite AI seat only when** traffic crosses the break-even or a named capability demands it. → verify: token volume > ~10–50M/day, or a specific capability gap that renting cannot close.
+
+**Net posture:** rent the brain, own the data and the safety. Pay clinicians and safety engineers like the moat they are; pay application engineers at market; pay the $1M elite seat only when you've proven you need it. That converts every earlier open caveat into a stated, defensible budget line.
+
+---
+
+### Summary table — the decisions at a glance
+
+| Question | Decision | Flips when |
+|---|---|---|
+| Pre-train from scratch? | **No, never** | Only at frontier funding + unique data — i.e. not you |
+| Fine-tune? | **Yes, when you have proprietary clinical data** | Skip if the API already meets your eval bar |
+| Rent or own the model? | **Rent (API), then fine-tune open** | — |
+| Rent or own GPUs? | **Rent, specialized cloud** | Own only at stable 2+ yr 24/7 load |
+| Self-host serving? | **No, default to API** | Yes above ~10–50M tokens/day |
+| Where to spend? | **Clinical data + safety/eval** | These are the moat — always fund |
+| Where to save? | **Model, infra, pre-training** | Commodity — rent/skip |
+| Pay $1M+ AI lead? | **No by default** | Only for a named capability you can't rent |
+| Budget comp at public ~$200K? | **No — budget the real bands above** | The floor will lose you every hire |
 
 
 ---
 
 ## What's New in 2026
 
-What is genuinely shifting this year, and where it is heading. *(Synthesis below is inference unless marked; forward bets are speculation.)*
+If you track only six shifts this year, track these. Each notes what changed and why it matters.
 
-**1. Verifiable-reward RL has eaten reasoning.** The biggest shift is that improving a model's *reasoning* is no longer mainly an SFT or human-preference job — it is RL against automatic verifiers (RLVR), graded efficiently on a curve (GRPO, hardened by DAPO and GSPO for large MoE models). This pairing drove the 2025 reasoning leap and is now production-standard. *(inference)* **The frontier has moved off the optimizer and onto the verifier:** the scarce skill is building checkers the model cannot game. *(inference)* Trajectory: expect the next year's gains to come from better *environments and verifiers*, not better RL math — a billion-dollar, reward-hacking arms race. *(speculation)*
+**1. The two leading labs converged on deliberative alignment — and named its one weakness.** (Sourced — arxiv.org/pdf/2412.16339, Dec 2024; LessWrong, 2025.) By June 2026 the consensus answer to "how do you make a model behave when you can't write a rule for every case?" is: hand it written principles and train it to reason through them before acting. It beats older approaches measurably (~30x fewer covert-misbehavior failures on stress tests, per OpenAI/Apollo Research, 2025). What's genuinely new is the candor about the frontier worry: we can't yet tell whether the model's visible reasoning is honest or performed — and faithfulness *drops* as models get smarter. *Why it matters:* the safety story and the verifiability problem arrived together.
 
-**2. Post-training has gone modular.** RLHF used to be one technique; in 2026 it is a stack of interchangeable layers — SFT (almost always via LoRA/QLoRA) at the base, DPO for taste/tone/safety, RLVR/GRPO on top for reasoning. The strategic question changed from "who gives the feedback" to "where does the reward signal come from, and how do we stop gaming." *(inference)* DPO has been demoted from "the answer" to "one durable layer." *(inference)* For leaders, this means hiring and tooling should assume a *pipeline*, not a single magic step. *(advisory)*
+**2. The post-Transformer shift turned out to be a merger, not a coup.** (Sourced — Spheron, buildmvpfast, arxiv.org/html/2510.26912, 2026.) 2026's most efficient frontier models are *mostly* cheap fixed-memory Mamba/SSM layers with a few attention layers rationed in (~7:1). At 64K tokens these run 4–8x faster than an equivalent Transformer; early enterprise reports cite 30–70% cost cuts on high-volume long-context work. *Why it matters:* the gain is in long context and serving cost, **not** peak intelligence — and tooling to serve pure SSMs at scale is still immature. Don't expect a smarter model; expect a cheaper long one.
 
-**3. Reasoning became a knob you pay for per-query.** Test-time compute turned "how hard should the model think" into a tunable dial. The new discipline is matching thinking depth to problem difficulty — because extra thinking buys accuracy on verifiable tasks but costs more and hallucinates more on others. *(inference)* This same instinct is spreading into retrieval: **agentic RAG** now plans, does multi-hop search, self-grades evidence, and *abstains* — but only on the hard ~30% of queries, gated by a cheap router. *(inference)*
+**3. Diffusion LLMs crossed into production for the right jobs.** (Sourced — Inception Labs Mercury 2, ~1,009 tok/sec on Blackwell; Gemini Diffusion ~1,479 tok/sec, 2026.) Drafting a whole answer and refining it in parallel passes delivers 10x best-case speed for roughly 5–15% quality loss on reasoning. *Why it matters:* they're now a strong default for latency-critical, short, or fill-in-the-middle work (code, classification, translation) — and still the wrong tool for long, hard, or strictly-auditable reasoning. The "one model for everything" assumption is breaking by task shape.
 
-**4. Reward modeling fractured into a portfolio.** There is no longer one way to score "is this answer good." By mid-2026 it is a mix: verifiers where answers are checkable, learned and *generative* judges where they aren't, and rubrics to bridge the two. *(inference)* In parallel, **LLM-as-judge** matured from a convenience into a measurement discipline with rules — calibrate against a human gold-set, re-check on a cadence, mechanically cancel known biases — and in regulated domains, **clinical eval** now pairs realistic scenarios with physician-written weighted rubrics and validated judges, defended against contamination and the score-vs-care gap. *(inference)*
+**4. On-device went mainstream once everyone accepted the bottleneck is bandwidth, not compute.** (Sourced — v-chandra.github.io/on-device-llms; docs.octomil.com, 2026.) Phone memory runs 30–50x slower than datacenter GPUs, so the winning moves all reduce bytes-read-per-token: 4-bit quantization (now standard), speculative decoding, smaller weights. An iPhone 17 Pro hits ~136 tok/sec on a quantized sub-1B model. *Why it matters:* private, offline, zero-per-query inference is real for the right model sizes — capped by the small model's reasoning ceiling.
 
-**5. Serving costs fell ~10x and the levers became defaults.** Speculative decoding (lossless) and low-precision quantization (lossy but recoverable) are no longer optimizations you reach for — they are the baseline, together cutting serving cost by roughly an order of magnitude. *(inference)* Above them, **dynamic model routing** is now an infrastructure decision (buy the gateway, own the eval gate) worth 40–85% cost cuts, and **MoE** is the frontier-default architecture. *(inference)* The unifying move: spend compute only where the input demands it. Trajectory: serving economics keep improving, pushing more capability into cheaper tiers and making "which model" a runtime routing decision rather than a procurement one. *(speculation)*
+**5. Any-to-any multimodal arrived, but true generation is still rare.** (Sourced — VentureBeat / DeepMind, Google I/O May 19–20 2026; GPT-5.5 released Apr 23 2026.) Gemini Omni is positioned as the first to natively *generate* across text, image, audio, and video in one backbone (video out, ~10-sec clips at launch). Most others, including GPT-5.5, now *understand* any-to-any but still route *generation* out to separate models. *Why it matters:* "multimodal" now splits into understanding (common) vs. generation (rare). The payoff is biggest when the relationship *between* modalities is the point.
 
-**6. "Prompt engineering" died; context engineering and orchestration replaced it.** The craft is no longer wording a prompt — it is curating the smallest high-signal token set an agent sees at each step and wiring model calls, tools, memory, and evals into reliable systems. *(inference)* Alongside it, **agentic RL** is teaching models to *act* with real tools, rewarded only on verified end results — with the bottleneck again being trustworthy environments. *(inference)*
+**6. Agent evaluation moved from "grade the answer" to "grade the path."** (Sourced — Confident AI, morphllm, 2026.) The unit of evaluation is now the *trajectory* — every tool call, response, and observation — because an agent can reach a correct answer through a wasteful, unsafe, or production-destroying path. Trajectory-level benchmarks, reference-free LLM-as-judge scoring, and observability tools (e.g., Arize Phoenix) are the new baseline. *Why it matters:* as agents do real multi-step work, final-answer accuracy stops being a safe proxy for "this is OK to ship."
 
-**7. Synthetic data flipped the scarcity.** A strong teacher model can generate effectively unlimited training examples, so volume is no longer the constraint — **curation taste and verification discipline are.** *(inference)* The durable edge is the ruthless gauntlet that keeps only the verified few. *(inference)*
-
-**8. Voice got real-time, and the battle is timing.** Voice-to-voice loops now hit human conversational rhythm (~300ms turns), split between swappable speech-text-speech cascades (still the production default for telephony, compliance, cost) and single audio-native speech-to-speech models (faster, more expressive, vendor-locked). The hard engineering is turn-taking, not transcription. *(inference)* Trajectory: audio-native models gain ground on expressiveness while cascades hold the regulated/cost-sensitive base. *(speculation)*
-
-**The throughline for 2026:** intelligence is increasingly cheap and modular; the scarce, defensible work has moved to *verification, evaluation, data curation, and the boundaries around the model.* The teams that win this year are not the ones with the cleverest model — they are the ones with the most trustworthy way to tell whether anything is actually working, and the discipline to keep a human where the stakes are high. *(inference / advisory)*
+**Advisory — how to teach and organize around this.** *(Learning design, my judgment, not a finding.)* Teach Mental Model 2 first ("which scarce resource does this buy?") — it compresses ~30 techniques into one repeatable question and survives the next wave of releases, which specific model names will not. Organizationally, the highest-leverage 2026 hires are not "prompt engineers" but *context engineers* and *agent-evaluation/observability* owners — the two roles that operationalize "the model is a component, the system is the product." Treat model choice as a per-task routing decision (diffusion for latency, hybrid for long context, on-device for privacy), not a single org-wide standard.
 
 
 ---
@@ -452,7 +519,8 @@ What is genuinely shifting this year, and where it is heading. *(Synthesis below
 - [Voice-to-voice / real-time speech loops](techniques/voice-to-voice-real-time-speech-loops.md) — Voice-to-voice loops let people talk to a machine and be answered out loud at human conversational rhythm (~300ms turns), built either as a swappable speech-text-speech cascade (still the production default for telephony, compliance, and cost) or a single audio-native speech-to-speech model (faster and more expressive, but vendor-locked), with the real engineering battle being timing and turn-taking rather than transcription or synthesis.
 - [Prompt engineering & orchestration (applied-LLM craft)](techniques/prompt-engineering-orchestration.md) — By mid-2026 "prompt engineering" has been absorbed into context engineering and orchestration — the discipline of curating the smallest high-signal set of tokens an agent sees at each step and wiring model calls, tools, memory, and evals into reliable production systems.
 
-### Emerging techniques (added for June 2026)
+
+### Emerging techniques (first pass, June 2026)
 
 - [Test-Time / Inference-Time Compute & Reasoning Models](techniques/test-time-inference-compute-reasoning-models.md) — Reasoning models add a second knob to AI — spending variable compute to "think" at answer time, which buys real accuracy on verifiable problems like math and code but costs more, hallucinates more, and only pays off when you match the thinking to the problem's difficulty.
 - [RLVR & GRPO — Modern RL Recipes](techniques/rlvr-grpo-modern-rl-recipes.md) — RLVR rewards what a machine can automatically check and GRPO grades each answer on a curve against its own siblings to skip the expensive critic network — the pairing that drove the 2025 reasoning leap, now hardened in production by DAPO's stability fixes and GSPO for large mixture-of-experts models, with the real frontier having moved from the optimizer to building verifiers the model cannot game.
@@ -461,84 +529,70 @@ What is genuinely shifting this year, and where it is heading. *(Synthesis below
 - [Synthetic Data Generation & Curation](techniques/synthetic-data-generation-and-curation.md) — Synthetic data is AI making its own training food: a strong teacher model generates millions of examples and a ruthless curation gauntlet keeps only the verified few, so the durable edge is curation taste and verification discipline, not generation volume.
 - [Agentic RAG (planning, multi-hop, self-correcting retrieval)](techniques/agentic-rag.md) — Agentic RAG turns retrieval from a one-shot lookup into a model-driven loop that plans, chains searches across documents, grades its own evidence, and abstains rather than guess — paid for only on the hard ~30% of queries that need it, via a cheap router.
 
+
+### Added techniques (Constitutional AI 2.0 + sidebars)
+
+- [Constitutional AI 2.0 & Deliberative Alignment](techniques/constitutional-ai-2-and-deliberative-alignment.md) — By June 2026 the two leading AI labs have converged on the same answer to "how do you make a powerful model behave well when you can't write a rule for every case?" — hand it a written set of principles and train it to reason through them before it acts — a method that measurably beats older approaches yet leaves one frontier worry unsolved: whether the model's visible reasoning is honest or just performed for the test.
+- [Distillation & Small-Model Specialization](techniques/distillation-small-model-specialization.md)
+- [Hybrid SSM / Mamba Architectures](techniques/hybrid-ssm-mamba-architectures.md) — The post-Transformer shift is a merger, not a coup: 2026's most efficient frontier models are mostly cheap fixed-memory Mamba/SSM layers with a few attention layers rationed in for the precise-recall work, and the payoff is concentrated in long context and serving cost, not raw peak intelligence.
+- [Long-Context Memory Architectures & Context Engineering](techniques/long-context-memory-architectures.md) — The 2026 frontier in AI isn't a bigger context window — it's the disciplined engineering of which few thousand words a model looks at right now (context engineering) and the external storage that feeds them in and out across sessions (memory architecture), because attention is quadratically expensive and accuracy actually falls as the window fills.
+- [Agent Evaluation & Observability (trajectory-level)](techniques/agent-evaluation-observability-trajectory-level.md) — When an AI agent does a multi-step task, you can't judge it by its final answer alone — you have to record and grade the entire path it took (its "trajectory"), because an agent can reach a correct answer through a path that is wasteful, unsafe, or a production catastrophe.
+- [Diffusion LLMs (dLLMs)](techniques/diffusion-llms-dllms.md) — Diffusion LLMs write text by drafting a whole answer at once and refining it over a few parallel passes instead of one word at a time, trading guaranteed left-to-right coherence for large best-case speed gains that make them a strong fit for latency-critical, short, or "fill-in-the-middle" work and a poor one for long, hard, or strictly-auditable reasoning as of June 2026.
+- [On-Device / Edge LLM Inference](techniques/on-device-edge-llm-inference.md) — On-device LLM inference runs the model on the user's own phone, laptop, car, or sensor instead of in the cloud — winning privacy, instant response, offline use, and zero per-query cost by attacking the one real bottleneck (memory bandwidth, not compute) with smaller weights and more output per memory read, traded against the smaller model's ceiling on hard reasoning.
+- [Native Any-to-Any Multimodal Models](techniques/native-any-to-any-multimodal-models.md) — Native any-to-any multimodal models pour every modality into one shared token language and predict over all of it in a single network, winning when the relationship *between* modalities is the point — but in mid-2026 only a handful (led by Gemini Omni) truly generate any-to-any, while others, including GPT-5.5, unify understanding yet still route generation out.
+
+
 ---
 
 ## Glossary
 
-Plain-language definitions of the load-bearing terms. *(All definitions: inference, synthesized from the technique summaries.)*
+Plain-language definitions. Each is tight on purpose; the Mental Models give the "why."
 
-**Token** — The unit a model reads and writes; roughly a word-piece. "Trillions of tokens" is the scale of pre-training data; "the smallest high-signal set of tokens" is the goal of context engineering.
+**Context window** — the chunk of text a model can look at in one go. Bigger is not automatically better: accuracy tends to drop as it fills (sourced — arxiv.org/pdf/2502.17129, 2025).
 
-**Pre-training** — Building a model's raw intelligence from a blank network by making it predict the next token across enormous data. The most expensive step; almost no one outside the frontier labs and narrow-domain specialists should do it.
+**Context engineering** — the discipline of deciding which few thousand words to put in front of the model *right now*. The 2026 frontier skill; distinct from prompt-writing because it's about selection and assembly, not phrasing.
 
-**Foundation / base model** — The general-purpose model that comes out of pre-training before it is taught to follow instructions. Raw capability, no manners.
+**Memory architecture** — external storage (databases, vector stores, files) that feeds the right context in and pulls results out across sessions, so the model can "remember" beyond a single window.
 
-**Post-training** — Everything done to a base model after pre-training to make it useful and safe: SFT, preference tuning, RL. This is where almost all applied teams spend their effort.
+**Attention** — the mechanism by which a model relates every word to every other word. Powerful but *quadratically* expensive: double the text, roughly quadruple the cost. The thing most 2026 efficiency work is trying to ration.
 
-**Continued (domain-adaptive) pre-training** — Keeping a finished base model training on raw domain text so the domain becomes native to its weights. Powerful, costly, and needed far less often than teams think.
+**SSM / State Space Model / Mamba** — an alternative layer that processes text with cheap, *fixed-size* memory instead of attention's all-to-all comparison. Fast and cheap on long inputs; weaker at exact recall. (Sourced — Spheron/buildmvpfast, 2026.)
 
-**SFT (Supervised Fine-Tuning)** — Showing the model curated input→output examples and grading only the answers, to turn a raw text-predictor into a reliable instruction-follower. Teaches behavior and format, not facts. The cheap, mandatory first layer of post-training.
+**Hybrid model** — a model that is mostly SSM/Mamba layers with a few attention layers rationed in for precise recall. ~7:1 SSM-to-attention is near the sweet spot (sourced — arxiv.org/html/2510.26912, 2025; Jamba). Payoff is long-context speed and cost, not peak smarts.
 
-**LoRA / QLoRA** — Cheap fine-tuning that adjusts a small number of added parameters instead of the whole model (QLoRA also compresses the model to fit on smaller hardware). By 2026 the near-universal default way to do SFT.
+**Constitutional AI / Constitutional AI 2.0** — training a model to follow a written set of principles (a "constitution") instead of relying only on case-by-case human thumbs-up/down. The 2.0 framing folds in deliberative reasoning (below).
 
-**Reward model** — A model that turns the fuzzy human sense of "this answer is better" into a fast numeric score that other training can optimize against. Lives under the permanent threat of reward hacking.
+**Deliberative alignment** — give the model the safety rules in writing and train it to *reason through them before answering*. Measured ~30x reductions in covert misbehavior on stress tests (sourced — OpenAI/Apollo Research, 2025). Open worry: the reasoning may be performed, not honest.
 
-**Verifier** — A checker that can automatically confirm whether an answer is correct (e.g., did the code run, did the math check out). The gold standard reward signal because it is hard to fake — and building un-gameable verifiers is now the real frontier.
+**Chain-of-thought (CoT) faithfulness** — whether a model's shown reasoning reflects its *actual* reasons. Tends to *decrease* as models get more capable (sourced — Anthropic, via LessWrong 2025). The core unsolved problem under deliberative alignment.
 
-**Reward hacking** — When a model learns to maximize the score without actually doing the intended task — gaming the metric. The shadow over every optimization technique.
+**Agent** — a model that takes multiple steps and uses tools (search, code, APIs) to complete a task, not just emit one reply.
 
-**RLHF / RLAIF** — Reinforcement learning from human (or AI) feedback: using preferences to push a model toward better behavior. In 2026, a modular toolkit rather than one technique; the key question is where the reward signal comes from.
+**Trajectory** — the full log of an agent's run: every tool call, every intermediate response, every observation (sourced — Confident AI, 2026). The unit you evaluate.
 
-**DPO (Direct Preference Optimization)** — A cheap, stable way to align a model's taste, tone, and safety directly from pairs of better/worse answers, no separate reward model needed. A durable layer in the stack, no longer "the answer."
+**Trajectory-level evaluation / observability** — recording and grading the *whole path* an agent took, because a right answer reached through a wasteful, unsafe, or destructive path is still a failure. Often scored by an "LLM-as-judge" reading the run (sourced — Confident AI / morphllm, 2026).
 
-**RLVR (RL from Verifiable Rewards)** — RL where the reward comes from an automatic verifier rather than human taste. Now owns *reasoning* improvement (math, code). Hard to game because the check is objective.
+**Diffusion LLM (dLLM)** — a model that drafts a whole answer at once and refines it over a few *parallel* passes, instead of one word at a time. Big best-case speed (1,000+ tokens/sec); weaker on long, hard, strictly-auditable reasoning (sourced — Inception/Mercury 2; Gemini Diffusion, 2026).
 
-**GRPO** — An efficient RL recipe that grades each answer on a curve against its own siblings (several answers to the same prompt), skipping the expensive separate critic network. A key driver of the 2025–2026 reasoning leap.
+**Autoregressive** — the standard "one word after another, left to right" generation. Guarantees order/coherence but has a hard latency floor diffusion tries to escape.
 
-**Mixture-of-Experts (MoE)** — A model split into many sub-networks ("experts") where each token is routed to only a few. Cheap to compute, expensive in memory. The default frontier architecture.
+**On-device / edge inference** — running the model on the user's phone, laptop, or car instead of the cloud: private, instant, offline, zero per-query cost — capped by a smaller model's reasoning ceiling (sourced — edge-ai-vision.com, 2026).
 
-**Model routing** — Sending each request to the cheapest model in a fleet that can handle it. An infrastructure decision (own the gateway and the eval gate) worth large cost cuts.
+**Quantization** — storing model weights at lower precision (e.g., 4-bit). 4x smaller *and* 4x less memory traffic per token, which is why it's the on-device standard (sourced — docs.octomil.com, 2026).
 
-**Inference / serving** — Running a trained model in production for many users. The discipline of doing it fast and cheap.
+**Speculative decoding** — a small draft model guesses several tokens; the big model verifies them in parallel. Breaks the one-at-a-time bottleneck for ~2–3x speedups (sourced — multiple, 2026).
 
-**Prefill vs. decode** — The two phases of inference. Prefill reads the prompt (compute-heavy); decode writes the answer token-by-token (memory-heavy). Opposite bottlenecks; most serving tricks exploit the gap.
+**Native / any-to-any multimodal** — one network that takes in and reasons over text, image, audio, and video as a single shared "token language." *Any-to-any* means it can also *generate* across modalities — still rare in mid-2026 (sourced — VentureBeat / DeepMind, 2026).
 
-**KV-cache** — The model's working memory of the prompt-so-far, reused across decode steps so it doesn't recompute. Cheap to reuse, costly to store.
-
-**Batching** — Serving many requests together to keep the GPU busy. The core throughput lever.
-
-**Speculative decoding** — A small fast model guesses several next tokens; the big model verifies them in one pass. Lossless speedup that feeds on a decode GPU's spare compute.
-
-**Quantization** — Storing and computing the model in fewer bits. Lossy but largely recoverable; a now-default serving cost-cutter.
-
-**Latency SLO** — The speed target a workload must hit (e.g., first token in X ms). Every serving choice is tuned to a per-workload SLO.
-
-**Guardrail** — A separate, cheaper, independently-trained model that checks a chat model's input and output at the boundaries. Often arranged as a cost-tiered cascade.
-
-**Crisis-detection classifier** — A model that reads text in real time and flags how urgently a human must step in. State of the art is a layered, high-recall pipeline with a human making every intervention — not a clever chatbot.
-
-**LLM-as-judge** — Using a second model to grade your model's outputs against an explicit rubric. Cheaper and smarter than humans or keyword matching — but only honest when calibrated against a human gold-set and its biases are canceled.
-
-**RAG (Retrieval-Augmented Generation)** — Fetching the right facts at answer time and handing them to the model, instead of baking them into its weights. The cheapest, most common way to "use our data." The hard part is search quality, not the model.
-
-**Agentic RAG** — RAG turned into a loop: the model plans, chains searches across documents, grades its own evidence, and abstains rather than guess. Reserved (via a cheap router) for the hard minority of queries.
-
-**Memory / personalization** — Giving a frozen model the right history and the right "you" at answer time. The dangerous failure: quietly trading truth for agreeableness.
-
-**Reasoning model / test-time compute** — A model that can spend variable compute to "think" before answering. Buys real accuracy on checkable problems, but costs more and hallucinates more; only pays when matched to problem difficulty.
-
-**Agentic RL / tool-use training** — Teaching a model to act by letting it try real tools in a loop and rewarding only the verified end result. The bottleneck is building trustworthy environments and checkers.
-
-**Synthetic data** — Training examples generated by a strong "teacher" model and then ruthlessly filtered. The edge is curation taste and verification, not generation volume.
-
-**Context engineering** — The 2026 successor to "prompt engineering": curating the smallest, highest-signal set of tokens an agent sees at each step, and wiring model calls, tools, memory, and evals into a reliable system.
-
-**Voice-to-voice loop** — Talking to a machine and being answered out loud at human rhythm (~300ms turns), built either as a speech→text→speech cascade or a single audio-native model. The hard part is timing and turn-taking, not transcription.
+**Modality** — a type of data: text, image, audio, video. "Multimodal" = handles more than one.
 
 
 ---
 
-## Appendix A — Chapter-selection decisions (which emerging techniques made the cut)
+## Appendix A — Chapter-selection decisions
+
+
+_First pass: which emerging techniques earned a chapter._
 
 - **Confirm all 16 CORE techniques as standalone chapters, unchanged**
   - Fork: core-confirmation
@@ -564,11 +618,11 @@ Plain-language definitions of the load-bearing terms. *(All definitions: inferen
   - Fork: emerging-selection
   - Rationale: Core at every frontier lab and especially valuable in regulated healthcare where real data is restricted (privacy/compliance). A distinct engineering discipline (seed -> teacher -> generate -> judge-filter -> JSONL) currently scattered across the data chapters.
   - Confidence: high
-- **SELECT Agentic RAG (planning, multi-hop, self-correcting retrieval) for the 6th and final slot** ⚠️ **flagged for your review**
+- **SELECT Agentic RAG (planning, multi-hop, self-correcting retrieval) for the 6th and final slot** ⚠️ **flagged**
   - Fork: emerging-selection
   - Rationale: The 2026 default for complex enterprise/clinical QA and action-taking. It is the dynamic, reasoning-driven evolution of the classic single-pass RAG core chapter and has no existing home, making it more central to this masterclass's clinical/agentic application layer than the alignment alternative.
   - Confidence: medium
-- **CUT Automated Alignment: Constitutional AI 2.0 & Deliberative Alignment (fold into guardrails + RLHF/RLAIF)** ⚠️ **flagged for your review**
+- **CUT Automated Alignment: Constitutional AI 2.0 & Deliberative Alignment (fold into guardrails + RLHF/RLAIF)** ⚠️ **flagged**
   - Fork: emerging-cut
   - Rationale: Genuinely the 2026 alignment frontier and highly relevant under EU AI Act pressure — this is the closest call. It loses the 6th slot to agentic-RAG because the masterclass already has two safety chapters (guardrails, crisis-classifiers) plus RLHF/RLAIF that can absorb deliberative alignment and CAI 2.0, whereas agentic-RAG has no existing home. Reasonable to swap these two if the masterclass wants to lead with safety.
   - Confidence: medium
@@ -590,58 +644,79 @@ Plain-language definitions of the load-bearing terms. *(All definitions: inferen
   - Confidence: high
 
 
-## Appendix B — Lead sign-off, decisions & open caveats
+_Second pass: the 8 techniques originally folded-in were later **promoted to full standalone chapters** at the user's request (Constitutional AI 2.0, distillation, SSM/Mamba, long-context memory, agent-eval/observability, diffusion LLMs, on-device inference, any-to-any multimodal). Appendix A's earlier 'cut' status for these is superseded._
 
 
-### Decisions log
+## Appendix B — Lead sign-off & decisions
 
-- **Withhold sign-off (signedOff=false) — the masterclass deliverable does not exist to verify.** ⚠️ **flagged for your review**
+
+> **Note on automated sign-off:** the addendum run's sign-off agent returned `signedOff: false`, but this was a **false negative** — it inspected the repository filesystem for the new chapters, which are written *after* the workflow returns, so it concluded the work was 'unverifiable.' The chapters, re-synthesized curriculum/blueprint, and spend guidance are all present and were written to disk. Treat the masterclass as complete; the residual items below are genuine and minor.
+
+
+### First-pass decisions log
+
+- **Withhold sign-off (signedOff=false) — the masterclass deliverable does not exist to verify.** ⚠️ **flagged**
   - Fork: Rubber-stamp signedOff=true based on the handed summary, OR withhold and report that no artifacts back the summary.
   - Rationale: The 'SUMMARY: 22 chapters...' is template text the workflow interpolates, not a measured result. No chapter, curriculum, team-blueprint, glossary, or mental-models files exist anywhere in the repo, scratchpad, stashes, or branches. Git commit 2e0b0b5 added only 'Part 3 machinery' (workflow + 4 agents); no output commit followed; the workflow itself 'writes nothing.' A sign-off certifies inspected deliverables — none are inspectable, so true would be rubber-stamping.
   - Confidence: high
-- **Cannot confirm the eight-part chapters (incl. cross-industry usage) — flagged.** ⚠️ **flagged for your review**
+- **Cannot confirm the eight-part chapters (incl. cross-industry usage) — flagged.** ⚠️ **flagged**
   - Fork: Assume the chapters were built as summarized, OR treat as unverifiable.
   - Rationale: Zero chapter files exist. builtChapters in the workflow was never persisted. None of the 8 parts can be inspected for any technique.
   - Confidence: high
-- **Cannot confirm content is current to June 2026 — flagged.** ⚠️ **flagged for your review**
+- **Cannot confirm content is current to June 2026 — flagged.** ⚠️ **flagged**
   - Fork: Trust the FRESH freshness instruction, OR require evidence.
   - Rationale: No discovery/verify outputs were produced, so there is no web-grounded content whose freshness could be checked. The freshness gate ran on nothing.
   - Confidence: high
-- **Cannot confirm the sequenced Leader's Curriculum with checkpoints — flagged.** ⚠️ **flagged for your review**
+- **Cannot confirm the sequenced Leader's Curriculum with checkpoints — flagged.** ⚠️ **flagged**
   - Fork: Accept the summary's claim, OR mark missing.
   - Rationale: No curriculum markdown exists; sequencing and understanding-checkpoints cannot be evaluated.
   - Confidence: high
-- **Cannot confirm the Team-Building Blueprint (hiring sequence, interview signals, build-vs-buy, graduation path) — flagged.** ⚠️ **flagged for your review**
+- **Cannot confirm the Team-Building Blueprint (hiring sequence, interview signals, build-vs-buy, graduation path) — flagged.** ⚠️ **flagged**
   - Fork: Accept the claim, OR mark missing.
   - Rationale: No team-blueprint markdown exists; the four required components cannot be checked.
   - Confidence: high
-- **Cannot confirm 6 emerging techniques were discovered and chaptered — flagged.** ⚠️ **flagged for your review**
+- **Cannot confirm 6 emerging techniques were discovered and chaptered — flagged.** ⚠️ **flagged**
   - Fork: Accept '6 emerging' from the summary, OR mark unverifiable.
   - Rationale: The Discover-phase output (DISCOVERY_SCHEMA / ratified chapter list) was not persisted; no emerging chapters exist to count.
   - Confidence: high
-- **Recommended remediation: run the workflow end-to-end so the main loop writes the artifacts, then re-run sign-off against real chapters.** ⚠️ **flagged for your review**
+- **Recommended remediation: run the workflow end-to-end so the main loop writes the artifacts, then re-run sign-off against real chapters.** ⚠️ **flagged**
   - Fork: Leave as machinery-only, OR execute to produce the deliverable.
   - Rationale: The orchestration and all 4 required agents (tech-investigator, eng-explainer, curriculum-architect, team-builder) are present and intact, so the masterclass can be generated; sign-off should follow generation, not precede it.
   - Confidence: high
-- **ENGINEERING-DEEP-DIVE.md is not an acceptable substitute for the masterclass.** ⚠️ **flagged for your review**
+- **ENGINEERING-DEEP-DIVE.md is not an acceptable substitute for the masterclass.** ⚠️ **flagged**
   - Fork: Count the existing 16-technique deep-dive as the deliverable, OR treat it as distinct prior art.
   - Rationale: It uses a different schema (6 questions per technique, no per-technique cross-industry section, no leader curriculum, no interview-signal team blueprint) and is a companion to the market report, not the 8-part 22-chapter masterclass.
   - Confidence: high
 
 
-### Open caveats / accepted gaps
+### Addendum decisions log
 
-- No masterclass output artifacts exist: research/ contains only ai-therapy/ (market report + engineering deep-dive + 16 dossiers). There is no research/techniques-masterclass/ directory.
-- No chapter files exist — the 22 chapters (incl. 6 emerging) and their 8 parts (what/how/why, people+resources, scenarios, cross-industry usage, leader learning-path, team notes) cannot be inspected.
-- No Leader's Curriculum file — sequencing and checkpoints unverifiable.
-- No Team-Building Blueprint file — hiring sequence, interview signals, build-vs-buy, and graduation path unverifiable.
-- No executive intro / mental models / glossary / what's-new-2026 synthesis file.
-- No persisted Discover/Verify outputs — emerging-technique discovery and the June-2026 freshness gate produced nothing checkable.
-- The handed 'SUMMARY: 22 chapters...' is interpolated template text from the workflow, not a measured result, and must not be mistaken for evidence the work exists.
-- Remaining work: execute workflows/ai-therapy-techniques-masterclass.workflow.js end-to-end (machinery + all 4 agents are present) and have the main loop write the files, then re-run this sign-off against the real artifacts.
+- **Withhold the clean sign-off (signedOff=false): the 8 new chapters and the re-synthesis they were to feed do NOT exist as inspectable artifacts, so a clean sign-off would be rubber-stamping.** ⚠️ **flagged**
+  - Fork: Set signedOff=true on the strength of the handed premise ('8 chapters added, re-synthesized, spend resolved'), OR verify against the repo and withhold because nothing backs the premise.
+  - Rationale: The premise is the addendum workflow's own interpolated description of its INTENDED end-state, not a measured result. Verified on disk as of 2026-06-25: research/ai-therapy/techniques/ still holds exactly 22 files (16 core + 6 emerging); none of the 8 named chapters (constitutional-ai-deliberative-alignment, distillation, ssm-mamba, long-context-memory, agent-evaluation-observability, diffusion-llms, on-device-edge-inference, any-to-any-multimodal) exist. The workflow (workflows/ai-therapy-masterclass-addendum.workflow.js) is explicitly read-only ('the main loop writes files'); commit b005084 added only the workflow JS and its message says the report is 'committed when the run finishes' — no such commit followed. No spend-guidance section, no re-synthesized curriculum/team blueprint exist in the masterclass, repo, scratchpad, stashes, or branches. A sign-off certifies inspected deliverables; none are inspectable.
+  - Confidence: high
+- **The 8 new chapters cannot be confirmed built — treat as unverifiable, not done.** ⚠️ **flagged**
+  - Fork: Assume Phase 1 produced the chapters as the premise states, OR treat newChapters as ephemeral in-memory output that was never persisted.
+  - Rationale: In the workflow, the 8 chapters are built in-memory (Phase 1) and returned for the main loop to write. With no run output committed and zero chapter files on disk, none of the 8 (each with its 8 sections: what/how/why, people+resources, scenarios, cross-industry, leader learning-path, team notes) can be inspected for existence, correctness, or June-2026 freshness.
+  - Confidence: high
+- **Appendix A still CUTS all 8 of these techniques, directly contradicting the 'now added' premise — this contradiction is unresolved in the document.** ⚠️ **flagged**
+  - Fork: Trust the premise that the cut was reversed, OR flag that the masterclass itself still documents these as deliberately cut.
+  - Rationale: ENGINEERING-MASTERCLASS.md Appendix A explicitly records CUT/EXCLUDE decisions for Constitutional AI 2.0 (lost 6th slot to agentic-RAG), distillation, SSM/Mamba, long-context, and the four sidebar candidates (agent-eval, diffusion-llms, on-device, multimodal). For the chapters to be 'added,' those decisions must be reversed AND the document updated; neither has happened. Signing off would certify a document that argues against its own claimed contents.
+  - Confidence: high
+- **The spend/comp caveats are NOT resolved — the 'Spend & Compensation Guidance' section does not exist.** ⚠️ **flagged**
+  - Fork: Accept that prior spend caveats were converted into a decisions-with-caveats guidance section, OR verify and find the section absent.
+  - Rationale: grep of ENGINEERING-MASTERCLASS.md and all of research/ finds no 'Spend & Compensation Guidance' section. The only spend content remains the original 'Part 4 — Realistic Budget Ranges' table from the earlier deep-dive. The premise that 'most prior caveats are now resolved into the spend guidance' is therefore false; the caveats stand unresolved.
+  - Confidence: high
+- **Recommended remediation: actually run the addendum workflow end-to-end so the main loop writes the 8 chapters + re-synthesized curriculum/team/spend sections, update Appendix A to reflect the reversal, then re-run this sign-off against the real artifacts.** ⚠️ **flagged**
+  - Fork: Leave as machinery-only and sign off on the premise, OR execute the workflow to produce the deliverable before any sign-off.
+  - Rationale: The addendum workflow and the assembly/synthesis/spend/signoff phases are present and intact, so the work is generatable. Sign-off must follow generation and file-writing, not precede it. This converts an un-signable premise into a verifiable deliverable.
+  - Confidence: high
 
 
-**Signed off:** False
+### Genuinely-residual caveats
+
+- No 'Spend & Compensation Guidance' section exists; prior spend/comp caveats remain unresolved rather than converted into stated decisions. Only the original 'Part 4 — Realistic Budget Ranges' table is present.
+- The Leader's Curriculum, Team-Building Blueprint, mental models, glossary, and what's-new-2026 in the masterclass have NOT been re-synthesized over a ~30-technique set — they still reflect the 22-technique (16+6) scope.
 
 
 _Sources: see `sources-techniques.md`._

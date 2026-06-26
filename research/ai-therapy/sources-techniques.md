@@ -1686,3 +1686,487 @@ _1684 unique sources across the technique chapters, curriculum, and team bluepri
 - morphllm.com, Claude benchmarks (June 2026)
 - npj Digital Medicine (nature.com/articles/s41746-025-02112-0); Bon View Press hallucination-risk study; ScienceDirect S2666521225001474
 - tldl.io, LLM API pricing 2026 — https://www.tldl.io/resources/llm-api-pricing-2026 (2026)
+
+
+## Addendum sources (8 added chapters)
+
+- /home/user/bharats-claude-toolkit/research/ai-therapy/ENGINEERING-DEEP-DIVE.md
+- /home/user/bharats-claude-toolkit/research/ai-therapy/REPORT.md
+- AI21, Attention was never enough: the rise of hybrid LLMs — https://www.ai21.com/blog/rise-of-hybrid-llms/ (2026)
+- Achilles' Heel of Mamba (arXiv 2509.17514) — https://arxiv.org/pdf/2509.17514
+- Agent Evaluation & Observability technique brief (provided, dated June 2026)
+- B'MOJO (eidetic vs. fading memory framing, arXiv 2407.06324) — https://arxiv.org/abs/2407.06324 (2024)
+- Cartesia Sonic 3 on SageMaker JumpStart — AWS — https://aws.amazon.com/about-aws/whats-new/2026/02/cartesia-sonic-3-on-sagemaker-jumpstart/ (Feb 2026)
+- Cartesia on-device SSM voice — https://cartesia.ai/blog/on-device
+- Constitutional AI 2.0 & Deliberative Alignment technique brief (provided, dated June 2026)
+- Deploy IBM Granite 4.1 on GPU Cloud (512K context) — Spheron — https://www.spheron.network/blog/deploy-ibm-granite-4-1-gpu-cloud/ (2026)
+- Diffusion LLMs (dLLMs) technique brief (provided, dated June 2026)
+- HybriDNA (Transformer-Mamba2 DNA) — https://arxiv.org/html/2502.10807v2
+- Hybrid Mamba-SAM 3D medical segmentation (arXiv 2602.00650) — https://arxiv.org/abs/2602.00650
+- Hybrid SSM / Mamba Architectures technique brief (provided, dated June 2026)
+- IBM Granite 4 hybrid Mamba-2 — InfoQ — https://www.infoq.com/news/2025/11/ibm-granite-mamba2-enterprise/ (Nov 2025)
+- IBM Granite 4.0 hybrid models — https://www.ibm.com/new/announcements/ibm-granite-4-0-hyper-efficient-high-performance-hybrid-models (2025)
+- Jamba-1.5 (arXiv 2408.12570) — https://arxiv.org/pdf/2408.12570 (2024)
+- Long-Context Memory Architectures & Context Engineering technique brief (provided, dated June 2026)
+- Mamba-3 (arXiv 2603.15569) — https://arxiv.org/abs/2603.15569 (Mar 2026)
+- Mamba-3 / SSM GPU deployment guide — Spheron — https://www.spheron.network/blog/mamba-3-state-space-model-gpu-cloud-deployment/ (2026)
+- Mamba-3 — Together AI — https://www.together.ai/blog/mamba-3 (Mar 2026)
+- Mamba-3, ICLR 2026 (oral) — https://openreview.net/pdf?id=HwCvaJOiCj (Mar 2026)
+- Mamba-3: An Inference-First State Space Model — Cartesia — https://blog.cartesia.ai/p/mamba-3 (Mar 2026)
+- Meet Mamba-3 — MarkTechPost — https://www.marktechpost.com/2026/03/18/meet-mamba-3-a-new-state-space-model-frontier-with-2x-smaller-states-and-enhanced-mimo-decoding-hardware-efficiency/ (Mar 2026)
+- MiniMax-01 lightning-attention hybrid — https://www.minimax.io/news/minimax-01-series-2 (Jan 2025)
+- NVIDIA Nemotron 3 Super — https://medium.com/@sampan090611/nvidias-nemotron-and-the-hybrid-transformer-mamba-moment-bca35bb096c2 (Mar 2026)
+- Native Any-to-Any Multimodal Models technique brief (provided, dated June 2026)
+- Nemotron-H (arXiv 2504.03624) — https://arxiv.org/abs/2504.03624 (2025)
+- On-Device / Edge LLM Inference technique brief (provided, dated June 2026)
+- Original Mamba (selective SSM) — https://arxiv.org/abs/2312.00752 (Dec 2023)
+- Phi-4-mini-flash (SambaY/GMU) — Microsoft (2025)
+- Priming: Hybrid SSMs from pretrained Transformers (arXiv 2605.08301) — https://arxiv.org/abs/2605.08301 (May 2026)
+- ProtMamba (protein SSM, PMC) — https://pmc.ncbi.nlm.nih.gov/articles/PMC12206526/
+- Pure-SSM ~15pt 5-shot MMLU gap (arXiv 2406.07887) — https://arxiv.org/abs/2406.07887
+- Qwen3-Next / vLLM hybrid architecture — https://vllm.ai/blog/2025-09-11-qwen3-next (Sep 2025)
+- Qwen3.5 architecture & throughput — https://qwen.ai/blog?id=qwen3.5 (2026)
+- SSM/hybrid long-context characterization — https://arxiv.org/abs/2507.12442 (2025)
+- SpatialVLA-Mamba (OpenReview) — https://openreview.net/forum?id=sTn4EqE49A
+- Stuffed Mamba: oversized states / inability to forget (arXiv 2410.07145) — https://arxiv.org/pdf/2410.07145
+- arXiv 2503.13657 (MAST, NeurIPS 2025)
+- arXiv 2511.21730 (2025)
+- arXiv 2603.28063 (2026)
+- arXiv 2606.19544 (Reliability without Validity, 2026)
+- arXiv 2606.26300 (The Verification Horizon, 2026)
+- https://agentmarketcap.ai/blog/2026/04/10/agent-memory-vendor-landscape-2026-letta-zep-mem0-langmem
+- https://agentmarketcap.ai/blog/2026/04/11/agent-context-engineering-sliding-windows-memory-2026
+- https://ai.google.dev/gemma/docs/diffusiongemma
+- https://aigi.ox.ac.uk/wp-content/uploads/2026/01/Kolt-Caputo-et-al.-2026-Legal-Alignment-for-Safe-and-Ethical-AI.pdf
+- https://aimultiple.com/ai-context-window
+- https://aimultiple.com/finance-llm
+- https://aimultiple.com/llm-latency-benchmark
+- https://aisuperior.com/cost-of-training-llm-from-scratch/
+- https://aisuperior.com/llm-training-cost/
+- https://alexbobes.com/artificial-intelligence/rag-vs-fine-tuning/
+- https://alignment.openai.com/model-spec-evals
+- https://alignment.openai.com/model-spec-evals/
+- https://aman.ai/primers/ai/gpt4o-native-image-generation/
+- https://anudeepsri.medium.com/langsmith-vs-arize-vs-braintrust-e397e4728a76
+- https://apidog.com/blog/qwen-3-5-omni/
+- https://artificialanalysis.ai/agents/coding-agents
+- https://artificialanalysis.ai/models/mercury-2
+- https://artificialintelligenceact.eu/
+- https://arxiv.org/abs/2307.03172
+- https://arxiv.org/abs/2403.03507
+- https://arxiv.org/abs/2405.21015
+- https://arxiv.org/abs/2412.05270
+- https://arxiv.org/abs/2412.16339
+- https://arxiv.org/abs/2502.09992
+- https://arxiv.org/abs/2503.03480
+- https://arxiv.org/abs/2503.13657
+- https://arxiv.org/abs/2504.07951
+- https://arxiv.org/abs/2506.17298
+- https://arxiv.org/abs/2507.11473
+- https://arxiv.org/abs/2507.12442
+- https://arxiv.org/abs/2508.10875
+- https://arxiv.org/abs/2508.15487
+- https://arxiv.org/abs/2509.15541
+- https://arxiv.org/abs/2511.20857
+- https://arxiv.org/abs/2602.00650
+- https://arxiv.org/abs/2603.15569
+- https://arxiv.org/abs/2603.21341
+- https://arxiv.org/abs/2603.23640
+- https://arxiv.org/abs/2604.15804
+- https://arxiv.org/abs/2605.08301
+- https://arxiv.org/abs/2605.12493
+- https://arxiv.org/abs/2605.29607
+- https://arxiv.org/html/2502.00937v1
+- https://arxiv.org/html/2502.10807v2
+- https://arxiv.org/html/2505.02567v5
+- https://arxiv.org/html/2505.02567v6
+- https://arxiv.org/html/2505.08638v1
+- https://arxiv.org/html/2505.17613
+- https://arxiv.org/html/2507.12442v2
+- https://arxiv.org/html/2507.16731v1
+- https://arxiv.org/html/2510.13220
+- https://arxiv.org/html/2510.13759v3
+- https://arxiv.org/html/2510.18480v3
+- https://arxiv.org/html/2510.24605v1
+- https://arxiv.org/html/2510.26583v1
+- https://arxiv.org/html/2512.04123v1
+- https://arxiv.org/html/2512.17077
+- https://arxiv.org/html/2601.04175
+- https://arxiv.org/html/2601.14691v1
+- https://arxiv.org/html/2601.21406v1
+- https://arxiv.org/html/2602.09843v1
+- https://arxiv.org/html/2602.11354v1
+- https://arxiv.org/html/2603.09538v1
+- https://arxiv.org/html/2603.23640v1
+- https://arxiv.org/html/2603.29194v1
+- https://arxiv.org/html/2604.24396
+- https://arxiv.org/html/2605.00080v1
+- https://arxiv.org/html/2605.10653v1
+- https://arxiv.org/html/2605.25343
+- https://arxiv.org/html/2605.25343v1
+- https://arxiv.org/html/2606.07297v1
+- https://arxiv.org/html/2606.10315
+- https://arxiv.org/html/2606.19544v1
+- https://arxiv.org/pdf/2312.00111
+- https://arxiv.org/pdf/2312.00752
+- https://arxiv.org/pdf/2406.07887
+- https://arxiv.org/pdf/2408.12570
+- https://arxiv.org/pdf/2410.03810
+- https://arxiv.org/pdf/2410.07145
+- https://arxiv.org/pdf/2410.20011
+- https://arxiv.org/pdf/2412.10079
+- https://arxiv.org/pdf/2502.09992
+- https://arxiv.org/pdf/2502.13917
+- https://arxiv.org/pdf/2503.24047
+- https://arxiv.org/pdf/2503.24278
+- https://arxiv.org/pdf/2504.01903
+- https://arxiv.org/pdf/2505.06409
+- https://arxiv.org/pdf/2505.19616
+- https://arxiv.org/pdf/2506.00413
+- https://arxiv.org/pdf/2506.09104
+- https://arxiv.org/pdf/2506.14429
+- https://arxiv.org/pdf/2507.03033
+- https://arxiv.org/pdf/2507.11097
+- https://arxiv.org/pdf/2507.19227
+- https://arxiv.org/pdf/2508.02193
+- https://arxiv.org/pdf/2508.03686
+- https://arxiv.org/pdf/2509.06932
+- https://arxiv.org/pdf/2509.11252
+- https://arxiv.org/pdf/2509.17514
+- https://arxiv.org/pdf/2509.24296
+- https://arxiv.org/pdf/2509.24365
+- https://arxiv.org/pdf/2510.09309
+- https://arxiv.org/pdf/2510.09615
+- https://arxiv.org/pdf/2510.13721
+- https://arxiv.org/pdf/2510.14946
+- https://arxiv.org/pdf/2510.21652
+- https://arxiv.org/pdf/2511.03728
+- https://arxiv.org/pdf/2511.05502
+- https://arxiv.org/pdf/2511.11248
+- https://arxiv.org/pdf/2511.21730
+- https://arxiv.org/pdf/2512.02014
+- https://arxiv.org/pdf/2512.03048
+- https://arxiv.org/pdf/2512.06443
+- https://arxiv.org/pdf/2512.16041
+- https://arxiv.org/pdf/2512.17077
+- https://arxiv.org/pdf/2512.22615
+- https://arxiv.org/pdf/2512.24903
+- https://arxiv.org/pdf/2601.03192
+- https://arxiv.org/pdf/2601.12979
+- https://arxiv.org/pdf/2601.14691
+- https://arxiv.org/pdf/2601.22155
+- https://arxiv.org/pdf/2602.00521
+- https://arxiv.org/pdf/2602.02140
+- https://arxiv.org/pdf/2602.02204
+- https://arxiv.org/pdf/2602.04813
+- https://arxiv.org/pdf/2602.06052
+- https://arxiv.org/pdf/2602.08235
+- https://arxiv.org/pdf/2603.02874
+- https://arxiv.org/pdf/2603.05399
+- https://arxiv.org/pdf/2603.09023
+- https://arxiv.org/pdf/2603.09619
+- https://arxiv.org/pdf/2603.10476
+- https://arxiv.org/pdf/2603.13243
+- https://arxiv.org/pdf/2603.15228
+- https://arxiv.org/pdf/2603.15569
+- https://arxiv.org/pdf/2603.16952
+- https://arxiv.org/pdf/2603.17919
+- https://arxiv.org/pdf/2603.21341
+- https://arxiv.org/pdf/2603.23500
+- https://arxiv.org/pdf/2603.24576
+- https://arxiv.org/pdf/2603.26410
+- https://arxiv.org/pdf/2603.28063
+- https://arxiv.org/pdf/2605.25343
+- https://atlan.com/know/agent-memory-architectures/
+- https://atlan.com/know/agentic-ai-memory-vs-vector-database/
+- https://atlan.com/know/ai-agent/ai-agent-in-healthcare/
+- https://atlan.com/know/best-ai-agent-memory-frameworks-2026/
+- https://atlan.com/know/context-poisoning/
+- https://atlan.com/know/what-does-context-engineer-do/
+- https://awesomeagents.ai/leaderboards/edge-mobile-llm-leaderboard/
+- https://aws.amazon.com/about-aws/whats-new/2026/02/cartesia-sonic-3-on-sagemaker-jumpstart/
+- https://benchlm.ai/benchmarks/sweVerified
+- https://bisi.org.uk/reports/claudes-new-constitution-ai-alignment-ethics-and-the-future-of-model-governance
+- https://blog.bluedot.org/p/deliberative-alignment
+- https://blog.cartesia.ai/p/mamba-3
+- https://blog.google/innovation-and-ai/models-and-research/google-deepmind/gemini-2-5-native-audio/
+- https://blog.google/innovation-and-ai/technology/developers-tools/bringing-gemini-models-to-apple-developers/
+- https://blog.google/innovation-and-ai/technology/developers-tools/diffusion-gemma-faster-text-generation/
+- https://blog.jetbrains.com/ai/2025/11/why-diffusion-models-could-change-developer-workflows-in-2026/
+- https://brain.co/blog/chained-voice-agent-architectures-speech-to-speech-vs-chained-pipeline-vs-hybrid-approaches
+- https://buzzgrewal.medium.com/beyond-next-token-how-diffusion-llms-like-mercury-2-and-llada-hit-1-000-tokens-per-second-in-2026-996b52cd4fce
+- https://callsphere.ai/blog/td30-fw-opentelemetry-genai-conventions-april-2026-guide
+- https://cartesia.ai/blog/on-device
+- https://claude5.com/news/constitutional-ai-2-0-safety-alignment-breakthroughs-in-2026
+- https://codingscape.com/blog/most-powerful-llms-large-language-models
+- https://cryptobriefing.com/nvidia-h100-rental-price-increase-2026/
+- https://ctaio.dev/en/salary/anthropic-salary/
+- https://daily.dev/blog/running-llms-locally-ollama-llama-cpp-self-hosted-ai-developers/
+- https://deepeval.com/guides/guides-llm-as-a-judge
+- https://deepmind.google/models/gemma/diffusiongemma/
+- https://defensescoop.com/2024/12/06/palantir-anduril-consortium-ai-new-alliance-merge-capabilities/
+- https://delight.ai/blog/ai-for-cx/best-ai-customer-service
+- https://dev.to/agdex_ai/ai-agent-memory-in-2026-mem0-vs-zep-vs-letta-vs-cognee-a-practical-guide-cfa
+- https://dev.to/arshtechpro/apples-foundation-models-framework-run-ai-on-device-with-just-a-few-lines-of-swift-lbp
+- https://dev.to/heath_99ab1667dfecd3da406/ai-memory-governance-for-legal-tech-how-contract-ai-agents-handle-privileged-data-3h2d
+- https://dev.to/shieldstring/browser-based-llms-in-healthcare-2e72
+- https://dev.to/vainkop/mercury-2-and-the-end-of-autoregressive-monopoly-what-diffusion-llms-mean-for-production-agent-334p
+- https://developer.android.com/ai/gemini-nano
+- https://developer.nvidia.com/blog/accelerate-ai-inference-for-edge-and-robotics-with-nvidia-jetson-t4000-and-nvidia-jetpack-7-1/
+- https://developer.nvidia.com/blog/implementing-falcon-h1-hybrid-architecture-in-nvidia-megatron-core/
+- https://developer.nvidia.com/blog/introducing-nemotron-3-super-an-open-hybrid-mamba-transformer-moe-for-agentic-reasoning/
+- https://developer.nvidia.com/blog/introducing-nvidia-jetson-thor-the-ultimate-platform-for-physical-ai/
+- https://developers.google.com/ml-kit/genai
+- https://developers.googleblog.com/blazing-fast-on-device-genai-with-litert-lm/
+- https://developers.redhat.com/articles/2026/04/28/beyond-next-token-why-diffusion-llms-are-changing-game
+- https://docs.octomil.com/blog/on-device-llm-inference-2025-2026/
+- https://druganddeviceworld.com/2026/01/26/hospital-of-2026-local-llms-and-ai-are-redefining-healthcare/
+- https://emelia.io/hub/bitnet-1bit-llm-cpu-inference
+- https://en.wikipedia.org/wiki/1.58-bit_large_language_model
+- https://epoch.ai/blog/how-much-does-it-cost-to-train-frontier-ai-models
+- https://epoch.ai/publications/where-autonomy-works-evaluating-robot-capabilities-in-2026
+- https://explainx.ai/blog/mercury-2-diffusion-llm-1000-tokens-per-second-inception-2026
+- https://fin.ai/learn/evaluate-ai-agent-compliance-financial-services
+- https://firebase.blog/posts/2026/06/apple-foundation-models-gemini/
+- https://fireworks.ai/blog/fine-tuning-bottlenecks
+- https://fortune.com/2026/01/14/google-gemini-ai-personal-assistant-gmail-photos-youtube-history-personal-intelligence/
+- https://freeacademy.ai/blog/rag-vs-fine-tuning-vs-prompt-engineering-comparison-2026
+- https://futureagi.com/blog/best-legal-ai-evaluation-platforms-2026/
+- https://futureagi.com/blog/llm-as-judge-best-practices-2026
+- https://galileo.ai/blog/agent-evaluation-framework-metrics-rubrics-benchmarks
+- https://galileo.ai/blog/survey-of-hallucinations-in-multimodal-models
+- https://github.com/QwenLM/Qwen3-Omni
+- https://github.com/VILA-Lab/Awesome-DLMs
+- https://github.com/benchflow-ai/awesome-evals
+- https://github.com/hao-ai-lab/d3LLM
+- https://github.com/state-spaces/mamba
+- https://grapeup.com/blog/running-llms-on-device-with-qualcomm-snapdragon-8-elite
+- https://greptime.com/blogs/2026-05-09-opentelemetry-genai-semantic-conventions
+- https://hkunlp.github.io/blog/2025/dream/
+- https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Thinking
+- https://huggingface.co/blog/daya-shankar/open-source-llms
+- https://huggingface.co/papers/2507.22827
+- https://huggingface.co/papers/2508.02193
+- https://hyscaler.com/insights/vision-language-action-vla-guide/
+- https://inside.cartesia.ai/p/mamba-3
+- https://intuitionlabs.ai/articles/biology-foundation-models-comparison
+- https://intuitionlabs.ai/articles/h100-rental-prices-cloud-comparison
+- https://intuitionlabs.ai/articles/large-language-model-benchmarks-life-sciences-overview
+- https://inworld.ai/resources/best-speech-to-speech-model
+- https://jobsbyculture.com/blog/openai-compensation-2026
+- https://jonathankinlay.com/2026/03/state-space-models-for-market-microstructure-can-mamba-replace-transformers-in-high-frequency-finance/
+- https://jusrecruit.com/blogs/hire-mlops-llm-ops-engineers-ai-interviews-2026/
+- https://justee.ai/blog/ai-legal-document-review
+- https://knightli.com/en/2026/05/07/chatgpt-claude-code-gemini-memory-comparison/
+- https://labelyourdata.com/articles/llm-as-a-judge
+- https://labs.cloudsecurityalliance.org/research/csa-research-note-dod-ai-guardrail-mandates-vendor-governanc/
+- https://labs.cloudsecurityalliance.org/research/csa-research-note-nist-ai-agent-red-teaming-standards-202603/
+- https://laminar.sh/article/2026-04-23-top-6-agent-observability-platforms
+- https://latitude.so/blog/agent-first-comparison-guide-vs-braintrust
+- https://latitude.so/blog/ai-agent-failure-detection-guide
+- https://latitude.so/blog/build-eval-driven-ai-observability-for-agents
+- https://legora.com/blog/2026-the-year-of-agents-in-legal-ai
+- https://lmcouncil.ai/benchmarks
+- https://localaimaster.com/blog/npu-comparison-2026
+- https://localaimaster.com/models/best-local-ai-coding-models
+- https://luonghongthuan.com/en/blog/google-io-2026-agentic-gemini-diffusiongemma-2026-06-11/
+- https://machinelearning.apple.com/research/apple-foundation-models-2025-updates
+- https://machinelearning.apple.com/research/introducing-apple-foundation-models
+- https://marcohkvanhurne.medium.com/the-state-of-agentic-roi-q2-2026-e03ad76fa3a4
+- https://masturbyte.com/diffusion-llms.html
+- https://medium.com/@Indext_Data_Lab/ai-agent-audit-the-complete-2026-governance-and-compliance-guide-aa945b2d2f67
+- https://medium.com/@akhshyganesh/the-dawn-of-native-1-bit-llms-how-bitnet-b1-58-2b-4t-is-changing-the-game-5db3b659a0a9
+- https://medium.com/@evertongomede/context-rot-the-silent-failure-mode-of-long-running-ai-agents-ae14616c0a88
+- https://medium.com/@nikomao89/deconstructing-constitutional-ai-2-0-technical-changes-in-anthropics-post-pledge-architecture-6eba6e64479a
+- https://medium.com/@sampan090611/nvidias-nemotron-and-the-hybrid-transformer-mamba-moment-bca35bb096c2
+- https://medium.com/byte-sized-ai/openai-introduces-4o-image-generation-a-native-autoregressive-alternative-to-diffusion-models-6f17a6db0ad3
+- https://medium.com/data-science-collective/on-device-llm-or-cloud-api-a-practical-checklist-for-product-owners-and-architects-30386f00f148
+- https://medium.com/macoclock/apples-quiet-bet-on-llm-routers-using-gemini-d0a04cc1c4b6
+- https://mem0.ai/blog/ai-memory-benchmarks-in-2026
+- https://mem0.ai/blog/context-engineering-ai-agents-guide
+- https://mem0.ai/blog/context-window-is-ram-not-storage-why-most-agent-failures-happen-how-to-fix-them-in-2026
+- https://mem0.ai/blog/state-of-ai-agent-memory-2026
+- https://mindgard.ai/blog/what-is-ai-red-teaming
+- https://mlflow.org/top-5-agent-observability-tools/
+- https://mmmu-benchmark.github.io/
+- https://model-spec.openai.com/2025-12-18.html
+- https://nat.io/blog/llms-in-2026-from-bigger-to-better
+- https://nerdleveltech.com/apple-foundation-models-framework-claude-gemini
+- https://news.ycombinator.com/item?id=48450142
+- https://newsletter.semianalysis.com/p/the-great-gpu-shortage-rental-capacity
+- https://odsc.medium.com/from-context-engineers-to-chief-ai-officers-emerging-ai-job-roles-for-2026-9f757603f547
+- https://ofox.ai/blog/apple-foundation-models-3-wwdc-2026-developer-read/
+- https://openai.com/index/deliberative-alignment/
+- https://openai.com/index/detecting-and-reducing-scheming-in-ai-models/
+- https://openai.com/index/openai-for-healthcare/
+- https://openreview.net/forum?id=3Z3Is6hnOT
+- https://openreview.net/forum?id=sTn4EqE49A
+- https://openreview.net/pdf?id=HwCvaJOiCj
+- https://openrouter.ai/inception/mercury-2
+- https://opentelemetry.io/blog/2026/genai-observability/
+- https://opentelemetry.io/docs/specs/semconv/gen-ai/
+- https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-agent-spans/
+- https://opiniojuris.org
+- https://opiniojuris.org/2026/02/26/the-pentagon-anthropic-clash-over-military-ai-guardrails/
+- https://orbilontech.com/gemini-omni/
+- https://orchestrator.dev/blog/2026-04-06--claude-code-agent-memory-2026/
+- https://particula.tech/blog/chroma-context-rot-long-context-degradation
+- https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools
+- https://pli.princeton.edu/blog/2026/mamba-3-improved-sequence-modeling-using-state-space-principles
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12206526/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12642585/
+- https://pmc.ncbi.nlm.nih.gov/articles/PMC12893917/
+- https://qwen.ai/blog?id=qwen3.5
+- https://recruiter.daily.dev/roles/ai-safety-engineer/
+- https://renard-digital.fr/blog/en/small-language-models-edge-devices-2026/
+- https://research.nvidia.com/publication/2025-06_mambavision-hybrid-mamba-transformer-vision-backbone
+- https://simplabots.com/ai-news-archive/apples-edge-ai-shift-what-developers-must-know/
+- https://sky.cs.berkeley.edu/project/mast/
+- https://skywork.ai/skypage/en/copilot-ai-laptops-guide/2033470596177543168
+- https://supersourcing.com/blog/hire-llm-developers-ai-product-company-usa/
+- https://techcrunch.com/2025/11/06/inception-raises-50-million-to-build-diffusion-models-for-code-and-text/
+- https://techfundingnews.com/inception-labs-banks-50m-to-make-diffusion-llms-10x-faster/
+- https://techintelix.com/news-red-teaming-ai-models-compliance-requirement-2026/
+- https://techjacksolutions.com/careers/ai-careers/ai-red-teamer/
+- https://techsy.io/en/blog/gemini-omni-api-pricing
+- https://theaicareerlab.com/blog/agentic-ai-jobs-guide-2026
+- https://themenonlab.blog/blog/llada21-diffusion-llm-892-tokens-second
+- https://thenewstack.io/inception-labs-mercury-2-diffusion/
+- https://tianpan.co/blog/2026-04-09-long-context-vs-rag-production-decision-framework
+- https://tianpan.co/blog/2026-04-10-hybrid-cloud-edge-llm-inference-routing
+- https://tianpan.co/blog/2026-04-10-hybrid-cloud-edge-llm-inference-when-to-run-on-device
+- https://time.com/7354738/claude-constitution-ai-alignment/
+- https://traded.co/vc/deal/inception-raises-50m-seed-funding-led-by-menlo-ventures-with-participation-from-top-investors/
+- https://trigent.com/blog/rise-of-multimodal-intelligence-what-unified-ai-models-mean-for-businesses-in-2026/
+- https://tutorials.technology/tutorials/context-engineering-claude-cursor-2026.html
+- https://usewire.io/blog/anthropic-managed-agents-memory-context-engineering/
+- https://v-chandra.github.io/on-device-llms/
+- https://vectorize.io/articles/ai-memory-poisoning
+- https://venturebeat.com/ai/western-qwen-ibm-wows-with-granite-4-llm-launch-and-hybrid-mamba-transformer
+- https://venturebeat.com/technology/google-unveils-gemini-omni-any-to-any-ai-model-what-enterprises-should-know
+- https://verifywise.ai/ai-governance-library/agentic-evaluation/agent-anthropic-demystifying-evals-2026
+- https://vllm.ai/blog/2025-09-11-qwen3-next
+- https://wavespeed.ai/blog/posts/qwen3-5-omni-api-pricing-2026/
+- https://winbuzzer.com/2026/03/18/open-source-mamba-3-arrives-to-surpass-transformer-xcxwbn/
+- https://winbuzzer.com/2026/03/27/google-gemini-imports-chats-memory-chatgpt-claude-xcxwbn/
+- https://www.adaline.ai/blog/complete-guide-llm-ai-agent-evaluation-2026
+- https://www.adaline.ai/blog/llm-as-a-judge-reliability-bias
+- https://www.ai21.com/blog/rise-of-hybrid-llms/
+- https://www.anthropic.com/constitution
+- https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
+- https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+- https://www.anthropic.com/news/claude-new-constitution
+- https://www.anthropic.com/research/bloom
+- https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback
+- https://www.anthropic.com/research/next-generation-constitutional-classifiers
+- https://www.anthropic.com/research/petri-open-source-auditing
+- https://www.apolloresearch.ai/research/stress-testing-deliberative-alignment-for-anti-scheming-training/
+- https://www.arthur.ai/column/agentic-ai-observability-playbook-2026
+- https://www.articsledge.com/post/mamba-model
+- https://www.arxiv.org/pdf/2509.15541
+- https://www.astralcodexten.com/p/deliberative-alignment-and-the-spec
+- https://www.augmentcode.com/guides/ai-agent-monitoring
+- https://www.ayautomate.com/blog/ai-engineer-salary-guide-2026
+- https://www.ayautomate.com/blog/ai-engineer-skills-2026
+- https://www.bentoml.com/blog/multimodal-ai-a-guide-to-open-source-vision-language-models
+- https://www.blog.brightcoding.dev/2026/06/02/stop-hand-coding-uis-from-screenshots-screenshot-to-code-does-it-instantly
+- https://www.braintrust.dev/articles/agent-observability-complete-guide-2026
+- https://www.businesswire.com/news/home/20251106570339/en/
+- https://www.businesswire.com/news/home/20260224034496/en/
+- https://www.businesswire.com/news/home/20260224034496/en/Inception-Launches-Mercury-2-the-Fastest-Reasoning-LLM-5x-Faster-Than-Leading-Speed-Optimized-LLMs-with-Dramatically-Lower-Inference-Cost
+- https://www.channel.tel/blog/voice-ai-memory-build-vs-buy-comparison
+- https://www.codeant.ai/blogs/swe-bench-scores
+- https://www.cognee.ai/blog/guides/ai-coding-agent-persistent-codebase-memory
+- https://www.confident-ai.com/blog/llm-agent-evaluation-complete-guide
+- https://www.confident-ai.com/blog/why-llm-as-a-judge-is-the-best-llm-evaluation-method
+- https://www.confident-ai.com/knowledge-base/compare/top-7-llm-observability-tools
+- https://www.crescendo.ai/news/ai-in-healthcare-news
+- https://www.dailydoseofds.com/diffusion-models-part-2/
+- https://www.deloitte.com/us/en/insights/industry/health-care/agentic-ai-health-care-operating-model-change.html
+- https://www.devopsschool.com/blog/ai-evaluation-engineer-role-blueprint-responsibilities-skills-kpis-and-career-path/
+- https://www.digitalapplied.com/blog/agent-observability-platforms-langsmith-langfuse-arize-2026
+- https://www.digitalapplied.com/blog/ai-developer-hiring-skills-that-matter-2026
+- https://www.digitalapplied.com/blog/context-engineering-agent-reliability-playbook-2026
+- https://www.digitalapplied.com/blog/context-window-arms-race-10m-token-era-guide
+- https://www.digitalapplied.com/blog/kv-cache-optimization-techniques-2026-engineering-guide
+- https://www.digitalapplied.com/blog/multimodal-ai-benchmarks-2026-vision-audio-code
+- https://www.edge-ai-vision.com/2026/01/on-device-llms-in-2026-what-changed-what-matters-whats-next/
+- https://www.eesel.ai/blog/decagon-vs-sierra
+- https://www.emergentmind.com/topics/deliberative-alignment
+- https://www.emergentmind.com/topics/hybrid-mamba-transformer
+- https://www.emergentmind.com/topics/mambats
+- https://www.emergentmind.com/topics/native-multimodal-models-nmms
+- https://www.frontiermodelforum.org/issue-briefs/chain-of-thought-monitorability/
+- https://www.frontiermodelforum.org/technical-reports/frontier-mitigations/
+- https://www.getvoibe.com/resources/ai-hallucinations-law-firms/
+- https://www.hklaw.com/en/insights/publications/2026/04/ai-regulation-the-new-compliance-frontier
+- https://www.ibm.com/new/announcements/ibm-granite-4-0-hyper-efficient-high-performance-hybrid-models
+- https://www.inceptionlabs.ai/blog/introducing-mercury
+- https://www.inceptionlabs.ai/blog/introducing-mercury-2
+- https://www.index.dev/blog/multimodal-ai-models-comparison
+- https://www.infoq.com/news/2025/11/ibm-granite-mamba2-enterprise/
+- https://www.infoq.com/news/2026/01/anthropic-constitution/
+- https://www.infoworld.com/article/4067691/ibm-launches-granite-4-0-to-cut-ai-infra-costs-with-hybrid-mamba-transformer-models.html
+- https://www.insideprivacy.com/artificial-intelligence/eu-ai-act-update-timeline-relief-targeted-simplification-and-new-prohibitions/
+- https://www.itu.int/itu-d/reports/statistics/facts-figures-2025/
+- https://www.iweaver.ai/blog/gemini-omni-video-model/
+- https://www.kdnuggets.com/5-open-source-omni-ai-models-that-handle-text-images-audio-and-video
+- https://www.kdnuggets.com/the-multimodal-ai-guide-vision-voice-text-and-beyond
+- https://www.keepmyprompts.com/en/blog/1m-context-windows-trap-rag-decision-framework
+- https://www.kognitos.com/blog/ai-audit-trail-requirements-2026-checklist/
+- https://www.kore1.com/ai-engineer-salary-guide/
+- https://www.kore1.com/hire-ai-engineers-2026-guide/
+- https://www.kore1.com/hire-llm-engineers-2026/
+- https://www.kore1.com/how-to-hire-ai-product-manager-2026/
+- https://www.lakera.ai/blog/guide-to-hallucinations-in-large-language-models
+- https://www.langchain.com/articles/llm-monitoring-observability
+- https://www.langchain.com/resources/llm-evals
+- https://www.legalnodes.com/article/eu-ai-act-2026-updates-compliance-requirements-and-business-risks
+- https://www.lesswrong.com/posts/ezfHZtu85yXi2d9Qa/constitutional-ai-vs-rlhf-vs-deliberative-alignment
+- https://www.levels.fyi/companies/anthropic/salaries
+- https://www.levels.fyi/companies/openai/salaries/software-engineer
+- https://www.marketscreener.com/news/ai-media-to-showcase-real-time-translation-and-accessibility-workflows-at-ise-2026-as-multilingual-a-ce7e5bdfd88cf621
+- https://www.marktechpost.com/2025/04/14/multimodal-models-dont-need-late-fusion-apple-researchers-show-early-fusion-architectures-are-more-scalable-efficient-and-modality-agnostic/
+- https://www.marktechpost.com/2026/03/18/meet-mamba-3-a-new-state-space-model-frontier-with-2x-smaller-states-and-enhanced-mimo-decoding-hardware-efficiency/
+- https://www.marktechpost.com/2026/03/30/alibaba-qwen-team-releases-qwen3-5-omni-a-native-multimodal-model-for-text-audio-video-and-realtime-interaction/
+- https://www.marktechpost.com/2026/04/29/top-10-kv-cache-compression-techniques-for-llm-inference-reducing-memory-overhead-across-eviction-quantization-and-low-rank-methods/
+- https://www.medrxiv.org/content/10.64898/2026.04.09.26350519v1.full
+- https://www.meta-intelligence.tech/en/insight-context-engineering
+- https://www.meta-intelligence.tech/en/insight-slm-enterprise
+- https://www.microsoft.com/en-us/research/blog/advances-to-low-bit-quantization-enable-llms-on-edge-devices/
+- https://www.microsoft.com/en-us/research/publication/bitnet-a4-8-4-bit-activations-for-1-bit-llms/
+- https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/
+- https://www.mindstudio.ai/blog/what-is-google-gemini-omni
+- https://www.minimax.io/news/minimax-01-series-2
+- https://www.morphllm.com/ai-agent-evaluation
+- https://www.morphllm.com/llm-context-window-comparison
+- https://www.mygreatlearning.com/blog/what-is-gemini-omni-googles-unified-ai-model-for-video-image-audio-and-text/
+- https://www.nature.com/articles/s41598-025-30150-x
+- https://www.newsletter.swirlai.com/p/state-of-context-engineering-in-2026
+- https://www.nxcode.io/resources/news/gemini-3-1-pro-vs-gpt-5-4-comparison-2026
+- https://www.ox.ac.uk/news/2026-03-27-expert-comment-claude-we-trust-evaluating-new-constitution
+- https://www.patronus.ai/blog/introducing-trail-a-benchmark-for-agentic-evaluation
+- https://www.pin.com/blog/ai-compensation-salary-guide/
+- https://www.practical-devsecops.com/emerging-ai-security-roles/
+- https://www.qwe.edu.pl/tutorial/openai-deliberative-alignment-two-paths-entropy/
+- https://www.retellai.com/blog/sierra-vs-decagon
+- https://www.seangoedecke.com/limitations-of-text-diffusion-models/
+- https://www.secondtalent.com/occupations/fine-tuning-engineer/
+- https://www.siliconflow.com/articles/en/best-LLMs-for-real-time-inference-on-edge
+- https://www.siliconflow.com/articles/en/best-multimodal-ai-models
+- https://www.sitepoint.com/hybrid-cloudlocal-llm-the-complete-architecture-guide-2026/
+- https://www.sitepoint.com/vllm-production-deployment-guide-2026/
+- https://www.spheron.network/blog/context-engineering-production-ai-agents-kv-cache-long-context/
+- https://www.spheron.network/blog/deploy-ibm-granite-4-1-gpu-cloud/
+- https://www.spheron.network/blog/mamba-3-state-space-model-gpu-cloud-deployment/
+- https://www.teamday.ai/blog/gpt-5-5-launch
+- https://www.thundercompute.com/blog/nvidia-h100-pricing
+- https://www.tierzero.ai/blog/multi-agent-ai-state-failures/
+- https://www.together.ai/blog/consistency-diffusion-language-models
+- https://www.together.ai/blog/mamba-3
+- https://www.truefoundry.com/blog/llm-deployment-in-regulated-industries-hipaa-soc2-and-gdpr-playbook-for-2026
+- https://www.trustlogix.ai/blog/agentic-ai-compliance-financial-services
+- https://www.vo3ai.com/gemini-omni
+- https://www.ziprecruiter.com/Jobs/Diffusion-Model
+- https://zenvanriel.com/ai-engineer-blog/anthropic-claude-constitution-ai-alignment-guide/
+- vLLM production deployment 2026 — SitePoint — https://www.sitepoint.com/vllm-production-deployment-guide-2026/

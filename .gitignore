@@ -2,3 +2,6 @@
 .claude/settings.local.json
 .claude/team-context.json
 .claude/team-snapshot.json
+
+# Local agent scratchpad (not part of the project)
+scratchpad/

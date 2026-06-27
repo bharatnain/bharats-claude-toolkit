@@ -171,4 +171,4 @@ copied into this repo and stays auto-updated from source:
 - `claude-code-workflows` (`agent-teams`, `agent-orchestration`, `conductor`, role bundles) — https://github.com/wshobson/agents (MIT) — enabled
 - `ecc` — https://github.com/affaan-m/ecc (MIT) — registered, on-demand
 - `superpowers` / `elements-of-style` — https://github.com/obra/superpowers-marketplace (MIT) — registered, on-demand
-- `beads` (`bd`) — https://github.com/steveyegge/beads — agentic issue tracker; integrated as CLI + plugin/MCP (license unverified → integrated, not vendored)
+- `beads` (`bd`) — https://github.com/steveyegge/beads — agentic issue tracker; the **default task store** for the toolkit. `bootstrap.sh` auto-installs the CLI (non-blocking), a `SessionStart` hook runs `bd init` per git repo, and workflows/teams persist tasks to it — all opt-out via `CLAUDE_BEADS=off`, with the native Task tools as the fallback. Integrated as **CLI only** (MCP deferred). **License unverified → integrated by reference, NOT vendored**; it is therefore intentionally absent from `THIRD_PARTY_SOURCES.json` (that manifest tracks vendored skills for upstream refresh).

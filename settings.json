@@ -47,7 +47,8 @@
   },
   "permissions": {
     "allow": [
-      "Bash(bash scripts/db-probe.sh:*)"
+      "Bash(bash scripts/db-probe.sh:*)",
+      "Bash(bd:*)"
     ]
   }
 }

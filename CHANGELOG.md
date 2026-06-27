@@ -16,6 +16,19 @@ All notable changes to this project are documented here. Format follows
   apostrophe inside the `$( … <<'PY' … )` here-doc tripped bash 3.2's command-substitution lexer
   (`unexpected EOF while looking for matching '`). The here-doc comments are now apostrophe-free;
   `bash -n` passes under 3.2.
+- **Added: beads (`bd`) is now the default task store.** `bootstrap.sh` auto-installs the `bd` CLI
+  (non-blocking; opt out with `CLAUDE_BEADS=off`) and `settings.json` permits it (`Bash(bd:*)`). A
+  new `SessionStart` hook (`hooks/beads_init.py`, matcher `startup`) runs `bd init`
+  (`--skip-agents --skip-hooks`, so it never writes `CLAUDE.md`/`AGENTS.md` or installs git hooks)
+  once per git repo, gitignores `.beads/`, and injects a directive to use beads — all fail-open and
+  git-repo-only, with the native Task tools as the fallback.
+- **Added: beads-backed workflows.** New flagship `workflows/beads-task.workflow.js` + pure helper
+  `workflows/lib/beads.js` give workflows cross-session task memory: decompose a goal into
+  acceptance-criteria beads issues under an epic, resume by `epicId` (closed issues skipped), and
+  close each issue only when the quality-gate verdict is `pass`.
+- **Fixed: `beads-contract.md` now matches the real bd 1.0.4 CLI** (`bd create` / `--acceptance` /
+  `--deps` / `bd ready --exclude-type epic` / `bd close --reason`) — the previously documented
+  `bd add` / `--depends-on` do not exist in current beads.
 - **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and
   start a new chat.
 

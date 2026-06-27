@@ -150,3 +150,26 @@ echo
 echo "Activation: restart Claude Code OR run /reload-plugins in an open session"
 echo "for the always-on tier to take effect. ecc and superpowers remain one"
 echo "'/plugin install' away."
+
+# ---------------------------------------------------------------------------
+# Optional: make the beads (bd) task tracker present machine-wide. beads is the
+# default task manager for the always-on tier. This step is NON-BLOCKING and
+# idempotent: it runs only when bd is missing, never fails the bootstrap, and is
+# skipped entirely when CLAUDE_BEADS=off. It never runs "bd init" -- per-repo
+# init is the SessionStart hook job. bash 3.2 safe: plain if, no arrays, and it
+# lives OUTSIDE the python here-doc so no apostrophe can trip the 3.2 lexer.
+# ---------------------------------------------------------------------------
+if [ "${CLAUDE_BEADS:-on}" != "off" ]; then
+  if command -v bd >/dev/null 2>&1; then
+    echo "beads: bd already on PATH ($(command -v bd))"
+  elif ! command -v curl >/dev/null 2>&1; then
+    echo "beads: bd not found and curl unavailable; skipping optional install. See README."
+  else
+    echo "beads: bd not found; attempting optional install (non-blocking)..."
+    if curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash; then
+      echo "beads: bd installed."
+    else
+      echo "beads: optional bd install did not complete; continuing. Bootstrap is unaffected."
+    fi
+  fi
+fi

@@ -41,6 +41,7 @@ Apply the 15-minute unit rule:
 - Continue session for closely-coupled units.
 - Start fresh session after major phase transitions.
 - Compact after milestone completion, not during active debugging.
+- For goals that span sessions, persist the decomposition to beads and resume via the epic id — see the `beads-task` workflow template (`workflows/beads-task.workflow.js`).
 
 ## Review Focus for AI-Generated Code
 

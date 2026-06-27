@@ -3,6 +3,22 @@
 All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), and versions map to the toolkit's phases.
 
+## [Unreleased]
+
+- **Fixed: bootstrap wrote `enabledPlugins` as a JSON array, which current Claude Code reads as
+  zero enabled plugins** — so `bash scripts/bootstrap.sh` never actually enabled the always-on
+  tier and none of the vendored skills loaded. Verified on the desktop app's embedded Claude Code
+  2.1.187: `Found 0 plugins (0 enabled, 0 disabled)` → 0 plugin skills. Claude Code expects an
+  object map `{ "plugin@marketplace": true }`. `settings.json` now uses the object form, and the
+  bootstrap merge writes/normalizes `enabledPlugins` as an object — migrating a legacy
+  array-valued target and never overriding a user-set `false` (dest wins on collision).
+- **Fixed: `scripts/bootstrap.sh` aborted under macOS's system bash 3.2** (`/bin/bash`). An
+  apostrophe inside the `$( … <<'PY' … )` here-doc tripped bash 3.2's command-substitution lexer
+  (`unexpected EOF while looking for matching '`). The here-doc comments are now apostrophe-free;
+  `bash -n` passes under 3.2.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and
+  start a new chat.
+
 ## [0.8.1] - 2026-06-24
 
 - Removed the redundant `"hooks": "./hooks/hooks.json"` field from `.claude-plugin/plugin.json`.

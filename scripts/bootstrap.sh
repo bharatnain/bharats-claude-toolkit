@@ -66,10 +66,10 @@ if not isinstance(src, dict):
     print("Error: source settings is not a JSON object.", file=sys.stderr)
     sys.exit(1)
 
-# Result preserves dest's existing key order first, then any new keys.
+# Result preserves the dest key order first, then any new keys.
 merged = dict(dest)
 
-# extraKnownMarketplaces: dict update. Start from dest's map, apply source
+# extraKnownMarketplaces: dict update. Start from the dest map, apply source
 # entries key-by-key (source wins on collision); dest-only keys preserved.
 src_mkt = src.get("extraKnownMarketplaces", {})
 if src_mkt:
@@ -77,20 +77,25 @@ if src_mkt:
     dest_mkt.update(src_mkt)
     merged["extraKnownMarketplaces"] = dest_mkt
 
-# enabledPlugins: order-preserving union. Dest order kept first, then any
-# source entries not already present, appended in source order. No dupes.
-src_plugins = src.get("enabledPlugins", [])
+# enabledPlugins: object map {plugin: true}. Claude Code reads this as a
+# JSON object, NOT an array -- an array silently enables zero plugins. Merge
+# the source map into dest key-by-key; dest wins on collision so an explicit
+# user enable/disable is never overridden. A legacy array-valued dest (or an
+# array-valued source) is normalized to the object form first.
+src_plugins = src.get("enabledPlugins")
 if src_plugins:
-    dest_plugins = list(merged.get("enabledPlugins", []))
-    seen = set(dest_plugins)
-    for p in src_plugins:
-        if p not in seen:
-            dest_plugins.append(p)
-            seen.add(p)
-    merged["enabledPlugins"] = dest_plugins
+    src_map = ({p: True for p in src_plugins}
+               if isinstance(src_plugins, list) else dict(src_plugins))
+    dest_ep = merged.get("enabledPlugins", {})
+    dest_map = ({p: True for p in dest_ep}
+                if isinstance(dest_ep, list) else dict(dest_ep))
+    for p, is_on in src_map.items():
+        if p not in dest_map:
+            dest_map[p] = is_on
+    merged["enabledPlugins"] = dest_map
 
 # permissions.allow: order-preserving union nested under the permissions
-# object. Dest's existing allow rules are kept first, then any source rules
+# object. Existing dest allow rules are kept first, then any source rules
 # not already present. Other permissions keys (deny, ask,
 # additionalDirectories) and any dest-only fields are preserved untouched.
 src_allow = src.get("permissions", {}).get("allow", [])
@@ -105,7 +110,7 @@ if src_allow:
     dest_perms["allow"] = dest_allow
     merged["permissions"] = dest_perms
 
-# Source's $comment documents the template, not the user's config: never
+# The source $comment documents the template, not the user config: never
 # propagate it. (Any pre-existing dest $comment is preserved untouched.)
 
 with open(tmp_path, "w", encoding="utf-8") as f:

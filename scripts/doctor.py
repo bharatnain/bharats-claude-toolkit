@@ -129,7 +129,7 @@ def run_checks():
          else "install Node.js (see nodejs.org)"),
         ("git", "fail", "install git from git-scm.com or your package manager"),
         ("gh", "fail", "brew install gh (or see cli.github.com)"),
-        ("bd", "warn", "OPTIONAL — curl -sSL "
+        ("bd", "warn", "default task store — bootstrap.sh auto-installs it; or: curl -sSL "
          "https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash"),
     ]
     for name, absent_status, hint in tool_specs:
@@ -139,6 +139,25 @@ def run_checks():
             checks.append(result(
                 f"tool: {name}", absent_status, False,
                 "not found on PATH", hint))
+
+    # --- NON-critical: beads .beads/ task store (hard default; never fails) ---
+    beads_off = os.environ.get("CLAUDE_BEADS", "").strip().lower() in ("0", "false", "no", "off")
+    cwd = Path.cwd()
+    if beads_off:
+        checks.append(result(".beads/ store", "ok", False,
+                             "beads disabled via CLAUDE_BEADS — skipping"))
+    elif not shutil.which("bd"):
+        checks.append(result(".beads/ store", "ok", False,
+                             "bd not installed — see the tool check above"))
+    elif not (cwd / ".git").exists():
+        checks.append(result(".beads/ store", "ok", False,
+                             "not a git repo — beads initializes per git repo"))
+    elif (cwd / ".beads").is_dir():
+        checks.append(result(".beads/ store", "ok", False,
+                             ".beads/ present — beads task store initialized"))
+    else:
+        checks.append(result(".beads/ store", "warn", False,
+                             "no .beads/ here — open Claude Code (SessionStart auto-inits) or run: bd init"))
 
     # --- NON-critical: notifier (platform-appropriate) ---
     if is_mac:

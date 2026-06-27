@@ -12,7 +12,8 @@ dependency-free helper (`lib/runner.js`) to consult the quality gate.
 
 There is **no `package.json`** here and there are **no dependencies**. `lib/runner.js`
 uses only `node:` builtins (`node:child_process`, `node:fs`, `node:path`) and never
-touches the network. The templates import only `./lib/runner.js`.
+touches the network; `lib/beads.js` is pure (no `node:` imports at all). The templates
+import `./lib/runner.js`, and the beads-backed one also `./lib/beads.js`.
 
 ## How to invoke
 
@@ -36,6 +37,7 @@ at the start so a run is debuggable.
 | `implement-task-with-gates.workflow.js` **(flagship)** | Plan → implement → gate → bounded Critic fix-loop → integrate | **required** | `task`, `profile`, `checks[]` |
 | `migrate-sweep.workflow.js` | Mechanical migration swept across sites, gated per site | **required (per site)** | `target`, `sites[]`, `profile`, `checks[]`, `maxSites` |
 | `design-panel.workflow.js` | architect + code-architect + planner in parallel → synthesize | none | `target`, `constraints` |
+| `beads-task.workflow.js` **(flagship)** | Beads-backed: decompose → ready → claim → gate → close-when-green, **resumable by epic id** (cross-session memory) | **required (per issue)** | `goal`, `epicId`, `profile`, `checks[]`, `maxStages` |
 
 The templates use `agentType` strings that map to the existing `agents/`
 definitions — `code-reviewer`, `architect`, `code-architect`, `planner`,
@@ -153,3 +155,23 @@ loop's `iter < cap` bound guarantees it **always terminates**. The change is onl
 integrated when the gate is green; if the loop is exhausted with blocking
 failures remaining, the workflow stops short of integrating and reports the
 remaining failures.
+
+## Beads-backed memory (`beads-task.workflow.js`)
+
+`beads-task.workflow.js` makes a workflow's tasks **durable across sessions** by persisting
+them to [beads](../README.md#agentic-project-management-beads) (`bd`). Because a Workflow
+script is sandboxed (no shell), it can't run `bd` itself — `lib/beads.js` returns
+**prompt + schema pairs** that the spawned `agent()` runs against the `bd` CLI (or the native
+Task tools when `bd` is absent). The command vocabulary lives once in
+[`skills/team-orchestration/references/beads-contract.md`](../skills/team-orchestration/references/beads-contract.md).
+
+**The memory is an epic id.** The first run decomposes the goal into acceptance-criteria-bearing
+issues under a `wf:`-prefixed **epic** (labelled `beads-workflow`) and returns its `epicId`. Pass
+that `epicId` back as `args.epicId` on a later run: the workflow queries the blocker-aware
+`bd ready` queue, **skips already-closed issues** (the memory), and picks up newly-unblocked
+ones. This is orthogonal to the Workflow tool's own **within-run** `runId` resume — `runId`
+resumes one interrupted execution; `epicId` resumes the *task set* days later in a fresh session.
+
+An issue is **closed only when its acceptance criteria are met AND the gate verdict is `pass`**
+(not merely `ok` — `runGate` is fail-open and returns `verdict:'error', ok:true` on a gate error).
+The caller must persist `result.epicId` to resume; otherwise a re-run creates a duplicate epic.

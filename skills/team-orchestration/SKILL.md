@@ -64,10 +64,11 @@ Break the goal into the **smallest independently verifiable units**. **Every tas
 A task without acceptance criteria is not ready to assign.
 
 Persist tasks to **beads** when `bd` is on PATH, otherwise **degrade to native Task tools**.
-Detect first, then branch — do not assume `bd` exists (it is not on PATH in this environment).
-The command contract (`bd add` with acceptance criteria → `bd ready` → `bd update` →
-`bd close`) and the native-Task fallback are documented in
-[references/beads-contract.md](references/beads-contract.md).
+Detect first, then branch — do not assume `bd` exists. The command contract (bd 1.0.4:
+`bd create` with `--acceptance` → `bd ready --exclude-type epic` → `bd update --claim` →
+`bd close --reason`) and the native-Task fallback are documented in
+[references/beads-contract.md](references/beads-contract.md). For an automated end-to-end
+variant, see the `beads-task` workflow template (`workflows/beads-task.workflow.js`).
 
 ### 5. Spawn the teammates
 

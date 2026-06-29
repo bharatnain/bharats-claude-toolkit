@@ -152,6 +152,42 @@ echo "for the always-on tier to take effect. ecc and superpowers remain one"
 echo "'/plugin install' away."
 
 # ---------------------------------------------------------------------------
+# Install the default global CLAUDE.md (Andrej Karpathy's LLM-coding guidelines,
+# shipped as this repo's own CLAUDE.md) to the user-level memory file so the
+# rules apply in every project by default. NON-BLOCKING and non-destructive:
+#   - default on; set CLAUDE_DEFAULT_CLAUDE_MD=off to skip.
+#   - writes the file only when absent (or byte-identical -> reported no-op).
+#   - never clobbers a DIFFERING existing file unless CLAUDE_FORCE_CLAUDE_MD is
+#     set, which backs the existing file up first (mirrors the settings backup).
+# CLAUDE_MD overrides the destination (tests point it at a temp file, exactly
+# like CLAUDE_SETTINGS above). bash 3.2 safe: plain ifs, cmp for identity, no
+# arrays, lives outside the python here-doc.
+# ---------------------------------------------------------------------------
+if [ "${CLAUDE_DEFAULT_CLAUDE_MD:-on}" != "off" ]; then
+  SRC_CLAUDE_MD="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/CLAUDE.md"
+  DEST_CLAUDE_MD="${CLAUDE_MD:-$HOME/.claude/CLAUDE.md}"
+  if [ ! -f "$SRC_CLAUDE_MD" ]; then
+    echo "CLAUDE.md: source not found at $SRC_CLAUDE_MD; skipping."
+  else
+    mkdir -p "$(dirname "$DEST_CLAUDE_MD")"
+    if [ ! -f "$DEST_CLAUDE_MD" ]; then
+      cp "$SRC_CLAUDE_MD" "$DEST_CLAUDE_MD"
+      echo "CLAUDE.md: installed default rules -> $DEST_CLAUDE_MD"
+    elif cmp -s "$SRC_CLAUDE_MD" "$DEST_CLAUDE_MD"; then
+      echo "CLAUDE.md: $DEST_CLAUDE_MD already up to date"
+    elif [ -n "${CLAUDE_FORCE_CLAUDE_MD:-}" ]; then
+      CMD_BACKUP="$DEST_CLAUDE_MD.bak.$(date +%Y%m%d%H%M%S)"
+      cp "$DEST_CLAUDE_MD" "$CMD_BACKUP"
+      cp "$SRC_CLAUDE_MD" "$DEST_CLAUDE_MD"
+      echo "CLAUDE.md: backed up existing -> $CMD_BACKUP, then wrote defaults"
+    else
+      echo "CLAUDE.md: existing $DEST_CLAUDE_MD left untouched (differs from default)."
+      echo "           re-run with CLAUDE_FORCE_CLAUDE_MD=1 to overwrite (a backup is made)."
+    fi
+  fi
+fi
+
+# ---------------------------------------------------------------------------
 # Optional: make the beads (bd) task tracker present machine-wide. beads is the
 # default task manager for the always-on tier. This step is NON-BLOCKING and
 # idempotent: it runs only when bd is missing, never fails the bootstrap, and is

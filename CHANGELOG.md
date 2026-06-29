@@ -5,6 +5,14 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Added: bootstrap installs a default global `CLAUDE.md`.** `bash scripts/bootstrap.sh` now
+  copies this repo's [`CLAUDE.md`](CLAUDE.md) (Andrej Karpathy's four LLM-coding rules — Think
+  Before Coding / Simplicity First / Surgical Changes / Goal-Driven Execution) to
+  `~/.claude/CLAUDE.md`, so the rules apply in every project by default instead of only inside this
+  repo. Non-destructive: it writes the file only when absent (byte-identical → reported no-op) and
+  never clobbers a differing existing file unless `CLAUDE_FORCE_CLAUDE_MD` is set (which backs the
+  existing file up first, mirroring the settings backup). Opt out with `CLAUDE_DEFAULT_CLAUDE_MD=off`;
+  `CLAUDE_MD` overrides the destination for tests (like `CLAUDE_SETTINGS`).
 - **Fixed: bootstrap wrote `enabledPlugins` as a JSON array, which current Claude Code reads as
   zero enabled plugins** — so `bash scripts/bootstrap.sh` never actually enabled the always-on
   tier and none of the vendored skills loaded. Verified on the desktop app's embedded Claude Code

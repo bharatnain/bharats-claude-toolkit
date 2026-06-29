@@ -56,7 +56,13 @@ It safely deep-merges this repo's [`settings.json`](settings.json) (both
 it never duplicates or removes entries. Open Claude Code in any directory and the always-on
 tier is live; `ecc`/`superpowers` are registered and one command away.
 
-*Advanced/test:* set `CLAUDE_SETTINGS=/path/to/settings.json` to merge into a different target file.
+It also installs this repo's [`CLAUDE.md`](CLAUDE.md) (Andrej Karpathy's LLM-coding guidelines)
+to `~/.claude/CLAUDE.md` so the rules apply in **every** project by default. It writes the file
+only when absent and never clobbers a differing one you already have — opt out with
+`CLAUDE_DEFAULT_CLAUDE_MD=off`, or overwrite-with-backup via `CLAUDE_FORCE_CLAUDE_MD=1`.
+
+*Advanced/test:* set `CLAUDE_SETTINGS=/path/to/settings.json` to merge into a different target
+file, and `CLAUDE_MD=/path/to/CLAUDE.md` to install the rules to a different target file.
 
 <details>
 <summary>Fallbacks (manual)</summary>

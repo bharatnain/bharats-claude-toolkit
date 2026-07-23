@@ -93,4 +93,4 @@ Good-better-best exploits robust buyer psychology: **Goldilocks** (buyers pick t
 - [ ] Credits: publish a legible exchange rate, offer spend caps and alerts, bundle a predictable base allotment — buyers hate black-box math, and credit repricing revolts are the canonical 2026 failure (Cursor's apology-and-refunds episode).
 - [ ] Outcome pricing: run the **CAMP** test first — Consistency of outcomes, Attribution, Measurability, Predictability. Use only when the outcome is unambiguous, countable, and cleanly attributable (Intercom Fin's $0.99 per resolution), and you have performance data to underwrite the risk. Otherwise you've reinvented a contingency-fee law firm with worse margins.
 
-*Deeper reading: `research/startup-business-models/03-pricing.md` (frameworks, Van Westendorp mechanics, Slack/HubSpot/Fin case studies).*
+*Deeper reading: [`03-pricing.md`](https://github.com/bharatnain/research/blob/main/startup-business-models/03-pricing.md) in the `bharatnain/research` repo (frameworks, Van Westendorp mechanics, Slack/HubSpot/Fin case studies).*

@@ -62,7 +62,7 @@ A seed-readiness checklist with 2026 metric bars by round (pre-seed → seed →
 
 ## Deeper Reading
 
-This skill is self-contained, but it distills a 12-document research library. For full sourcing, case studies, and the surrounding playbook, see `research/startup-business-models/` in this repo — start with `playbook.md`, then `01-idea-evaluation-and-conviction.md`, `02-business-model-taxonomy.md`, `03-pricing.md`, and `05-fundraising-mechanics-2026.md`.
+This skill is self-contained, but it distills a 12-document research library. For full sourcing, case studies, and the surrounding playbook, see [`startup-business-models/`](https://github.com/bharatnain/research/tree/main/startup-business-models) in the `bharatnain/research` repo — start with `playbook.md`, then `01-idea-evaluation-and-conviction.md`, `02-business-model-taxonomy.md`, `03-pricing.md`, and `05-fundraising-mechanics-2026.md`.
 
 ## References
 - `references/evaluation-gauntlet.md` — sequential stress-test gates with pass thresholds and kill signals

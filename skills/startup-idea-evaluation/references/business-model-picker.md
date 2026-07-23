@@ -91,4 +91,4 @@ Transitions are possible but are surgery, not convenience pivots (Adobe's licens
 
 State: (1) the recommended model with the Q1–Q7 answers that drove it, (2) the runner-up and why it lost, (3) the forced gross margin and what it implies for fundraising, (4) the 2026 hybrid component to design in from day one, and (5) the model's canonical corpse and how the idea avoids that death.
 
-*Deeper reading: `research/startup-business-models/02-business-model-taxonomy.md`.*
+*Deeper reading: [`02-business-model-taxonomy.md`](https://github.com/bharatnain/research/blob/main/startup-business-models/02-business-model-taxonomy.md) in the `bharatnain/research` repo.*

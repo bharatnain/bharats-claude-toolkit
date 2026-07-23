@@ -105,4 +105,4 @@ Status quo → a big change in the world (your why-now) → winners and losers �
 
 Score each checklist item met / missing / unknown; state which round the evidence actually supports (often one rung lower than hoped); compute fully-diluted founder ownership under the proposed raise; and list the 3 highest-leverage gaps to close before the first investor meeting.
 
-*Deeper reading: `research/startup-business-models/05-fundraising-mechanics-2026.md` (SAFE mechanics, glossary), `04-unit-economics-and-money.md` (the metrics investors probe), and `07-pitching-and-storytelling.md` (full pitch grammar, cold email, warm intros).*
+*Deeper reading in the [`bharatnain/research`](https://github.com/bharatnain/research/tree/main/startup-business-models) repo: `05-fundraising-mechanics-2026.md` (SAFE mechanics, glossary), `04-unit-economics-and-money.md` (the metrics investors probe), and `07-pitching-and-storytelling.md` (full pitch grammar, cold email, warm intros).*

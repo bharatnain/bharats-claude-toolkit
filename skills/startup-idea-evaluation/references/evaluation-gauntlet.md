@@ -141,4 +141,4 @@ The canonical deaths to rank against (CB Insights: % of failure post-mortems cit
 
 Per gate: verdict (PASS / CONDITIONAL / KILL) + one-sentence reason; for CONDITIONAL, the cheapest next experiment (action, cost, time, pre-registered pass/fail bar). End with an overall verdict — **build / test further / pivot within space / kill** — plus the top-ranked premortem cause of death.
 
-*Deeper reading: `research/startup-business-models/01-idea-evaluation-and-conviction.md` and `11-failure-patterns-and-case-studies.md`.*
+*Deeper reading in the [`bharatnain/research`](https://github.com/bharatnain/research/tree/main/startup-business-models) repo: `01-idea-evaluation-and-conviction.md` and `11-failure-patterns-and-case-studies.md`.*

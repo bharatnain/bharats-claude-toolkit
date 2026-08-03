@@ -1,0 +1,4 @@
+from	to
+bar.h	foo.h
+foo.h	bar.h
+main.c	foo.h

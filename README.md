@@ -7,10 +7,10 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 20 enabled plugins**, which bring **116 vendored skills + 4 agents** from this
+**Always-on = 25 enabled plugins**, which bring **134 vendored skills + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
-*enable* is the plugin; the 116 skills + 4 agents are what *this* repo's plugin contributes,
-and the other 19 plugins layer their skills on top.
+*enable* is the plugin; the 134 skills + 8 agents are what *this* repo's plugin contributes,
+and the other 24 plugins layer their skills on top.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
 
@@ -30,13 +30,18 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
 - `ui-ux-pro-max` — design intelligence: 67 styles / 161 palettes / 57 font pairings
 - `web-quality-skills` — Addy Osmani: accessibility (WCAG 2.2), performance, Core Web Vitals, SEO
 - `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills: discovery, strategy, PRDs/OKRs/roadmaps
-- `agent-teams` / `agent-orchestration` — wshobson `claude-code-workflows`: multi-agent role/team setups (tech-lead, frontend, backend, ml-engineer)
+- `superpowers` — obra (`superpowers-marketplace`): brainstorm→plan→execute methodology (now enabled by default)
+- `security-guidance` / `plugin-dev` — Anthropic (`claude-plugins-official`): security guardrails + plugin authoring
+- `differential-review` / `fp-check` — Trail of Bits (`trailofbits-skills`); `security-awareness` — Trail of Bits (`trailofbits-skills-curated`)
+- `agent-orchestration` — wshobson `claude-code-workflows`: multi-agent role/team setups (tech-lead, frontend, backend, ml-engineer). *`agent-teams` from the same marketplace is explicitly **disabled** — it still calls the `TeamCreate`/`TeamDelete` tools removed in Claude Code v2.1.178.*
 - **ship & operate** (wshobson `claude-code-workflows`): `backend-development`, `backend-api-security`, `cloud-infrastructure`, `kubernetes-operations`, `cicd-automation`, `deployment-strategies`, `deployment-validation`, `observability-monitoring`, `incident-response` — deploy/run/monitor the product
 - **data & ML** (wshobson `claude-code-workflows`): `data-engineering`, `machine-learning-ops` — pipelines/warehouses, ML training & MLOps
 
 **On-demand (registered, install when needed)**
 - `ecc@ecc` — the full 271-skill ECC collection
-- `superpowers@superpowers-marketplace`, `elements-of-style@superpowers-marketplace` — obra
+- `elements-of-style@superpowers-marketplace` — obra (`superpowers` itself is now always-on)
+- `probity` — nizos: TDD/rule-enforcement hooks; `memsearch` — zilliztech: semantic session memory; `openai-codex` — OpenAI: cross-model reviews — all registered, not enabled
+- the remaining `trailofbits-skills` / `trailofbits-skills-curated` plugins beyond the three enabled above
 - more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `frontend-mobile-development`, …)
 - `beads` — agentic issue tracker (`bd` CLI + plugin); see **Agentic project management** below
 
@@ -91,8 +96,10 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 /plugin install pm-product-discovery@pm-skills
 /plugin install pm-product-strategy@pm-skills
 /plugin install pm-execution@pm-skills
-/plugin install agent-teams@claude-code-workflows
+/plugin install superpowers@superpowers-marketplace
 /plugin install agent-orchestration@claude-code-workflows
+# NOTE: do NOT install agent-teams@claude-code-workflows — it calls tools
+# removed in Claude Code v2.1.178 and is explicitly disabled in settings.json.
 ```
 
 </details>
@@ -145,10 +152,15 @@ then `/reload-plugins` to activate. Tunables (set in your shell, or under `env` 
 
 ```text
 /plugin install ecc@ecc                              # the 271-skill firehose
-/plugin install superpowers@superpowers-marketplace  # brainstorm→plan→execute methodology
-/plugin install elements-of-style@superpowers-marketplace
+/plugin install elements-of-style@superpowers-marketplace  # obra style guide (superpowers itself is now always-on)
 /reload-plugins                                       # make them live in THIS session, no restart
 ```
+Also registered (browse with `/plugin` and install from their marketplaces): **probity**
+(TDD/rule-enforcement hooks), **memsearch** (semantic session memory), **openai-codex**
+(cross-model reviews), and the remaining **trailofbits-skills** / **trailofbits-skills-curated**
+plugins beyond the enabled `differential-review` / `fp-check` / `security-awareness`.
+`agent-teams@claude-code-workflows` stays disabled (calls tools removed in Claude Code v2.1.178).
+
 Then just work — the newly available skills auto-trigger by description.
 (`/reload-plugins` may warn about prompt-cache invalidation if a plugin adds MCP servers.)
 
@@ -210,14 +222,27 @@ fails open. The payload field names were inferred and must be verified live — 
 **Architecture & planning (agents)** — `architect`, `planner`, `code-architect`, `spec-miner`
 
 **Building AI products** — `mcp-builder` (Anthropic), `eval-harness`, `cost-aware-llm-pipeline`,
-`context-budget`
+`context-budget`, `launch-your-agent` + `agent-wrap-up` (Claude Managed Agents scaffolding)
+
+**Security pipeline (Anthropic defending-code)** — `threat-model`, `vuln-scan`, `vuln-triage`,
+`vuln-patch`, `dnr-hunt`, `dnr-respond` — the full THREAT_MODEL → findings → triage → patch chain,
+plus `plugin-vetting` (vet third-party plugins/marketplaces before enabling; see
+[`docs/supply-chain.md`](docs/supply-chain.md))
+
+**Code migration** — `code-migration` (Anthropic's migration kit: feasibility → dependency map →
+translation → parity)
+
+**Financial modeling (Anthropic financial-services)** — `dcf-model`, `3-statement-model`,
+`comps-analysis`, `lbo-model`, `audit-xls` — hands-on spreadsheet construction/auditing
+(strategy stays with `cfo-advisor`)
 
 **Python & data** — `python-patterns`, `python-testing`, `fastapi-patterns`, `postgres-patterns`
 
 **Frontend & React** — `react-patterns`, `react-best-practices` (Vercel)
 
 **Design & UI polish** — `design-system`, `make-interfaces-feel-better`, `motion-foundations`,
-`motion-patterns`, `theme-factory`, `brand-guidelines`
+`motion-patterns`, `theme-factory`, `brand-guidelines`, `hallmark` (anti-slop design review /
+design-DNA extraction — explicit invocation only)
 
 **Copywriting & content** — `copywriting`, `copy-editing`, `content-strategy`, `content-engine`,
 `article-writing`, `brand-voice`, `onboarding`
@@ -246,7 +271,9 @@ and a paid fal.ai `FAL_KEY` (`fal-ai-media`). No good Claude skill exists for st
 Skills that take the toolkit from "build & market a product" to "run a company end-to-end."
 
 **Exec & strategy (C-suite advisory)** — `ceo-advisor`, `cfo-advisor`, `cro-advisor`, `cmo-advisor`,
-`cpo-advisor`, `general-counsel-advisor`, `board-deck-builder`, `executive-mentor` (adversarial
+`cpo-advisor`, `general-counsel-advisor` (now with a vendored contract-review deep-dive family),
+`advisor-profile` (guided interview → the shared `company-context.md` all advisors read),
+`board-deck-builder`, `executive-mentor` (adversarial
 thinking partner), `competitive-intel`, `ma-playbook`, `scenario-war-room`, `agent-protocol`
 (inter-advisor coordination)
 

@@ -1,0 +1,2 @@
+# strongly connected components > 1 file: 1
+pkg/__init__.py	pkg/a.py	pkg/c.py

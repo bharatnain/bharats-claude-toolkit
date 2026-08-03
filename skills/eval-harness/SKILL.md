@@ -203,6 +203,7 @@ Store evals in project:
 5. **Human review for security** - Never fully automate security checks
 6. **Keep evals fast** - Slow evals don't get run
 7. **Version evals with code** - Evals are first-class artifacts
+8. **Verify model IDs when benchmarking across model versions** - Model names, pricing, and caching rules change; check current IDs and deprecations in `skills/cost-aware-llm-pipeline/references/claude-api/models.md` (and `model-migration.md` beside it for breaking changes) instead of hardcoding remembered model strings
 
 ## Example: Adding Authentication
 

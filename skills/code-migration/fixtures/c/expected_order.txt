@@ -1,0 +1,3 @@
+# migration order: one batch per line, dependencies first
+bar.h	foo.h
+main.c

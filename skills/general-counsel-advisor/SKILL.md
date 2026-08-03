@@ -148,6 +148,18 @@ See `references/ip_and_regulatory.md` for sequencing.
 - `ra-qm-team/` — ISO 13485, MDR, FDA 510(k), GDPR execution
 - `c-level-advisor/c-level-agents/skills/gc-review/SKILL.md` — `gc-review` slash command
 
+## Contract Review Deep-Dives
+
+For a full playbook-driven contract review, use the routing in `references/contract-review/` (vendored from [anthropics/claude-for-legal](https://github.com/anthropics/claude-for-legal), Apache-2.0 — `LICENSE.txt` in that directory):
+
+- [routing.md](references/contract-review/routing.md) — title-based routing: identify the agreement from its main title and exhibit/schedule titles (not body keywords), then load the matching reference(s) below
+- [nda-review.md](references/contract-review/nda-review.md) — GREEN/YELLOW/RED NDA triage; GREEN requires attorney-reviewed playbook positions, and covenant packages disguised as NDAs auto-YELLOW
+- [vendor-agreement-review.md](references/contract-review/vendor-agreement-review.md) — term-by-term vendor MSA review with severity calibration and paste-ready redline language
+- [saas-msa-review.md](references/contract-review/saas-msa-review.md) — SaaS overlay: auto-renewal mechanics, price escalation, data exit, SLA, subprocessors, AI/ML training rights
+- [deal-debrief-agent.md](references/contract-review/deal-debrief-agent.md) + [playbook-monitor-agent.md](references/contract-review/playbook-monitor-agent.md) — the deviation-log → playbook-amendment loop that keeps the playbook matching what actually gets signed
+
+These reviews read playbook positions from the persistent company context profile (`company-context.md`, `## Contract playbook` section) — build and maintain it with the `advisor-profile` skill.
+
 ## References
 
 - [contracts_playbook.md](references/contracts_playbook.md) — Standard contracts, clause checklist, common founder traps

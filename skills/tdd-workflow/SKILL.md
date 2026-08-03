@@ -499,6 +499,58 @@ npm test && npm run lint
   uses: codecov/codecov-action@v3
 ```
 
+## Automated Enforcement (probity)
+
+TDD compliance can be enforced mechanically instead of by convention. This toolkit
+registers the **probity** marketplace (github.com/nizos/probity, MIT). Install it with:
+
+```
+/plugin marketplace add nizos/probity
+/plugin install probity@probity
+```
+
+Once installed, probity wires a `PreToolUse` hook on `Bash|Write|Edit|NotebookEdit`
+that runs `npx @nizos/probity --agent claude-code`: an AI validator that reads the
+recent session transcript, the current file content, and the pending write, then
+passes the write or blocks it with the named TDD violation.
+
+<!-- The judging rules below are adapted from probity
+     (github.com/nizos/probity, src/rules/enforce-tdd.ts —
+     DEFAULT_TDD_RULES / PROCESS_INSTRUCTIONS).
+     MIT License, Copyright (c) 2026 Nizar Selander. -->
+
+Whether or not the enforcer is installed, apply the same judging rules to your own
+writes:
+
+- **Judge the diff, not the file — transient states are allowed.** What is judged is
+  the change a write makes, not the resulting file as a whole. A transient file state
+  is never itself a violation, however broken the file looks: an unresolved symbol, a
+  dead or unused definition, a duplicated declaration, a reference to a removed name,
+  a half-finished multi-step change. Consistency is checked when the tests next run.
+  This allowance is about structure — it does not excuse skipping a failing test or
+  over-implementing.
+- **One new test per write.** A single write should add at most one new test (compare
+  current content with the pending write to count newly added tests). Restructuring,
+  reorganizing, splitting, or combining existing tests is not "adding" — the rule is
+  about intent to add behavior, not surface diff count. A test added to drive new
+  behavior must be observed failing for the right reason (an assertion, not a syntax
+  or import error) before production code is written to satisfy it.
+- **Characterization tests are exempt from failing-first.** A test added to capture
+  existing behavior is allowed to pass immediately and must not be blocked for not
+  failing first: characterization tests pinning the current implementation, tests at
+  a new layer (e.g. an e2e covering code already exercised by units), or pinning
+  tests added before a refactor pulls a seam out from under them.
+- **Refactor-phase gating.** Refactoring does not require a failing test — production
+  and test edits that preserve observable behavior are allowed when the relevant tests
+  were passing before the refactor began. Writing the *next* test crosses the
+  green→red boundary, so that is where a skipped refactor gets judged: when the prior
+  green left a refactor that is unmistakable and clearly without downside, stop and do
+  it before the new red. The bar is deliberately high — forcing a refactor risks
+  needless abstraction or breaking conventions — so when the win is not clear-cut,
+  let green stand.
+- **Deletion is free.** Deleting code, tests, or helpers never requires a failing test
+  to drive it, even when the removed code was used or test-covered.
+
 ## Best Practices
 
 1. **Write Tests First** - Always TDD

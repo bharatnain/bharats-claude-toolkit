@@ -196,5 +196,6 @@ All output passes the Internal Quality Loop before reaching the founder (see `..
 ## Context Integration
 
 - **Always** read `company-context.md` before responding (if it exists)
+- To create or refresh `company-context.md`, use the `advisor-profile` skill — a guided interview that writes the persistent company/advisor context all advisor skills share
 - **During board meetings:** Use only your own analysis in Phase 2 (no cross-pollination)
 - **Invocation:** You can request input from other roles: `[INVOKE:role|question]`

@@ -15,7 +15,13 @@ Runner exit translation (scripts/quality_gate.py process exit -> hook exit):
   runner 2  -> FAIL-OPEN  (exit 0, log to stderr) — never wedge a session.
 
 Env:
-  GATE_HOOK_DEBUG=1   print the stdin payload + the decision it WOULD make, exit 0.
+  GATE_HOOK_DEBUG=1         print the stdin payload + the decision it WOULD
+                            make, exit 0.
+  CLAUDE_TOOLKIT_HOOKS=off  master off-switch for all toolkit hooks. This hook
+                            SETS it for gate subprocesses: a gate command that
+                            re-invokes `claude -p` must not re-fire these hooks
+                            (recursion guard), or PostToolUse -> gate -> nested
+                            edit -> PostToolUse could loop forever.
 """
 import json
 import os
@@ -37,12 +43,28 @@ def _eprint(msg):
     print(msg, file=sys.stderr)
 
 
+# Bounded stdin read: a hook must never buffer unbounded input.
+MAX_STDIN = 10 * 1024 * 1024  # 10 MiB
+
+
 def _read_payload():
-    raw = "" if sys.stdin.isatty() else sys.stdin.read()
+    raw = "" if sys.stdin.isatty() else sys.stdin.read(MAX_STDIN)
     try:
         return json.loads(raw) if raw.strip() else {}
     except Exception:
         return {}
+
+
+def _bootstrap_path():
+    """Hooks may run in a minimal env; ensure common user bin dirs are on PATH
+    so `bd` and profile-configured gate tools are found."""
+    home = os.path.expanduser("~")
+    parts = os.environ.get("PATH", "").split(os.pathsep)
+    for p in (os.path.join(home, ".local", "bin"), os.path.join(home, "bin"),
+              "/opt/homebrew/bin", "/usr/local/bin"):
+        if os.path.isdir(p) and p not in parts:
+            parts.insert(0, p)
+    os.environ["PATH"] = os.pathsep.join(parts)
 
 
 CODE_EXTS = (
@@ -77,7 +99,10 @@ def run_gate(extra_args, root):
     cmd = [sys.executable, QUALITY_GATE] + extra_args + ["--format", "json"]
     if root:
         cmd.append(root)
-    proc = subprocess.run(cmd, capture_output=True, text=True)
+    # Recursion guard: gate checks run profile-configured commands, which may
+    # re-invoke claude; the nested session must not re-fire toolkit hooks.
+    env = dict(os.environ, CLAUDE_TOOLKIT_HOOKS="off")
+    proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
     report = None
     try:
         report = json.loads(proc.stdout)
@@ -270,7 +295,10 @@ GATED = {
 
 
 def main():
+    if os.environ.get("CLAUDE_TOOLKIT_HOOKS", "").strip().lower() in ("0", "false", "no", "off"):
+        return 0  # disabled, or running inside a gate subprocess (recursion guard)
     debug = os.environ.get("GATE_HOOK_DEBUG", "").strip() in ("1", "true", "yes", "on")
+    _bootstrap_path()
     payload = _read_payload()
     event = payload.get("hook_event_name", "")
     root = team_sentinel.find_repo_root()

@@ -251,13 +251,17 @@ def main(argv):
 
         if args.strict_yaml:
             try:
-                import yaml  # noqa: F401
-                # best-effort re-parse; ignore result, just validate parseability
+                import yaml
+            except ImportError:
+                yaml = None
+            if yaml is not None:
                 fm_text = text.split("---", 2)
                 if len(fm_text) >= 3:
-                    yaml.safe_load(fm_text[1])
-            except Exception:
-                pass
+                    try:
+                        yaml.safe_load(fm_text[1])
+                    except yaml.YAMLError as e:
+                        findings.append(Finding(dir_name, path, "error", "F1",
+                                                f"frontmatter not strict-YAML-parseable: {e}"))
 
         name = keys.get("name", "").strip()
         desc = keys.get("description", "").strip()

@@ -1,0 +1,2 @@
+# strongly connected components > 1 file: 1
+bar.h	foo.h

@@ -1,0 +1,5 @@
+# Notes vocabulary: when the source shares one error sentinel (NULL/None/-1) across failure kinds, every guard row carries the tag allocation-guard or precondition-guard in its evidence notes — see RULEBOOK §2, the error-recovery rule. Columns are fixed.
+file	symbol	source_construct	classification	target_translation	evidence	status
+src/parser.c	Token.text	borrowed char* into arena	BORROWED	&'arena str	created parser.c:142, escapes via ast.c:88, freed with arena parser.c:301	confirmed
+src/registry.py	Registry._handlers	dict mutated after init	OWNED_MUTABLE	Map<string, Handler> behind readonly facade	created registry.py:31, mutated registry.py:55 register(), read-only after boot main.py:12	confirmed
+src/net.c	Conn.buf	pointer aliased across threads	UNKNOWN	Option<NonNull<u8>> + TODO(port): aliasing across threads unresolved — q: is write exclusive to reader thread?	written net.c:77 thread A, read net.c:210 thread B, no lock found	unknown

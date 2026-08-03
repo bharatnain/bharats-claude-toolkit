@@ -205,7 +205,14 @@
         "theme-factory",
         "brand-guidelines",
         "mcp-builder"
-      ]
+      ],
+      "files": [
+        "skills/cost-aware-llm-pipeline/references/claude-api/models.md",
+        "skills/cost-aware-llm-pipeline/references/claude-api/model-migration.md",
+        "skills/cost-aware-llm-pipeline/references/claude-api/prompt-caching.md",
+        "skills/cost-aware-llm-pipeline/references/claude-api/LICENSE.txt"
+      ],
+      "_comment": "The 'files' above are a partial vendor of the upstream claude-api skill's shared/ reference files, embedded in the (ECC-sourced) cost-aware-llm-pipeline skill and vendored at a LATER SHA than the three full skills: b29e7cf65e5cb78a5ac33d582270551bc74a14eb (2026-07). upstream_head_at_manifest remains accurate for theme-factory/brand-guidelines/mcp-builder."
     },
     {
       "repo": "https://github.com/t0ddc3by/claude-for-customer-success",
@@ -235,6 +242,91 @@
       "skills": [
         "openfga"
       ]
+    },
+    {
+      "repo": "https://github.com/anthropics/defending-code-reference-harness",
+      "license": "Apache-2.0",
+      "copyright": "Anthropic PBC",
+      "upstream_head_at_manifest": "6de8141b971d917a461bce4193c8b535a6b6cfc1",
+      "skills": [
+        "threat-model",
+        "vuln-scan",
+        "vuln-triage",
+        "vuln-patch",
+        "dnr-hunt",
+        "dnr-respond"
+      ],
+      "_comment": "Upstream 'triage'/'patch' renamed to 'vuln-triage'/'vuln-patch'. Shared helper vendored as skills/_lib/checkpoint.py + test_checkpoint.py (upstream .claude/skills/_lib/)."
+    },
+    {
+      "repo": "https://github.com/anthropics/claude-for-legal",
+      "license": "Apache-2.0",
+      "copyright": "Anthropic",
+      "upstream_head_at_manifest": "4a6c651889c97cc9140580363c73e0eb17379c2b",
+      "skills": [
+        "advisor-profile"
+      ],
+      "_comment": "Also vendored as references (not standalone skills) under skills/general-counsel-advisor/references/contract-review/: routing, nda-review, vendor-agreement-review, saas-msa-review, deal-debrief-agent, playbook-monitor-agent. Apache-2.0 LICENSE.txt retained in both directories."
+    },
+    {
+      "repo": "https://github.com/anthropics/financial-services",
+      "license": "Apache-2.0",
+      "copyright": "Anthropic, PBC",
+      "upstream_head_at_manifest": "eb0c1ea962d4c6cee07f4920e36b1aa7a025d320",
+      "skills": [
+        "dcf-model",
+        "audit-xls",
+        "3-statement-model",
+        "comps-analysis",
+        "lbo-model"
+      ]
+    },
+    {
+      "repo": "https://github.com/Nutlope/hallmark",
+      "license": "MIT",
+      "copyright": "Hallmark contributors",
+      "upstream_head_at_manifest": "aeb42fb354ff4efa36ab475773a082315a3af2ce",
+      "skills": [
+        "hallmark"
+      ]
+    },
+    {
+      "repo": "https://github.com/anthropics/code-migration-kit-with-claude-code",
+      "license": "Apache-2.0",
+      "copyright": "Anthropic PBC",
+      "upstream_head_at_manifest": "cf91c9d5068d9aaf95a36164169f08c3e636c909",
+      "skills": [
+        "code-migration"
+      ]
+    },
+    {
+      "repo": "https://github.com/anthropics/launch-your-agent",
+      "license": "Apache-2.0",
+      "copyright": "Anthropic PBC",
+      "upstream_head_at_manifest": "c9e0f1378a252bd42deb7e9eb02ac0cbd07160bc",
+      "skills": [
+        "launch-your-agent",
+        "agent-wrap-up"
+      ]
+    },
+    {
+      "repo": "https://github.com/anthropics/knowledge-work-plugins",
+      "license": "Apache-2.0",
+      "copyright": "Anthropic",
+      "upstream_head_at_manifest": "f32aab8257f3e29910c097143089a35957946cbd",
+      "skills": [
+        "plugin-vetting"
+      ]
+    },
+    {
+      "repo": "https://github.com/nizos/probity",
+      "license": "MIT",
+      "copyright": "Nizar Selander",
+      "upstream_head_at_manifest": "14a92f19b28842beac25a92925d857a34515f224",
+      "skills": [
+        "tdd-workflow"
+      ],
+      "_comment": "tdd-workflow's base is ECC-derived (see the ECC entry); only its 'Automated Enforcement (probity)' section adapts probity's TDD judging rules (src/rules/enforce-tdd.ts). Probity itself is not vendored — it is a registered marketplace in settings.json."
     }
   ]
 }

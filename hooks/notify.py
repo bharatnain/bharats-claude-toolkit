@@ -7,6 +7,8 @@ Claude finishes a turn (the `Stop` event). Reads the event JSON on stdin.
 
 Env vars:
   CLAUDE_NOTIFY=0           disable all notifications
+  CLAUDE_TOOLKIT_HOOKS=off  master off-switch for all toolkit hooks; also set by
+                            team_gate.py for gate subprocesses (recursion guard)
   CLAUDE_NOTIFY_ON_STOP=1   also notify when Claude finishes a turn (default: off)
   CLAUDE_NOTIFY_SOUND=name  macOS sound name (default: Ping; empty string = silent)
   CLAUDE_NOTIFY_DRYRUN=1    print the decision instead of firing (for testing)
@@ -18,6 +20,21 @@ import os
 import shutil
 import subprocess
 import sys
+
+# Bounded stdin read: a hook must never buffer unbounded input.
+MAX_STDIN = 10 * 1024 * 1024  # 10 MiB
+
+
+def _bootstrap_path():
+    """Hooks may run in a minimal env; ensure common user bin dirs are on PATH
+    so notifier binaries (terminal-notifier, notify-send) are found."""
+    home = os.path.expanduser("~")
+    parts = os.environ.get("PATH", "").split(os.pathsep)
+    for p in (os.path.join(home, ".local", "bin"), os.path.join(home, "bin"),
+              "/opt/homebrew/bin", "/usr/local/bin"):
+        if os.path.isdir(p) and p not in parts:
+            parts.insert(0, p)
+    os.environ["PATH"] = os.pathsep.join(parts)
 
 
 def truncate(s, n=140):
@@ -72,9 +89,11 @@ def fire(title, body):
 
 
 def main():
-    if os.environ.get("CLAUDE_NOTIFY", "").strip().lower() in ("0", "false", "no", "off"):
-        return
-    raw = "" if sys.stdin.isatty() else sys.stdin.read()
+    for var in ("CLAUDE_TOOLKIT_HOOKS", "CLAUDE_NOTIFY"):
+        if os.environ.get(var, "").strip().lower() in ("0", "false", "no", "off"):
+            return
+    _bootstrap_path()
+    raw = "" if sys.stdin.isatty() else sys.stdin.read(MAX_STDIN)
     try:
         payload = json.loads(raw) if raw.strip() else {}
     except Exception:

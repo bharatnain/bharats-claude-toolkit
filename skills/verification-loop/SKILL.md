@@ -125,3 +125,15 @@ Run: /verify
 
 This skill complements PostToolUse hooks but provides deeper verification.
 Hooks catch issues immediately; this skill provides comprehensive review.
+
+In this toolkit, `hooks/team_gate.py` runs the quality gate automatically on
+`PostToolUse`, `Stop`, `SubagentStop`, `PreCompact`, and the team events
+`TaskCreated`, `TaskCompleted`, and `TeammateIdle` (a no-op unless a team
+session sentinel is active).
+
+When wiring verification into your own `Stop` or `SubagentStop` hooks, prefer
+returning `hookSpecificOutput.additionalContext` (Claude Code v2.1.163+): it
+feeds the verification report back to Claude and keeps the turn going without
+the output being labeled a hook error. Reserve a blocking response (exit code 2
+with the failure on stderr) for genuinely blocking gate failures — do not fake
+an error just to steer Claude.

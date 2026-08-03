@@ -2,7 +2,7 @@
 name: cost-aware-llm-pipeline
 description: Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, retry logic, and prompt caching.
 metadata:
-  source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
+  source: "Adapted from ECC (github.com/affaan-m/ecc), MIT; references/claude-api/ vendored from anthropics/skills (Apache-2.0, LICENSE.txt in-dir)"
 ---
 
 # Cost-Aware LLM Pipeline
@@ -39,7 +39,7 @@ def select_model(
         return force_model
     if text_length >= _SONNET_TEXT_THRESHOLD or item_count >= _SONNET_ITEM_THRESHOLD:
         return MODEL_SONNET  # Complex task
-    return MODEL_HAIKU  # Simple task (3-4x cheaper)
+    return MODEL_HAIKU  # Simple task (~3x cheaper)
 ```
 
 ### 2. Immutable Cost Tracking
@@ -152,20 +152,23 @@ def process(text: str, config: Config, tracker: CostTracker) -> tuple[Result, Co
     return parse_result(response), tracker
 ```
 
-## Pricing Reference (2025-2026)
+## Pricing Reference (cached Jul 2026)
 
 | Model | Input ($/1M tokens) | Output ($/1M tokens) | Relative Cost |
 |-------|---------------------|----------------------|---------------|
-| Haiku 4.5 | $0.80 | $4.00 | 1x |
-| Sonnet 4.6 | $3.00 | $15.00 | ~4x |
-| Opus 4.5 | $15.00 | $75.00 | ~19x |
+| Haiku 4.5 | $1.00 | $5.00 | 1x |
+| Sonnet 4.6 | $3.00 | $15.00 | ~3x |
+| Opus 5 | $5.00 | $25.00 | ~5x |
+| Fable 5 | $10.00 | $50.00 | ~10x |
+
+Prices drift — treat this table as a snapshot. Before hardcoding model IDs or prices, verify against [references/claude-api/models.md](references/claude-api/models.md) (current model IDs, aliases, deprecations) or the live pricing docs.
 
 ## Best Practices
 
 - **Start with the cheapest model** and only route to expensive models when complexity thresholds are met
 - **Set explicit budget limits** before processing batches — fail early rather than overspend
 - **Log model selection decisions** so you can tune thresholds based on real data
-- **Use prompt caching** for system prompts over 1024 tokens — saves both cost and latency
+- **Use prompt caching** for long shared system prompts — saves both cost and latency. The minimum cacheable prefix is model-dependent (512 tokens on Opus 5/Fable 5, 1024 on Sonnet 4.6+, 4096 on Haiku 4.5); shorter prefixes silently won't cache. See [references/claude-api/prompt-caching.md](references/claude-api/prompt-caching.md)
 - **Never retry on authentication or validation errors** — only transient failures (network, rate limit, server error)
 
 ## Anti-Patterns to Avoid
@@ -182,3 +185,11 @@ def process(text: str, config: Config, tracker: CostTracker) -> tuple[Result, Co
 - Batch processing pipelines where cost adds up quickly
 - Multi-model architectures that need intelligent routing
 - Production systems that need budget guardrails
+
+## References (vendored Claude API material, Apache-2.0)
+
+Current-as-of-Jul-2026 reference files from the Anthropic `claude-api` skill — consult these before choosing model IDs, quoting prices, or configuring caching:
+
+- [references/claude-api/models.md](references/claude-api/models.md) — model catalog: exact IDs/aliases, context windows, active/deprecated/retired status
+- [references/claude-api/model-migration.md](references/claude-api/model-migration.md) — breaking changes and drop-in replacements when moving pipelines to newer models
+- [references/claude-api/prompt-caching.md](references/claude-api/prompt-caching.md) — cache breakpoint placement, per-model minimum prefix sizes, write/read economics, invalidation rules

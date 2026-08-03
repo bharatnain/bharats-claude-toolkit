@@ -93,6 +93,19 @@ Copyright (c) 2026 Hemant Naik
 
 - Skills: `soc2`, `iso-27001`, `gdpr`, `hipaa`, `pci-dss` (extracted from upstream `.skill` archives)
 
+### Hallmark — https://github.com/Nutlope/hallmark
+Copyright (c) 2026 Hallmark contributors
+
+- Skill: `hallmark`
+
+### Probity — https://github.com/nizos/probity
+Copyright (c) 2026 Nizar Selander
+
+- Skill: `tdd-workflow` — the "Automated Enforcement (probity)" section adapts the TDD
+  judging rules from `src/rules/enforce-tdd.ts` (`DEFAULT_TDD_RULES` / `PROCESS_INSTRUCTIONS`).
+  Probity itself is not vendored; it is registered as an installable marketplace in
+  `settings.json` and installs its own `PreToolUse` hook when enabled.
+
 ### MIT License text
 
 The MIT terms below apply to each MIT-licensed component listed above, with its
@@ -133,6 +146,17 @@ Licensed under the Apache License, Version 2.0 — https://www.apache.org/licens
 > **not** open source, and are intentionally **not** vendored here. They are available
 > natively in Claude Code regardless.
 
+### Anthropic skills — https://github.com/anthropics/skills (claude-api reference files)
+
+- Reference files: `skills/cost-aware-llm-pipeline/references/claude-api/`
+  (`models.md`, `model-migration.md`, `prompt-caching.md`) — vendored from the upstream
+  `claude-api` skill's `shared/` directory (not a full-skill vendor; the full claude-api
+  skill ships built into Claude Code and is intentionally not vendored here).
+
+Retains the original Apache License 2.0 as
+`skills/cost-aware-llm-pipeline/references/claude-api/LICENSE.txt`.
+Licensed under the Apache License, Version 2.0 — https://www.apache.org/licenses/LICENSE-2.0
+
 ### SuccessCOACHING — enterprise customer-success skills — https://github.com/t0ddc3by/claude-for-customer-success
 Copyright 2026 SuccessCOACHING
 
@@ -147,6 +171,73 @@ Each retains the original Apache License 2.0 as `LICENSE.txt` in its own skill d
 - Skill: `openfga` (ReBAC/Zanzibar modeling: types, relations, tuples, CEL/ABAC conditions, `.fga.yaml` tests)
 
 Retains the original Apache License 2.0 as `skills/openfga/LICENSE.txt`.
+
+### Anthropic defending-code reference harness — https://github.com/anthropics/defending-code-reference-harness
+Copyright 2026 Anthropic PBC
+
+- Skills: `threat-model`, `vuln-scan`, `vuln-triage` (upstream `triage`), `vuln-patch`
+  (upstream `patch`), `dnr-hunt`, `dnr-respond`
+- Shared helper: `skills/_lib/checkpoint.py` and `skills/_lib/test_checkpoint.py`
+  (upstream `.claude/skills/_lib/checkpoint.py` and `tests/test_skill_checkpoint.py`)
+
+Each retains the original Apache License 2.0 as `LICENSE.txt` in its own skill directory,
+and in `skills/_lib/`. Scripts keep their upstream SPDX headers.
+
+Local modifications: `triage` → `vuln-triage` and `patch` → `vuln-patch` (renamed to avoid
+colliding with the product-management `triage-requests` skill), with every cross-skill
+handoff reference, state directory, and invocation string updated; the repo-specific
+`vuln-pipeline` CLI delegation path removed (`vuln-patch` is static-review-only); the
+`dnrcanary` demo target and its grader removed from the D&R skills; and the checkpoint
+helper re-pointed from `.claude/skills/_lib/` to `skills/_lib/`.
+
+### Anthropic — Claude for Legal — https://github.com/anthropics/claude-for-legal
+Copyright Anthropic
+
+- Skill: `advisor-profile` (the `commercial-legal` cold-start interview + shared company-profile
+  template, genericized from a legal practice profile into the persistent company/advisor
+  context profile read by the C-suite advisor skills)
+- References vendored under `skills/general-counsel-advisor/references/contract-review/`:
+  contract-review routing, `nda-review` (GREEN/YELLOW/RED triage), `vendor-agreement-review`,
+  `saas-msa-review`, and the `deal-debrief` / `playbook-monitor` agent workflows
+  (deviation-log → playbook-amendment loop)
+
+Retains the original Apache License 2.0 as `skills/advisor-profile/LICENSE.txt` and
+`skills/general-counsel-advisor/references/contract-review/LICENSE.txt`. Local adaptations:
+upstream plugin-config paths replaced with the toolkit's `company-context.md` profile, upstream
+slash-commands neutralized, and matter-workspace/connector machinery not present in this
+toolkit removed.
+
+### Anthropic — Claude for Financial Services (Model Builder skills) — https://github.com/anthropics/financial-services
+- Skills: `dcf-model`, `audit-xls`, `3-statement-model`, `comps-analysis`, `lbo-model`
+  (vendored from `plugins/vertical-plugins/financial-analysis/skills/`)
+
+Each retains the original Apache License 2.0 as `LICENSE.txt` in its own skill directory.
+Licensed under the Apache License, Version 2.0 — https://www.apache.org/licenses/LICENSE-2.0
+
+### Anthropic — Claude Code Migration Kit — https://github.com/anthropics/code-migration-kit-with-claude-code
+Copyright 2026 Anthropic PBC
+
+- Skill: `code-migration` (prompts, templates, dependency-map/queue/build scripts, fixtures, and the kit's operating manual vendored as `references/kit-orientation.md`)
+
+Retains the original Apache License 2.0 as `skills/code-migration/LICENSE.txt`; scripts keep their upstream SPDX headers.
+Licensed under the Apache License, Version 2.0 — https://www.apache.org/licenses/LICENSE-2.0
+
+> Note: the upstream kit's `examples/` directory (a complete example run) is intentionally not vendored.
+
+### Anthropic — launch-your-agent (Claude Managed Agents scaffolding) — https://github.com/anthropics/launch-your-agent
+Copyright 2026 Anthropic PBC
+
+- Skills: `launch-your-agent` (the repo-root `cma-primitives.md` inventory is vendored into its
+  `references/`), `agent-wrap-up` (upstream `.claude/skills/wrap-up`, renamed to avoid a
+  generic `wrap-up` trigger)
+
+Each retains the original Apache License 2.0 as `LICENSE.txt` in its own skill directory,
+and SPDX headers are kept on all vendored files. Upstream explicitly invites vendoring.
+
+### Anthropic knowledge-work-plugins — plugin review policy — https://github.com/anthropics/knowledge-work-plugins
+- Skill: `plugin-vetting` (LLM-judge plugin/marketplace security-review policy and structured verdict schema, vendored from the repo's `.github/policy/` into `skills/plugin-vetting/references/`)
+
+Retains the original Apache License 2.0 as `skills/plugin-vetting/LICENSE.txt`.
 
 ---
 

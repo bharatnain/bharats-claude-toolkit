@@ -12,6 +12,9 @@ default).
 Env:
   CLAUDE_BEADS=off|0|false|no   disable entirely — no init, no directive, full
                                 fallback to native Task tools.
+  CLAUDE_TOOLKIT_HOOKS=off      master off-switch for all toolkit hooks; also set
+                                by team_gate.py for gate subprocesses (recursion
+                                guard).
 
 Always exits 0 — a SessionStart hook must never block session startup. Reads the
 event JSON on stdin and uses payload.cwd (falling back to $CLAUDE_PROJECT_DIR,
@@ -33,8 +36,27 @@ DIRECTIVE = (
 )
 
 
+# Bounded stdin read: a hook must never buffer unbounded input.
+MAX_STDIN = 10 * 1024 * 1024  # 10 MiB
+
+
 def beads_disabled():
-    return os.environ.get("CLAUDE_BEADS", "").strip().lower() in ("0", "false", "no", "off")
+    return any(
+        os.environ.get(v, "").strip().lower() in ("0", "false", "no", "off")
+        for v in ("CLAUDE_BEADS", "CLAUDE_TOOLKIT_HOOKS")
+    )
+
+
+def bootstrap_path():
+    """Hooks may run in a minimal env; ensure common user bin dirs are on PATH
+    so `bd` (often installed to ~/.local/bin or ~/bin) is found."""
+    home = os.path.expanduser("~")
+    parts = os.environ.get("PATH", "").split(os.pathsep)
+    for p in (os.path.join(home, ".local", "bin"), os.path.join(home, "bin"),
+              "/opt/homebrew/bin", "/usr/local/bin"):
+        if os.path.isdir(p) and p not in parts:
+            parts.insert(0, p)
+    os.environ["PATH"] = os.pathsep.join(parts)
 
 
 def find_repo_root(start):
@@ -98,7 +120,8 @@ def emit_context():
 def main():
     if beads_disabled():
         return
-    raw = "" if sys.stdin.isatty() else sys.stdin.read()
+    bootstrap_path()
+    raw = "" if sys.stdin.isatty() else sys.stdin.read(MAX_STDIN)
     try:
         payload = json.loads(raw) if raw.strip() else {}
     except Exception:

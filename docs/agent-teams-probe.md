@@ -30,7 +30,9 @@ when no team session is active), and any runner/internal error **fails open**
    export GATE_HOOK_DEBUG=1
    ```
 3. **Drive a small team through the lifecycle.** Start a team via `/team`
-   (or spawn a single teammate), then:
+   (or spawn a single teammate via the Agent tool's `name` parameter — every
+   session has one implicit team, so there is no team-creation tool call, and
+   teammates run in the background by default), then:
    - create a task,
    - complete a task,
    - let a teammate go idle.

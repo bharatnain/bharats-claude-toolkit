@@ -1,0 +1,3 @@
+# migration order: one batch per line, dependencies first
+pkg/b.py
+pkg/__init__.py	pkg/a.py	pkg/c.py

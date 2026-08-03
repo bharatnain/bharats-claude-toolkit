@@ -1,0 +1,5 @@
+source	target
+pkg/b.py	ts/b.ts
+pkg/__init__.py	ts/__init__.ts
+pkg/a.py	ts/a.ts
+pkg/c.py	ts/c.ts

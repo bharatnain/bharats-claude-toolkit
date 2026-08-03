@@ -26,13 +26,9 @@ fi
 # Ensure the target directory exists; a missing target is treated as {}.
 mkdir -p "$(dirname "$TARGET")"
 
-# Back up an existing target before writing. No backup if it didn't pre-exist.
+# Backup happens AFTER the merge is rendered and only when the write is not a
+# no-op (see below) — an idempotent re-run must not churn backups.
 BACKUP=""
-if [ -f "$TARGET" ]; then
-  BACKUP="$TARGET.bak.$(date +%Y%m%d%H%M%S)"
-  cp "$TARGET" "$BACKUP"
-  echo "Backup written: $BACKUP"
-fi
 
 # Render the merged settings to a temp file in the same directory (for an
 # atomic mv) using an inline python3 program. The program prints the summary
@@ -130,19 +126,35 @@ fi
 
 read -r MKT_COUNT PLUGIN_COUNT ALLOW_COUNT <<<"$COUNTS"
 
-# Atomically move the rendered file into place.
-mv "$TMP" "$TARGET"
-trap - EXIT
-
-# Validate the written file parses as JSON. On failure restore the backup
-# (if any) and exit non-zero.
-if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' "$TARGET"; then
-  echo "Error: written settings did not parse as JSON." >&2
-  if [ -n "$BACKUP" ]; then
-    cp "$BACKUP" "$TARGET"
-    echo "Restored backup: $BACKUP" >&2
+# Idempotent no-op: if the merged output is byte-identical to what is already
+# on disk, skip the write entirely — no backup churn, no mtime churn.
+# (Pattern: graphify install.py `_write_settings_with_backup`.)
+if [ -f "$TARGET" ] && cmp -s "$TMP" "$TARGET"; then
+  rm -f "$TMP"
+  trap - EXIT
+  echo "settings: $TARGET already up to date (no changes written)"
+else
+  # Back up the existing target before overwriting. No backup if absent.
+  if [ -f "$TARGET" ]; then
+    BACKUP="$TARGET.bak.$(date +%Y%m%d%H%M%S)"
+    cp "$TARGET" "$BACKUP"
+    echo "Backup written: $BACKUP"
   fi
-  exit 1
+
+  # Atomically move the rendered file into place.
+  mv "$TMP" "$TARGET"
+  trap - EXIT
+
+  # Validate the written file parses as JSON. On failure restore the backup
+  # (if any) and exit non-zero.
+  if ! python3 -c 'import json,sys; json.load(open(sys.argv[1], encoding="utf-8"))' "$TARGET"; then
+    echo "Error: written settings did not parse as JSON." >&2
+    if [ -n "$BACKUP" ]; then
+      cp "$BACKUP" "$TARGET"
+      echo "Restored backup: $BACKUP" >&2
+    fi
+    exit 1
+  fi
 fi
 
 echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules"

@@ -1,0 +1,2 @@
+# strongly connected components > 1 file: 1
+src/a.ts	src/b.ts	src/c.ts

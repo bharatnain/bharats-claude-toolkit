@@ -5,6 +5,49 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### 2026-08-03 — Upgrade wave: security pipeline, finance models, legal advisors, CMA, supply chain
+
+- **Added: 18 vendored skills (116 → 134).**
+  - *Security pipeline* (anthropics/defending-code-reference-harness, Apache-2.0): `threat-model`,
+    `vuln-scan`, `vuln-triage`, `vuln-patch`, `dnr-hunt`, `dnr-respond` — the full
+    THREAT_MODEL.md → VULN-FINDINGS.json → TRIAGE.json → PATCHES/ chain, with a shared
+    `skills/_lib/checkpoint.py` helper (35 unit tests pass).
+  - *Financial modeling* (anthropics/financial-services, Apache-2.0): `dcf-model`, `audit-xls`,
+    `3-statement-model`, `comps-analysis`, `lbo-model` — hands-on spreadsheet construction and
+    auditing; `cfo-advisor` keeps strategy scope and now cross-points at them.
+  - *Legal/advisor* (anthropics/claude-for-legal, Apache-2.0): `advisor-profile` — cold-start
+    interview that writes the shared `company-context.md` all C-suite advisors read; plus a
+    contract-review deep-dive family (NDA/vendor/SaaS-MSA review, deal-debrief, playbook-monitor)
+    vendored as `general-counsel-advisor` references.
+  - *Claude Managed Agents* (anthropics/launch-your-agent, Apache-2.0): `launch-your-agent`,
+    `agent-wrap-up`.
+  - *Code migration* (anthropics/code-migration-kit-with-claude-code, Apache-2.0):
+    `code-migration` — prompts, templates, dependency-map/queue/build scripts, fixtures.
+  - *Design review* (Nutlope/hallmark, MIT): `hallmark` — anti-slop audits, slop-test,
+    design-DNA extraction; scoped to explicit invocation so it never collides with
+    `frontend-design`/`ui-ux-pro-max`.
+  - *Supply chain* (anthropics/knowledge-work-plugins, Apache-2.0): `plugin-vetting` — LLM-judge
+    review policy + verdict schema to vet third-party plugins/marketplaces BEFORE enabling;
+    new `docs/supply-chain.md` documents the SHA-pinning adoption path.
+- **Changed: plugin roster in `settings.json`.** Now enabled by default: `superpowers`,
+  `security-guidance` + `plugin-dev` (claude-plugins-official), `differential-review` +
+  `fp-check` (trailofbits-skills), `security-awareness` (trailofbits-skills-curated).
+  Registered but NOT enabled: `probity`, `memsearch`, `openai-codex`, the remaining Trail of
+  Bits plugins. `agent-teams@claude-code-workflows` is explicitly **disabled** — it calls the
+  `TeamCreate`/`TeamDelete` tools removed in Claude Code v2.1.178.
+- **Changed: orchestration docs swept for Claude Code v2.1.220.** `team-orchestration` spawns
+  teammates via the Agent tool (implicit teams, background-by-default semantics, depth/concurrency
+  caps); `verification-loop` hooks guidance now prefers `additionalContext` over fake blocking
+  errors; `tdd-workflow` gains an "Automated Enforcement (probity)" section (MIT-attributed).
+- **Changed: hooks hardened.** All four hook scripts get bounded 10 MiB stdin reads, PATH
+  bootstrap, and a `CLAUDE_TOOLKIT_HOOKS=off` master switch doubling as a recursion guard;
+  `bootstrap.sh` adopts byte-compare no-op writes (no backup churn); new `docs/hooks-security.md`.
+- **Changed: Claude API references refreshed (Jul 2026).** `cost-aware-llm-pipeline` pricing
+  and cache-minimum facts corrected, with current `models.md`/`model-migration.md`/
+  `prompt-caching.md` vendored under its `references/claude-api/`.
+- Attribution for everything above is in `THIRD_PARTY_NOTICES.md` / `THIRD_PARTY_SOURCES.json`;
+  `SKILLS.md` catalog regenerated (134 skills, 8 agents).
+
 - **Added: bootstrap installs a default global `CLAUDE.md`.** `bash scripts/bootstrap.sh` now
   copies this repo's [`CLAUDE.md`](CLAUDE.md) (Andrej Karpathy's four LLM-coding rules — Think
   Before Coding / Simplicity First / Surgical Changes / Goal-Driven Execution) to

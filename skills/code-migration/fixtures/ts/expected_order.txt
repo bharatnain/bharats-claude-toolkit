@@ -1,0 +1,3 @@
+# migration order: one batch per line, dependencies first
+src/util/index.ts
+src/a.ts	src/b.ts	src/c.ts

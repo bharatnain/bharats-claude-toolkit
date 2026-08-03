@@ -1,0 +1,5 @@
+from	to
+src/a.ts	src/b.ts
+src/a.ts	src/util/index.ts
+src/b.ts	src/c.ts
+src/c.ts	src/a.ts

@@ -124,7 +124,7 @@ _134 vendored skills, 8 agents._
 | `social` | When the user wants help creating, scheduling, or optimizing social media content for LinkedIn, Twit… |
 | `startup-idea-evaluation` | Runs any startup idea through a rigorous, YC-style evaluation gauntlet before the user commits time … |
 | `success-plan-builder` | Build or update a customer success plan — account-specific success criteria, measurable milestones, … |
-| `tdd-workflow` | Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven dev… |
+| `tdd-workflow` | Plan-file-driven TDD delivery workflow — takes a *.plan.md and drives implementation to 80%+ coverag… |
 | `team-orchestration` | Orchestrate a multi-agent team to build something end-to-end — when the user wants to build with a t… |
 | `territory-planning-optimizer` | Account assignment by revenue potential, geography, relationship. Workload balancing, TAM/SAM calcul… |
 | `theme-factory` | Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML la… |

@@ -36,6 +36,9 @@
     },
     "openai-codex": {
       "source": { "source": "github", "repo": "openai/codex-plugin-cc" }
+    },
+    "mattpocock": {
+      "source": { "source": "github", "repo": "mattpocock/skills" }
     }
   },
   "enabledPlugins": {
@@ -47,6 +50,7 @@
     "pm-product-strategy@pm-skills": true,
     "pm-execution@pm-skills": true,
     "superpowers@superpowers-marketplace": true,
+    "mattpocock-skills@mattpocock": true,
     "security-guidance@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": true,
     "differential-review@trailofbits-skills": true,

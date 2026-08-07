@@ -7,7 +7,7 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 25 enabled plugins**, which bring **134 vendored skills + 8 agents** from this
+**Always-on = 26 enabled plugins**, which bring **134 vendored skills + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
 *enable* is the plugin; the 134 skills + 8 agents are what *this* repo's plugin contributes,
 and the other 24 plugins layer their skills on top.
@@ -31,6 +31,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
 - `web-quality-skills` — Addy Osmani: accessibility (WCAG 2.2), performance, Core Web Vitals, SEO
 - `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills: discovery, strategy, PRDs/OKRs/roadmaps
 - `superpowers` — obra (`superpowers-marketplace`): brainstorm→plan→execute methodology (now enabled by default)
+- `mattpocock-skills` — Matt Pocock (`mattpocock`): ~30 compact engineering/process skills — grilling (frontier-driven design interviews), domain-modeling (CONTEXT.md + ADRs), wayfinder/triage/to-tickets (tracker-abstracted planning; bind to beads via `/setup-matt-pocock-skills`), diagnosing-bugs (feedback-loop-first), teach, codebase-design. Its `writing-for-agents` is this toolkit's **house standard for skill authoring**.
 - `security-guidance` / `plugin-dev` — Anthropic (`claude-plugins-official`): security guardrails + plugin authoring
 - `differential-review` / `fp-check` — Trail of Bits (`trailofbits-skills`); `security-awareness` — Trail of Bits (`trailofbits-skills-curated`)
 - `agent-orchestration` — wshobson `claude-code-workflows`: multi-agent role/team setups (tech-lead, frontend, backend, ml-engineer). *`agent-teams` from the same marketplace is explicitly **disabled** — it still calls the `TeamCreate`/`TeamDelete` tools removed in Claude Code v2.1.178.*
@@ -328,6 +329,10 @@ to run by hand.
   tag triggers `release.yml`, which publishes the GitHub Release.
 - **Validate** — `validate_skills.py` (skills + `SKILLS.md` catalog) and `validate_assets.py`
   (`agents/`, `commands/`, `workflows/`) gate every change; both also run in CI.
+
+**Authoring a new skill** — follow the `writing-for-agents` skill from the enabled
+`mattpocock-skills` plugin (context pointers, the two loads, information hierarchy, leading
+words, no-op pruning). It is the house standard for any SKILL.md written or adapted here.
 
 **Refreshing a vendored skill** — vendored skills are point-in-time snapshots. Re-copy the
 directory from upstream and re-apply de-branding (drop `metadata.origin: ECC`, strip ECC

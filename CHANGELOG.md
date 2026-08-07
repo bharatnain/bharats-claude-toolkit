@@ -5,6 +5,20 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### 2026-08-07 — mattpocock-skills enabled by default; house skill-authoring standard
+
+- **Enabled: `mattpocock-skills@mattpocock`** (github.com/mattpocock/skills, MIT, v1.2.3) —
+  ~30 compact engineering/process skills: `grilling`/`grill-me`/`grill-with-docs`
+  (frontier-driven design interviews), `domain-modeling` (CONTEXT.md ubiquitous language +
+  ADRs), `wayfinder`/`triage`/`to-tickets` (tracker-abstracted planning — bind to beads via
+  `/setup-matt-pocock-skills`), `diagnosing-bugs` (feedback-loop-first debugging), `teach`,
+  `codebase-design`, `writing-for-agents`. Marketplace registered as `mattpocock` in
+  `settings.json`; subscribe model chosen over vendoring (actively versioned upstream).
+- **Changed: `tdd-workflow` description narrowed** to its plan-file-driven delivery scope, to
+  avoid trigger overlap with the new plugin's general-purpose `tdd` discipline skill.
+- **Docs: `writing-for-agents` adopted as the house standard** for authoring or adapting any
+  SKILL.md in this repo (README "Authoring a new skill").
+
 ### 2026-08-03 — Upgrade wave: security pipeline, finance models, legal advisors, CMA, supply chain
 
 - **Added: 18 vendored skills (116 → 134).**

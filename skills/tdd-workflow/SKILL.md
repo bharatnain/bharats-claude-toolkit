@@ -1,6 +1,6 @@
 ---
 name: tdd-workflow
-description: Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and E2E tests.
+description: Plan-file-driven TDD delivery workflow — takes a *.plan.md and drives implementation to 80%+ coverage across unit, integration, and E2E tests, with probity enforcement hooks. Use when executing a written plan file test-first, or when the user asks for the toolkit TDD workflow by name. For general red-green-refactor discipline and test-quality reference without a plan file, prefer the mattpocock-skills tdd skill.
 argument-hint: <path/to/*.plan.md>
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"

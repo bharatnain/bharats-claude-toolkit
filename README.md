@@ -343,6 +343,13 @@ for you to run by hand (the tag is created after the release commit so it points
   bumps the version and promotes the `[Unreleased]` CHANGELOG block into the new section — then
   prints the commit/tag/push commands. It **never commits, tags, or pushes**. Add `--dry-run` to preview. Pushing the `vX.Y.Z`
   tag triggers `release.yml`, which publishes the GitHub Release.
+- **Skill usage** — `python3 scripts/skill_usage.py --days 30` reads your local Claude Code
+  transcripts and reports which skills fired, which vendored skills never did (largest
+  description first — that is the always-on context cost), and enabled plugins with zero use.
+  `--prune-list` prints never-invoked directory names for a manual prune; nothing is deleted.
+  A local stand-in for `/skill-doctor` when usage reports are unavailable on your connection.
+- **Eval secret** — `bash scripts/set_eval_secret.sh` stores the `ANTHROPIC_API_KEY` repo secret
+  for `plugin-eval.yml` (prompts with hidden input, pipes to `gh secret set`, never in argv).
 - **Validate** — `validate_skills.py` (skills + `SKILLS.md` catalog) and `validate_assets.py`
   (`agents/`, `commands/`, `workflows/`) gate every change; both also run in CI.
 

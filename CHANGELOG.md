@@ -5,6 +5,12 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Added: `scripts/skill_usage.py`** — local skill-usage report from `~/.claude/projects` transcripts
+  (invoked skills, never-invoked vendored skills by description size, idle plugins, `--prune-list`);
+  a read-only stand-in for `/skill-doctor` when usage reports are unavailable. **Added:
+  `scripts/set_eval_secret.sh`** — stores the `ANTHROPIC_API_KEY` repo secret for `plugin-eval.yml`
+  via a hidden prompt piped to `gh secret set`.
+
 ## [0.9.0] - 2026-09-22
 
 ### 2026-09-22 — Backlog execution: full re-vendor wave, roster consolidation, agent-teams removal

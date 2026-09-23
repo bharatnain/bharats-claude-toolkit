@@ -1,6 +1,6 @@
 # Hook-layer security
 
-This toolkit ships five hook registrations across four scripts (`hooks/hooks.json` →
+This toolkit ships eight hook registrations across four scripts (`hooks/hooks.json` →
 `beads_init.py`, `notify.py`, `secret_scan.py`, `team_gate.py`). This doc covers three
 things: an **opt-in** tamper-proofing pattern for consumers, the stdin/exit-code contract
 every hook in this repo follows, and the Claude Code v2.1.207 / v2.1.214 constraints
@@ -74,7 +74,7 @@ Every hook script in `hooks/` follows the same contract:
 zilliztech/memsearch's `plugins/claude-code/hooks/common.sh`, Apache-2.0 — reimplemented
 here in stdlib Python, no code vendored.)
 
-## 3. Constraints for future hook authors (Claude Code v2.1.207 / v2.1.214)
+## 3. Constraints for future hook authors (verified against Claude Code 2.1.280, 2026-09-22)
 
 - **v2.1.207**: `${user_config.*}` in **shell-form** hook commands is rejected
   (shell-injection fix). If a hook needs a plugin option value, use exec form — a bare
@@ -86,8 +86,15 @@ here in stdlib Python, no code vendored.)
 - **v2.1.214**: single-segment `dir/**` glob rules (e.g. `Edit(src/**)`) now match only
   `<cwd>/dir`, not any nested `dir/` anywhere in the tree. Audit any glob you write in
   permission rules or hook conditions against the new anchoring.
+- **2.1.220 → 2.1.280 additions**: hook entries accept an `if` field that gates execution
+  by tool-call pattern (e.g. `"if": "Bash(rm *)"`); MCP-tool hooks are not available on the
+  initial `SessionStart` (only after `/clear`); project-level skill/subagent hooks require
+  workspace trust before they run; `once`/`async`/`asyncRewake`/`allowedEnvVars` and the
+  600 s default timeout are unchanged. The agent-teams events (`TaskCreated`,
+  `TaskCompleted`, `TeammateIdle`) remain experimental behind
+  `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`; this repo no longer registers them.
 
-**Audit verdict (this repo, 2026-08)**: all 11 registrations in `hooks/hooks.json` use
+**Audit verdict (this repo, 2026-09)**: all 8 registrations in `hooks/hooks.json` use
 exec form (`"command": "python3"` + `"args": [...]`); `${CLAUDE_PLUGIN_ROOT}` appears
 only inside `args` (allowed — the rejection targets `${user_config.*}` in shell-form
 strings). No entry uses `if:` conditions, no `${user_config.*}` anywhere, and nothing in

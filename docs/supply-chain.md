@@ -61,10 +61,13 @@ registers.
 
 ## Applying this to bharats-claude-toolkit
 
-Current state (2026-08): the `extraKnownMarketplaces` entries in `settings.json` are
-**unpinned** — `{ "source": "github", "repo": "owner/name" }` tracks the default branch.
-The inbound gate (`plugin-vetting`) covers the moment of first registration; nothing yet
-re-verifies subsequent upstream commits.
+Current state (2026-09-22): every external `extraKnownMarketplaces` entry in `settings.json`
+is **SHA-pinned** — `{ "source": "github", "repo": "owner/name", "ref": "main", "sha": "<40-char commit>" }`
+(the `sha` wins over `ref`). This repo's own marketplace stays unpinned so consumers track it.
+`scripts/check_upstream.py` reports marketplace pin drift alongside vendored-skill drift, and the
+weekly `upstream-drift` job posts both to the rolling issue. Moving a pin is a deliberate
+re-vet-and-bump: run `plugin-vetting` on the new revision, then edit the `sha`. Step 3 below
+(automated bump → scan → auto-drop) is still not implemented.
 
 Adopting the pattern here would mean, in increasing order of effort:
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Cut a release: bump version, scaffold CHANGELOG, refresh manifest, tag. Stdlib only.
+"""Cut a release: bump version, scaffold CHANGELOG, refresh manifest. Stdlib only.
 
-NO-SURPRISE guarantee: this script mutates the working tree and creates a LOCAL
-git tag, but it NEVER `git commit` and NEVER `git push`. After its writes it
-PRINTS the exact next commands for the human to run.
+NO-SURPRISE guarantee: this script mutates the working tree only. It NEVER
+`git commit`, NEVER `git tag`, and NEVER `git push`: the tag must point at the
+release commit, so tagging happens in the printed next commands, after the commit.
 
 Output format note: like the report-family scripts (check_upstream.py, doctor.py)
 this is an interactive human tool; it prints a plain human-readable plan. --dry-run
-prints the same plan and writes/tags nothing (one shared code path).
+prints the same plan and writes nothing (one shared code path).
 
 Usage:
   python3 scripts/release.py --bump patch [--refresh-manifest] [--dry-run]
@@ -33,8 +33,8 @@ SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+$")
 
 # Standard re-sync footer line every recent CHANGELOG entry ends with.
 RESYNC_LINE = (
-    "- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then `/reload-plugins` "
-    "(or restart Claude Code)."
+    "- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen "
+    "Claude Code and start a new chat."
 )
 
 
@@ -141,19 +141,31 @@ def build_changelog_section(version: str, bullets: list) -> str:
 
 
 def insert_changelog_section(changelog_text: str, section: str) -> str:
-    """Insert the new section immediately before the first existing '## [' heading."""
+    """Insert the new section at the top of the entries.
+
+    If a '## [Unreleased]' block exists, its body is PROMOTED into the new
+    section (placed above the git-log bullets) and the Unreleased heading is
+    left in place, empty, for the next cycle. Otherwise the section is
+    inserted immediately before the first existing '## [' heading.
+    """
     lines = changelog_text.splitlines(keepends=True)
-    insert_at = None
-    for i, line in enumerate(lines):
-        if line.startswith("## ["):
-            insert_at = i
-            break
-    block = section + "\n"  # blank line between new section and the next one
-    if insert_at is None:
-        # No existing entries: append after the header/intro.
+    headings = [i for i, line in enumerate(lines) if line.startswith("## [")]
+    if not headings:
         base = changelog_text if changelog_text.endswith("\n") else changelog_text + "\n"
         return base + "\n" + section
-    return "".join(lines[:insert_at]) + block + "".join(lines[insert_at:])
+    first = headings[0]
+    if lines[first].strip().lower().startswith("## [unreleased]"):
+        end = headings[1] if len(headings) > 1 else len(lines)
+        body = "".join(lines[first + 1:end]).strip("\n")
+        sec_lines = section.splitlines(keepends=True)
+        heading, rest = sec_lines[0], "".join(sec_lines[1:])
+        if body and "\n### " in "\n" + body:
+            rest = "### Commits\n\n" + rest.lstrip("\n")
+        promoted = heading + "\n" + (body + "\n\n" if body else "") + rest.lstrip("\n")
+        block = promoted + "\n"
+        return "".join(lines[:first + 1]) + "\n" + block + "".join(lines[end:])
+    block = section + "\n"  # blank line between new section and the next one
+    return "".join(lines[:first]) + block + "".join(lines[first:])
 
 
 def _inline_resolve_head(repo_url: str):
@@ -228,6 +240,7 @@ def next_commands(version: str, refresh_manifest: bool) -> str:
     return (
         f"  {add}\n"
         f'  git commit -m "Release v{version}"\n'
+        f"  git tag v{version}\n"
         f"  git push && git push --tags"
     )
 
@@ -235,7 +248,7 @@ def next_commands(version: str, refresh_manifest: bool) -> str:
 def main(argv):
     ap = argparse.ArgumentParser(
         description="Cut a release: bump version, scaffold CHANGELOG, optionally refresh "
-        "the source manifest, and create a local tag. Never commits or pushes."
+        "the source manifest. Never commits, tags, or pushes."
     )
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--bump", choices=["patch", "minor", "major"],
@@ -244,7 +257,7 @@ def main(argv):
     ap.add_argument("--refresh-manifest", action="store_true",
                     help="re-resolve each source's upstream HEAD and update the manifest")
     ap.add_argument("--dry-run", action="store_true",
-                    help="print the full plan and write/tag nothing")
+                    help="print the full plan and write nothing")
     args = ap.parse_args(argv)
 
     # ---- COMPUTE EVERYTHING FIRST (shared by dry-run and real run) ----
@@ -295,28 +308,21 @@ def main(argv):
     else:
         print("THIRD_PARTY_SOURCES.json: not touched (pass --refresh-manifest to update)")
         print()
-    print(f"git tag (lightweight): {tag}")
-    print()
-    print("Next commands for you to run (this script does NOT commit or push):")
+    print("Next commands for you to run (this script does NOT commit, tag, or push):")
     print(commands)
     print()
 
     if args.dry_run:
-        print("[dry-run] nothing written, no tag created.")
+        print("[dry-run] nothing written.")
         return 0
 
-    # ---- WRITE (atomic) THEN TAG ----
+    # ---- WRITE (atomic) ----
     atomic_write(PLUGIN_JSON, new_plugin_text)
     atomic_write(CHANGELOG, new_changelog_text)
     if args.refresh_manifest and new_manifest_text is not None:
         atomic_write(MANIFEST, new_manifest_text)
 
-    # Lightweight tag (simplest, sufficient). Does NOT commit or push.
-    rc, _out, err = _git(["tag", tag])
-    if rc != 0:
-        raise RuntimeError(f"git tag {tag} failed: {err.strip()}")
-
-    print(f"Wrote files and created local tag {tag}.")
+    print(f"Wrote files for {tag}.")
     print("Run the next commands above to finish the release.")
     return 0
 

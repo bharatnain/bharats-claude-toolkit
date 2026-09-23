@@ -1,6 +1,6 @@
 ---
 name: python-patterns
-description: Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications.
+description: Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications. Use when writing or reviewing Python code and idiomatic structure, typing, or PEP 8 is in question. Not for writing or structuring the tests — pytest fixtures, mocks, parametrization, TDD cycle, or coverage targets (use `python-testing`).
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
 ---

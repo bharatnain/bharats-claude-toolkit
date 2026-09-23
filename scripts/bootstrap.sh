@@ -76,8 +76,11 @@ if src_mkt:
 # enabledPlugins: object map {plugin: true}. Claude Code reads this as a
 # JSON object, NOT an array -- an array silently enables zero plugins. Merge
 # the source map into dest key-by-key; dest wins on collision so an explicit
-# user enable/disable is never overridden. A legacy array-valued dest (or an
-# array-valued source) is normalized to the object form first.
+# user enable/disable is never overridden -- EXCEPT that a plugin the repo
+# template sets to false is forced off, so repo-side disables (a plugin moved
+# to another marketplace, or one that calls removed tools) reach machines that
+# already had it on. A legacy array-valued dest (or an array-valued source) is
+# normalized to the object form first.
 src_plugins = src.get("enabledPlugins")
 if src_plugins:
     src_map = ({p: True for p in src_plugins}
@@ -88,6 +91,8 @@ if src_plugins:
     for p, is_on in src_map.items():
         if p not in dest_map:
             dest_map[p] = is_on
+        elif is_on is False and dest_map[p] is not False:
+            dest_map[p] = False  # repo-side disable wins (see settings.json $comment)
     merged["enabledPlugins"] = dest_map
 
 # permissions.allow: order-preserving union nested under the permissions
@@ -160,7 +165,7 @@ fi
 echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules"
 echo
 echo "Activation: restart Claude Code OR run /reload-plugins in an open session"
-echo "for the always-on tier to take effect. ecc and superpowers remain one"
+echo "for the always-on tier to take effect. ecc remains one"
 echo "'/plugin install' away."
 
 # ---------------------------------------------------------------------------
@@ -214,7 +219,7 @@ if [ "${CLAUDE_BEADS:-on}" != "off" ]; then
     echo "beads: bd not found and curl unavailable; skipping optional install. See README."
   else
     echo "beads: bd not found; attempting optional install (non-blocking)..."
-    if curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash; then
+    if curl -fsSL https://raw.githubusercontent.com/gastownhall/beads/v1.3.0/scripts/install.sh | BEADS_VERSION=1.3.0 bash; then
       echo "beads: bd installed."
     else
       echo "beads: optional bd install did not complete; continuing. Bootstrap is unaffected."

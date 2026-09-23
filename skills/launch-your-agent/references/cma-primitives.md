@@ -36,7 +36,7 @@ Minimal launch = create agent → create environment → create session → send
 
 **Config fields:** `name`* , `model`* , `system`, `tools`, `mcp_servers`, `skills`, `multiagent`, `description`, `metadata`. (*required)
 
-- **model:** any Claude 4.5-family or later. String form `"claude-opus-4-8"`, or object `{"id":"claude-opus-4-8","speed":"fast"}` for fast mode (Opus 4.6/4.7/4.8). Response stores `{id, speed}` (speed defaults `standard`).
+- **model:** any Claude 4.5-family or later. String form `"claude-opus-5-5"`, or object `{"id":"claude-opus-5-5","speed":"fast"}` for fast mode (Opus 5.5 / Opus 5 / Opus 4.8 only; Opus 4.7 errors). Response stores `{id, speed}` (speed defaults `standard`).
 - **Versioning:** create once, reference by ID forever. Each config-changing update mints a **new version** (`version` starts at 1, increments). No-op updates return the existing version.
 - **Update semantics:** pass current `version` (concurrency guard). Omitted fields preserved. Scalars replaced (`system`/`description` clearable with `null`; `model`/`name` mandatory). **Array fields `tools`/`mcp_servers`/`skills` are FULL replacement** — omit to preserve, `null`/`[]` to clear. `metadata` merges per-key (empty string deletes a key).
 - **Lifecycle:** Update (new version) · List versions (full history) · Archive (read-only; existing sessions keep running, new sessions can't reference). 

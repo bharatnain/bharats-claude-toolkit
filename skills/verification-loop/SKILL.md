@@ -1,6 +1,7 @@
 ---
 name: verification-loop
-description: "A comprehensive verification system for Claude Code sessions."
+description: "A comprehensive verification system for Claude Code sessions. Use when verifying a Claude Code session's work before claiming it is complete."
+license: MIT
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
 ---
@@ -31,8 +32,9 @@ If build fails, STOP and fix before continuing.
 
 ### Phase 2: Type Check
 ```bash
+set -o pipefail
 # TypeScript projects
-npx tsc --noEmit 2>&1 | head -30
+npx --no-install tsc --noEmit 2>&1 | head -30
 
 # Python projects
 pyright . 2>&1 | head -30
@@ -127,12 +129,11 @@ This skill complements PostToolUse hooks but provides deeper verification.
 Hooks catch issues immediately; this skill provides comprehensive review.
 
 In this toolkit, `hooks/team_gate.py` runs the quality gate automatically on
-`PostToolUse`, `Stop`, `SubagentStop`, `PreCompact`, and the team events
-`TaskCreated`, `TaskCompleted`, and `TeammateIdle` (a no-op unless a team
+`PostToolUse`, `Stop`, `SubagentStop`, and `PreCompact` (a no-op unless a team
 session sentinel is active).
 
 When wiring verification into your own `Stop` or `SubagentStop` hooks, prefer
-returning `hookSpecificOutput.additionalContext` (Claude Code v2.1.163+): it
+returning `hookSpecificOutput.additionalContext`: it
 feeds the verification report back to Claude and keeps the turn going without
 the output being labeled a hook error. Reserve a blocking response (exit code 2
 with the failure on stderr) for genuinely blocking gate failures — do not fake

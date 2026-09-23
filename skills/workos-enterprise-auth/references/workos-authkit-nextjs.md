@@ -1,5 +1,11 @@
 # WorkOS AuthKit for Next.js
 
+Docs: https://workos.com/docs/authkit/vanilla/nodejs#configure-initiate-login-uri and https://workos.com/docs/authkit/sessions#sign-out-uris
+
+If this file conflicts with fetched docs, follow the docs.
+
+**Required setup:** Read [workos-authkit-setup.md](workos-authkit-setup.md) alongside the SDK README below. Configure and verify the callback, Sign-out URI, and Initiate login URI for the target environment.
+
 ## Step 1: Fetch SDK Documentation (BLOCKING)
 
 **STOP. Do not proceed until complete.**
@@ -131,6 +137,23 @@ export const GET = handleAuth();
 
 Check README for exact usage. If build fails with "cookies outside request scope", the handler is likely missing async/await.
 
+## Step 6b: Create the initiate-login route (REQUIRED)
+
+The OAuth callback above cannot start a new sign-in. Create a separate public `/sign-in` route at `{APP_DIR}/app/sign-in/route.ts`, using the same root or `src/` directory detected earlier:
+
+```typescript
+import { getSignInUrl } from '@workos-inc/authkit-nextjs';
+import { redirect } from 'next/navigation';
+
+export async function GET() {
+  return redirect(await getSignInUrl());
+}
+```
+
+Use the app's actual origin and port for the Initiate login URI, for example `http://localhost:3000/sign-in`. Never set it to the callback URL or use `handleAuth()` in this route. Keep `/sign-in` accessible without an existing session. Read existing route files first; do not overwrite an unrelated sign-in flow. Fetch the SDK README to confirm the current API and PKCE cookie requirements.
+
+A client-side sign-in button using `refreshAuth()` does not replace this endpoint. Password-reset emails, invitations, and other externally started flows need a URL they can visit directly.
+
 ## Step 7: Provider Setup (REQUIRED)
 
 **CRITICAL:** You MUST wrap the app in `AuthKitProvider` in `app/layout.tsx`.
@@ -207,7 +230,12 @@ Sign-out **mutates state** — it clears the session — so it must never be a `
 Use a **POST server action**. In a Server Component, an inline action is fine:
 
 ```tsx
-<form action={async () => { 'use server'; await signOut(); }}>
+<form
+  action={async () => {
+    'use server';
+    await signOut();
+  }}
+>
   <button type="submit">Sign out</button>
 </form>
 ```
@@ -229,10 +257,10 @@ import { signOutAction } from '@/app/auth/actions';
 // ...
 <form action={signOutAction}>
   <button type="submit">Sign out</button>
-</form>
+</form>;
 ```
 
-`signOut()` accepts an optional `{ returnTo }`; with none, it redirects to the Logout URI configured in your WorkOS dashboard. If a generated `GET` sign-out route exists, **delete it** rather than switching it to `POST` — that removes the extra logout surface entirely.
+`signOut()` accepts an optional `{ returnTo }`; with none, it redirects to the default Sign-out URI configured in your WorkOS dashboard. If a generated `GET` sign-out route exists, **delete it** rather than switching it to `POST` — that removes the extra logout surface entirely.
 
 ### Critical auth URL gotchas
 
@@ -245,6 +273,8 @@ import { signOutAction } from '@/app/auth/actions';
 **Note:** The SDK renamed `getUser` to `withAuth` in newer versions. Use whichever function the installed SDK version exports — do NOT rename existing working imports.
 
 ## Verification Checklist (ALL MUST PASS)
+
+- [ ] Application settings and sign-in/sign-out flows pass the completion checklist in [workos-authkit-setup.md](workos-authkit-setup.md)
 
 Run these commands to confirm integration. **Do not mark complete until all pass:**
 
@@ -274,6 +304,9 @@ npm run build
 **If check #2 fails:** Go back to Step 6 and add AuthKitProvider. This is not optional.
 
 **Manual verification before marking complete:**
+
+- Visit `/sign-in` directly without a session. It must start AuthKit sign-in and return through the separate callback without a loop or PKCE error.
+- Confirm the configured Initiate login URI points to `/sign-in`, never the callback. A build alone does not prove the route or saved setting works.
 
 1. Click **Sign in** and confirm the browser goes to a real WorkOS URL — **not** `/[object Object]`
 2. Complete auth and confirm callback succeeds without `OAuth state mismatch`

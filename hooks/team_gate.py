@@ -210,52 +210,6 @@ def branch_stop(payload, root, debug):
     return 0
 
 
-def branch_task_completed(payload, root, debug):
-    """Phase-3 only. Run gate; exit 2 to reopen on runner-1."""
-    args = ["--scope", "changed"]
-    if debug:
-        _eprint("DECISION: TaskCompleted run -> reopen on runner-1")
-        return 0
-    rc, report, err = run_gate(args, root)
-    return translate(rc, report, err)
-
-
-def branch_teammate_idle(payload, root, debug):
-    """Phase-3 only. If `bd ready` has work, exit 2 with next task; else 0."""
-    bd = _which("bd")
-    if debug:
-        _eprint(f"DECISION: TeammateIdle (bd={'yes' if bd else 'no'})")
-        return 0
-    if not bd:
-        return 0
-    try:
-        proc = subprocess.run([bd, "ready"], capture_output=True, text=True)
-        if proc.returncode == 0 and proc.stdout.strip():
-            _eprint("Next ready task:")
-            _eprint(proc.stdout.strip())
-            return 2
-    except Exception as e:
-        _eprint(f"TeammateIdle check failed (ignored): {e}")
-    return 0
-
-
-def branch_task_created(payload, root, debug):
-    """Phase-3 only. If task lacks acceptance criteria, exit 2 with guidance."""
-    task = payload.get("task") or {}
-    ac = None
-    if isinstance(task, dict):
-        ac = task.get("acceptance_criteria") or task.get("acceptanceCriteria")
-    has_ac = bool(ac)
-    if debug:
-        _eprint(f"DECISION: TaskCreated (has_acceptance_criteria={has_ac})")
-        return 0
-    if not has_ac:
-        _eprint("Task is missing acceptance criteria. Add a verifiable "
-                "definition-of-done before starting work.")
-        return 2
-    return 0
-
-
 # --- small stdlib helpers (kept local; STDLIB ONLY) ----------------------
 def _which(name):
     import shutil
@@ -288,9 +242,6 @@ GATED = {
     "PostToolUse": branch_post_tool_use,
     "SubagentStop": branch_subagent_stop,
     "PreCompact": branch_pre_compact,
-    "TaskCompleted": branch_task_completed,
-    "TeammateIdle": branch_teammate_idle,
-    "TaskCreated": branch_task_created,
 }
 
 

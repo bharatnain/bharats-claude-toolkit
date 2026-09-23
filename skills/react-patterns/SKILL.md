@@ -1,6 +1,6 @@
 ---
 name: react-patterns
-description: React 18/19 patterns including hooks discipline, server/client component boundaries, Suspense + error boundaries, form actions, data fetching, state management decision trees, and accessibility-first composition. Use when writing or reviewing React components.
+description: React 18/19 patterns including hooks discipline, server/client component boundaries, Suspense + error boundaries, form actions, data fetching, state management decision trees, and accessibility-first composition. Use when writing or reviewing React components. Owns correctness and structure — how components compose and where state lives. Not for performance optimization work — eliminating request waterfalls, bundle size, re-render cost, server-side rendering speed (use `react-best-practices`).
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
 ---

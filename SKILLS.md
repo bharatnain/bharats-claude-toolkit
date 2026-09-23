@@ -46,7 +46,7 @@ _134 vendored skills, 8 agents._
 | `cost-aware-llm-pipeline` | Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, re… |
 | `cpo-advisor` | Product leadership for scaling companies. Product vision, portfolio strategy, product-market fit, an… |
 | `cro` | When the user wants to optimize, improve, or increase conversions on any marketing page or form — in… |
-| `cro-advisor` | Revenue leadership for B2B SaaS companies. Revenue forecasting, sales model design, pricing strategy… |
+| `cro-advisor` | Revenue leadership for B2B SaaS companies (CRO = Chief Revenue Officer). Revenue forecasting, sales … |
 | `customer-research` | CUSTOMER VOICE research — mine what individual customers say, feel, and struggle with from primary s… |
 | `dcf-model` | Real DCF (Discounted Cash Flow) model creation for equity valuation. Retrieves financial data from S… |
 | `deal-desk` | Per-deal gate at close — scores ONE proposed deal's margin/risk/terms and routes its discount to a n… |
@@ -90,7 +90,7 @@ _134 vendored skills, 8 agents._
 | `pipeline-health-analyzer` | Analyze pipeline health, identify stalled deals, predict close probability, and suggest actions to m… |
 | `plugin-vetting` | Security-vet a THIRD-PARTY Claude Code plugin, skill pack, or marketplace repo BEFORE registering or… |
 | `postgres-patterns` | PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based on… |
-| `pricing` | Tactical, hands-on PLG/SaaS pricing & packaging toolkit: building and improving a pricing page, free… |
+| `pricing` | Tactical, hands-on PLG/SaaS pricing & packaging toolkit: building, improving, and auditing a pricing… |
 | `pricing-strategist` | Strategic pricing DECISION layer: selects the pricing model (subscription/seat, usage-based, value-b… |
 | `process-mapper` | Use when a BizOps lead, COO, or process-improvement owner needs to document an end-to-end business p… |
 | `procurement-optimizer` | Use when running an annual SaaS audit, doing category-level spend review, or rationalizing the suppl… |
@@ -102,6 +102,7 @@ _134 vendored skills, 8 agents._
 | `python-testing` | Python testing strategies using pytest, TDD methodology, fixtures, mocking, parametrization, and cov… |
 | `qbr-builder` | Build or review a Quarterly Business Review — value delivered against success criteria, metrics summ… |
 | `quota-setting-calculator` | Top-down vs bottom-up quota models. Historical attainment, market growth assumptions, ramp periods, … |
+| `react-best-practices` | React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be … |
 | `react-patterns` | React 18/19 patterns including hooks discipline, server/client component boundaries, Suspense + erro… |
 | `referrals` | When the user wants to create, optimize, or analyze a referral program, affiliate program, or word-o… |
 | `rego-skill` | Write, test, and security-review OPA Rego policy-as-code: default-deny rule bodies, RBAC/ABAC author… |
@@ -111,7 +112,7 @@ _134 vendored skills, 8 agents._
 | `repo-scan` | Cross-stack source code asset audit — classifies every file, detects embedded third-party libraries,… |
 | `research-ops` | Evidence-first current-state research workflow. Use when the user wants fresh facts, comparisons, en… |
 | `revops` | Front-of-funnel revenue operations — the lead lifecycle systems that connect marketing to sales: lea… |
-| `rfp-responder` | Use when an RFP, RFI, RFQ, security questionnaire, vendor questionnaire, or proposal request arrives… |
+| `rfp-responder` | Use when an RFP, RFI, RFQ, or proposal request arrives — including a security questionnaire or vendo… |
 | `sales-comp-plan-designer` | Base/variable split recommendations, accelerators, decelerators, quota retirement methods, SPIFs, co… |
 | `sales-enablement` | Produce the sales COLLATERAL reps use to sell: pitch/sales decks, one-pagers and leave-behinds, obje… |
 | `sales-forecast-builder` | Rep/pipeline weighted forecast by deal probability — roll up open deals, track historical rep foreca… |
@@ -132,8 +133,7 @@ _134 vendored skills, 8 agents._
 | `ttv-analysis` | Time-to-value analysis for onboarding performance — single account or portfolio. Reads TtV targets b… |
 | `ux-writing` | Create user-centered, accessible interface copy (microcopy) for digital products including buttons, … |
 | `vendor-management` | Use when reviewing, scoring, or auditing third-party SaaS / vendor relationships — running a vendor … |
-| `vercel-react-best-practices` | React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be … |
-| `verification-loop` | A comprehensive verification system for Claude Code sessions. |
+| `verification-loop` | A comprehensive verification system for Claude Code sessions. Use when verifying a Claude Code sessi… |
 | `video-editing` | AI-assisted video editing workflows for cutting, structuring, and augmenting real footage. Covers th… |
 | `vuln-patch` | Generate candidate fixes for verified SECURITY findings and write |
 | `vuln-scan` | Static source-code vulnerability scan of a whole target directory. Reads the tree (and THREAT_MODEL.… |

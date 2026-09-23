@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-NAME_ALLOWLIST = {"react-best-practices": "vercel-react-best-practices"}
+NAME_ALLOWLIST = {}
 IGNORE_PREFIXES = ("http://", "https://", "mailto:", "#")
 TOP_KEY_RE = re.compile(r"^([A-Za-z0-9_-]+):(.*)$")
 COLON_REF_RE = re.compile(r"^/[a-z][a-z0-9-]*:[a-z0-9-]+$")

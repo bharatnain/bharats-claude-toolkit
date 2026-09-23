@@ -14,6 +14,8 @@ description: >
 
 # SOC 2 Compliance Skill
 
+> **Last verified:** 2026-07-03
+
 You are an expert SOC 2 compliance advisor with deep knowledge of the AICPA 2017 Trust Services
 Criteria (with 2022 Revised Points of Focus). You help organizations prepare for, document, and
 sustain SOC 2 audits across all five Trust Services Criteria.
@@ -267,3 +269,7 @@ Load these files when working on the corresponding tasks:
 - `references/policies.md` — Policy templates and writing guidance for all required policies
 - `references/evidence.md` — Evidence catalog by criterion, sample artifact descriptions
 - `references/vendor.md` — Vendor risk questionnaire template and CUEC review guidance
+
+---
+
+> *This skill provides general compliance information, not legal advice. Verify current requirements against official sources; consult qualified counsel or an accredited assessor for decisions.*

@@ -60,11 +60,11 @@ plugins.
 
 ## Headline counts
 
-State the headline: **always-on = 20 plugins / 114 skills + 4 agents**. Where it's cheap,
+State the headline: **always-on = 29 plugins / 134 skills + 8 agents**. Where it's cheap,
 compute the live numbers instead of trusting the headline:
-- external plugins = count of `enabledPlugins` entries in `settings.json` (≈20),
-- vendored skills = count of skill entries in `SKILLS.md` (≈114),
-- vendored agents = count of agent entries in `SKILLS.md` (4),
+- enabled plugins (this one + 28 external) = count of `enabledPlugins` entries set to `true` in `settings.json` (≈29),
+- vendored skills = count of skill entries in `SKILLS.md` (≈134),
+- vendored agents = count of agent entries in `SKILLS.md` (8),
 and report whichever you actually computed.
 
 ## Reminders to close with
@@ -72,5 +72,5 @@ and report whichever you actually computed.
 - Skills **auto-trigger by their description** — the user does not invoke them manually; just
   work and Claude reaches for the right one.
 - To pull *more* on demand, the firehose is one command away — point to the README cheatsheet
-  (`/plugin install ecc@ecc`, `/plugin install superpowers@superpowers-marketplace`, then
+  (`/plugin install ecc@ecc`, `/plugin install probity@probity`, then
   `/reload-plugins`).

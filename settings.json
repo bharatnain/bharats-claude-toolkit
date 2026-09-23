@@ -1,44 +1,38 @@
 {
-  "$comment": "Bharat's Claude Code setup. MERGE this into your user-global ~/.claude/settings.json so it applies in every directory. extraKnownMarketplaces makes marketplaces installable; enabledPlugins turns them on everywhere. ecc, probity (TDD/rule enforcement), memsearch (semantic session memory), openai-codex (cross-model reviews), and the non-default trailofbits plugins are registered but intentionally NOT enabled — one '/plugin install' away (see README cheatsheet). agent-teams@claude-code-workflows is explicitly disabled: it still calls the TeamCreate/TeamDelete tools removed in Claude Code v2.1.178 (Jun 2026).",
+  "$comment": "Bharat's Claude Code setup. MERGE this into your user-global ~/.claude/settings.json so it applies in every directory. extraKnownMarketplaces makes marketplaces installable; enabledPlugins turns them on everywhere. ecc, probity (TDD/rule enforcement), memsearch (semantic session memory), openai-codex (cross-model reviews), and the non-default trailofbits plugins are registered but intentionally NOT enabled — one '/plugin install' away (see README cheatsheet). agent-teams@claude-code-workflows is explicitly disabled: it still calls the TeamCreate/TeamDelete tools removed in Claude Code v2.1.178 (Jun 2026). superpowers and mattpocock-skills are consumed from claude-plugins-official (SHA-pinned by Anthropic) since 2026-09-22; their old marketplace keys are set to false, and bootstrap.sh forces a repo-side false onto existing machines so the duplicates are disabled. External marketplaces are SHA-pinned (source.sha, recorded 2026-09-22; bootstrap's own marketplace is left unpinned so consumers track this repo). scripts/check_upstream.py reports pin drift; bump a sha only after re-vetting (docs/supply-chain.md).",
   "extraKnownMarketplaces": {
     "bharats-claude-toolkit-dev": {
       "source": { "source": "github", "repo": "bharatnain/bharats-claude-toolkit" }
     },
     "ui-ux-pro-max-skill": {
-      "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill" }
+      "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill", "ref": "main", "sha": "dcc40ff5133ef78276117db0cc34e7b83cc8aeba" }
     },
     "addy-web-quality-skills": {
-      "source": { "source": "github", "repo": "addyosmani/web-quality-skills" }
+      "source": { "source": "github", "repo": "addyosmani/web-quality-skills", "ref": "main", "sha": "afa8da942115f2961fdbfa80807ea0b232ff6c00" }
     },
     "ecc": {
-      "source": { "source": "github", "repo": "affaan-m/ecc" }
-    },
-    "superpowers-marketplace": {
-      "source": { "source": "github", "repo": "obra/superpowers-marketplace" }
+      "source": { "source": "github", "repo": "affaan-m/ecc", "ref": "main", "sha": "bf70150eb2df8070024e5bdf08e4aa08959e2735" }
     },
     "pm-skills": {
-      "source": { "source": "github", "repo": "phuryn/pm-skills" }
+      "source": { "source": "github", "repo": "phuryn/pm-skills", "ref": "main", "sha": "8607e3b077817f89bf4a9b623246219734ac3be0" }
     },
     "claude-code-workflows": {
-      "source": { "source": "github", "repo": "wshobson/agents" }
+      "source": { "source": "github", "repo": "wshobson/agents", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" }
     },
     "trailofbits-skills": {
-      "source": { "source": "github", "repo": "trailofbits/skills" }
+      "source": { "source": "github", "repo": "trailofbits/skills", "ref": "main", "sha": "32e34f8173796e3566a51aee877dc96bc5191f64" }
     },
     "trailofbits-skills-curated": {
-      "source": { "source": "github", "repo": "trailofbits/skills-curated" }
+      "source": { "source": "github", "repo": "trailofbits/skills-curated", "ref": "main", "sha": "6d05be4889017b06fb15069f371afd220daffb62" }
     },
     "probity": {
-      "source": { "source": "github", "repo": "nizos/probity" }
+      "source": { "source": "github", "repo": "nizos/probity", "ref": "main", "sha": "fabb04968f259416645f91f3c62bc12147e714b5" }
     },
     "memsearch": {
-      "source": { "source": "github", "repo": "zilliztech/memsearch" }
+      "source": { "source": "github", "repo": "zilliztech/memsearch", "ref": "main", "sha": "f6da1ef67975d890d946b375a2a16c9302ddce76" }
     },
     "openai-codex": {
-      "source": { "source": "github", "repo": "openai/codex-plugin-cc" }
-    },
-    "mattpocock": {
-      "source": { "source": "github", "repo": "mattpocock/skills" }
+      "source": { "source": "github", "repo": "openai/codex-plugin-cc", "ref": "main", "sha": "db52e28f4d9ded852ab3942cea316258ae4ef346" }
     }
   },
   "enabledPlugins": {
@@ -49,8 +43,8 @@
     "pm-product-discovery@pm-skills": true,
     "pm-product-strategy@pm-skills": true,
     "pm-execution@pm-skills": true,
-    "superpowers@superpowers-marketplace": true,
-    "mattpocock-skills@mattpocock": true,
+    "superpowers@superpowers-marketplace": false,
+    "mattpocock-skills@mattpocock": false,
     "security-guidance@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": true,
     "differential-review@trailofbits-skills": true,
@@ -68,11 +62,15 @@
     "backend-development@claude-code-workflows": true,
     "backend-api-security@claude-code-workflows": true,
     "data-engineering@claude-code-workflows": true,
-    "machine-learning-ops@claude-code-workflows": true
+    "machine-learning-ops@claude-code-workflows": true,
+    "superpowers@claude-plugins-official": true,
+    "mattpocock-skills@claude-plugins-official": true,
+    "claude-security@claude-plugins-official": true,
+    "session-report@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
   },
   "permissions": {
     "allow": [
-      "Bash(bash scripts/db-probe.sh:*)",
       "Bash(bd:*)"
     ]
   }

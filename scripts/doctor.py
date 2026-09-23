@@ -130,7 +130,7 @@ def run_checks():
         ("git", "fail", "install git from git-scm.com or your package manager"),
         ("gh", "fail", "brew install gh (or see cli.github.com)"),
         ("bd", "warn", "default task store — bootstrap.sh auto-installs it; or: curl -sSL "
-         "https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash"),
+         "https://raw.githubusercontent.com/gastownhall/beads/v1.3.0/scripts/install.sh | BEADS_VERSION=1.3.0 bash"),
     ]
     for name, absent_status, hint in tool_specs:
         if shutil.which(name):

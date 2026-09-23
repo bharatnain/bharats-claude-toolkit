@@ -7,12 +7,13 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 26 enabled plugins**, which bring **134 vendored skills + 8 agents** from this
+**Always-on = 29 enabled plugins**, which bring **134 vendored skills + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
 *enable* is the plugin; the 134 skills + 8 agents are what *this* repo's plugin contributes,
-and the other 24 plugins layer their skills on top.
+and the other 28 plugins layer their skills on top.
 
-See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
+See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
+[`docs/housekeeping-2026-09.md`](docs/housekeeping-2026-09.md) for the open maintenance backlog.
 
 ---
 
@@ -21,7 +22,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
 | Tier | What | How it's wired |
 |---|---|---|
 | **Always-on** | This plugin + a few best-in-class external plugins, enabled in every directory | `enabledPlugins` in user-global `~/.claude/settings.json` |
-| **On-demand** | The ECC firehose + superpowers — registered but *not* enabled | `extraKnownMarketplaces`; install when relevant |
+| **On-demand** | The ECC firehose and other registered-but-not-enabled plugins | `extraKnownMarketplaces`; install when relevant |
 | **Vendored** | Curated skills copied *into* this plugin (so it's self-contained) | `skills/` and `agents/` in this repo |
 
 **Always-on plugins**
@@ -30,9 +31,10 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
 - `ui-ux-pro-max` — design intelligence: 67 styles / 161 palettes / 57 font pairings
 - `web-quality-skills` — Addy Osmani: accessibility (WCAG 2.2), performance, Core Web Vitals, SEO
 - `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills: discovery, strategy, PRDs/OKRs/roadmaps
-- `superpowers` — obra (`superpowers-marketplace`): brainstorm→plan→execute methodology (now enabled by default)
-- `mattpocock-skills` — Matt Pocock (`mattpocock`): ~30 compact engineering/process skills — grilling (frontier-driven design interviews), domain-modeling (CONTEXT.md + ADRs), wayfinder/triage/to-tickets (tracker-abstracted planning; bind to beads via `/setup-matt-pocock-skills`), diagnosing-bugs (feedback-loop-first), teach, codebase-design. Its `writing-for-agents` is this toolkit's **house standard for skill authoring**.
+- `superpowers` — obra, consumed from `claude-plugins-official` (SHA-pinned by Anthropic): brainstorm→plan→execute methodology. Note: since v6.4.1 `executing-plans` runs plans natively without pausing for review mid-plan; `diagnosing-superpowers` is its debugging entrypoint
+- `mattpocock-skills` — Matt Pocock, consumed from `claude-plugins-official` (SHA-pinned by Anthropic): ~30 compact engineering/process skills — grilling (frontier-driven design interviews), domain-modeling (CONTEXT.md + ADRs), wayfinder/triage/to-tickets (tracker-abstracted planning; bind to beads via `/setup-matt-pocock-skills`), diagnosing-bugs (feedback-loop-first), teach, codebase-design. Its `writing-for-agents` is this toolkit's **house standard for skill authoring**.
 - `security-guidance` / `plugin-dev` — Anthropic (`claude-plugins-official`): security guardrails + plugin authoring
+- `claude-security` / `session-report` / `skill-creator` — Anthropic (`claude-plugins-official`): in-session vulnerability scanning with verified patches, explorable session-usage reports, and skill creation/eval tooling (pairs with the `writing-for-agents` authoring standard)
 - `differential-review` / `fp-check` — Trail of Bits (`trailofbits-skills`); `security-awareness` — Trail of Bits (`trailofbits-skills-curated`)
 - `agent-orchestration` — wshobson `claude-code-workflows`: multi-agent role/team setups (tech-lead, frontend, backend, ml-engineer). *`agent-teams` from the same marketplace is explicitly **disabled** — it still calls the `TeamCreate`/`TeamDelete` tools removed in Claude Code v2.1.178.*
 - **ship & operate** (wshobson `claude-code-workflows`): `backend-development`, `backend-api-security`, `cloud-infrastructure`, `kubernetes-operations`, `cicd-automation`, `deployment-strategies`, `deployment-validation`, `observability-monitoring`, `incident-response` — deploy/run/monitor the product
@@ -40,7 +42,6 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
 
 **On-demand (registered, install when needed)**
 - `ecc@ecc` — the full 271-skill ECC collection
-- `elements-of-style@superpowers-marketplace` — obra (`superpowers` itself is now always-on)
 - `probity` — nizos: TDD/rule-enforcement hooks; `memsearch` — zilliztech: semantic session memory; `openai-codex` — OpenAI: cross-model reviews — all registered, not enabled
 - the remaining `trailofbits-skills` / `trailofbits-skills-curated` plugins beyond the three enabled above
 - more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `frontend-mobile-development`, …)
@@ -60,7 +61,7 @@ It safely deep-merges this repo's [`settings.json`](settings.json) (both
 `extraKnownMarketplaces` and `enabledPlugins`) into your user-global
 `~/.claude/settings.json`, writing a timestamped backup first, and is idempotent — re-running
 it never duplicates or removes entries. Open Claude Code in any directory and the always-on
-tier is live; `ecc`/`superpowers` are registered and one command away.
+tier is live; `ecc` is registered and one command away.
 
 It also installs this repo's [`CLAUDE.md`](CLAUDE.md) (Andrej Karpathy's LLM-coding guidelines)
 to `~/.claude/CLAUDE.md` so the rules apply in **every** project by default. It writes the file
@@ -78,16 +79,20 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 `~/.claude/settings.json` by hand (it carries both `extraKnownMarketplaces` and
 `enabledPlugins`). This is what `bootstrap.sh` does for you.
 
-**Option B — slash commands (manual).**
+**Option B — slash commands (manual; generated from `settings.json`).**
 ```text
-# register marketplaces
+# register marketplaces (claude-plugins-official is built in)
 /plugin marketplace add bharatnain/bharats-claude-toolkit
 /plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill
 /plugin marketplace add addyosmani/web-quality-skills
 /plugin marketplace add affaan-m/ecc
-/plugin marketplace add obra/superpowers-marketplace
 /plugin marketplace add phuryn/pm-skills
 /plugin marketplace add wshobson/agents
+/plugin marketplace add trailofbits/skills
+/plugin marketplace add trailofbits/skills-curated
+/plugin marketplace add nizos/probity
+/plugin marketplace add zilliztech/memsearch
+/plugin marketplace add openai/codex-plugin-cc
 
 # enable the always-on tier
 /plugin install bharats-claude-toolkit@bharats-claude-toolkit-dev
@@ -97,8 +102,28 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 /plugin install pm-product-discovery@pm-skills
 /plugin install pm-product-strategy@pm-skills
 /plugin install pm-execution@pm-skills
-/plugin install superpowers@superpowers-marketplace
+/plugin install security-guidance@claude-plugins-official
+/plugin install plugin-dev@claude-plugins-official
+/plugin install differential-review@trailofbits-skills
+/plugin install fp-check@trailofbits-skills
+/plugin install security-awareness@trailofbits-skills-curated
 /plugin install agent-orchestration@claude-code-workflows
+/plugin install cloud-infrastructure@claude-code-workflows
+/plugin install kubernetes-operations@claude-code-workflows
+/plugin install cicd-automation@claude-code-workflows
+/plugin install deployment-strategies@claude-code-workflows
+/plugin install deployment-validation@claude-code-workflows
+/plugin install observability-monitoring@claude-code-workflows
+/plugin install incident-response@claude-code-workflows
+/plugin install backend-development@claude-code-workflows
+/plugin install backend-api-security@claude-code-workflows
+/plugin install data-engineering@claude-code-workflows
+/plugin install machine-learning-ops@claude-code-workflows
+/plugin install superpowers@claude-plugins-official
+/plugin install mattpocock-skills@claude-plugins-official
+/plugin install claude-security@claude-plugins-official
+/plugin install session-report@claude-plugins-official
+/plugin install skill-creator@claude-plugins-official
 # NOTE: do NOT install agent-teams@claude-code-workflows — it calls tools
 # removed in Claude Code v2.1.178 and is explicitly disabled in settings.json.
 ```
@@ -119,12 +144,14 @@ re-run the bootstrap to pick it up:
 
 ```bash
 git pull
-bash scripts/bootstrap.sh   # backup + union-merge; won't disable anything you added
+bash scripts/bootstrap.sh   # backup + merge; keeps your own plugins, enforces repo-side disables
 /reload-plugins             # activate in this session (or restart Claude Code)
 ```
 
-The merge is a union: it only *adds* the new entries and never removes plugins you enabled
-yourself. Returning users only need these three lines.
+The merge adds new entries and keeps plugins you enabled yourself, with one exception: a
+plugin this repo's `settings.json` sets to `false` (a retired marketplace copy, or
+`agent-teams` which calls removed tools) is forced off on every run. Returning users only need
+these three lines.
 
 ---
 
@@ -153,14 +180,13 @@ then `/reload-plugins` to activate. Tunables (set in your shell, or under `env` 
 
 ```text
 /plugin install ecc@ecc                              # the 271-skill firehose
-/plugin install elements-of-style@superpowers-marketplace  # obra style guide (superpowers itself is now always-on)
+/plugin marketplace add obra/superpowers-marketplace && /plugin install elements-of-style@superpowers-marketplace  # obra style guide
 /reload-plugins                                       # make them live in THIS session, no restart
 ```
 Also registered (browse with `/plugin` and install from their marketplaces): **probity**
 (TDD/rule-enforcement hooks), **memsearch** (semantic session memory), **openai-codex**
 (cross-model reviews), and the remaining **trailofbits-skills** / **trailofbits-skills-curated**
 plugins beyond the enabled `differential-review` / `fp-check` / `security-awareness`.
-`agent-teams@claude-code-workflows` stays disabled (calls tools removed in Claude Code v2.1.178).
 
 Then just work — the newly available skills auto-trigger by description.
 (`/reload-plugins` may warn about prompt-cache invalidation if a plugin adds MCP servers.)
@@ -172,13 +198,13 @@ folder from `github.com/affaan-m/ecc/skills/<name>/` into this repo's `skills/`.
 
 ## Agentic project management (beads)
 
-[beads](https://github.com/steveyegge/beads) (`bd`) is a graph issue-tracker built for AI
+[beads](https://github.com/gastownhall/beads) (`bd`) is a graph issue-tracker built for AI
 agents — persistent, dependency-aware task memory across sessions. It's a **tool**, not a
 vendored skill (its license is unverified), so integrate it rather than copy it:
 
 ```bash
 # 1) install the CLI
-curl -sSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/gastownhall/beads/v1.3.0/scripts/install.sh | BEADS_VERSION=1.3.0 bash
 # 2) in a project
 bd init
 # 3) enable its Claude Code plugin (slash commands + MCP) per the repo's docs/PLUGIN.md
@@ -203,15 +229,6 @@ above when available.
 **Solo-safe by design:** with no sentinel marker, the gate hooks are pure no-ops — installing
 this changes nothing for solo work until `/team` activates a session, and teardown returns the
 hooks to no-ops.
-
-### Experimental: agent-teams gates
-
-When run with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, three additional team
-lifecycle events — `TaskCreated`, `TaskCompleted`, `TeammateIdle` — route into the
-same gate hook. The wiring is **additive and safe when the flag is off**: the
-events only fire under the experimental flag, and the hook stays sentinel-gated and
-fails open. The payload field names were inferred and must be verified live — see
-[`docs/agent-teams-probe.md`](docs/agent-teams-probe.md) for the one-time probe runbook.
 
 ---
 
@@ -254,8 +271,7 @@ design-DNA extraction — explicit invocation only)
 
 **Market & customer research** — `market-research` (TAM/SAM/SOM, competitive, diligence),
 `customer-research` (ICP/JTBD/VOC), `competitor-profiling`, `competitors`, `product-marketing`
-(positioning/ICP context spine). For general research, use the native `deep-research` +
-vendored `research-ops`.
+(positioning/ICP context spine). For general research, use the vendored `research-ops`.
 
 **Go-to-market** — `launch`, `sales-enablement`, `pricing` (with `product-marketing` + `market-research` above)
 
@@ -302,8 +318,8 @@ method)
 policy templates). For an alternative ReBAC engine, SpiceDB's `authzed/authzed-marketplace` is
 one clone away; for transcript-driven MEDDPICC, `extruct-ai/gtm-cowork-skills` is enable-only (no license).
 
-> **Not duplicated:** `code-review`, `security-review`, `deep-research`, `verify`, and `simplify`
-> ship natively with Claude Code — use those directly.
+> **Not duplicated:** `code-review`, `security-review`, and `simplify` ship natively with
+> Claude Code — use those directly.
 
 ECC-sourced skills have been **de-branded** (ECC-specific defaults, tool references, and
 personal-voice samples removed). Attribution and licenses for everything vendored are in
@@ -314,8 +330,8 @@ personal-voice samples removed). Attribution and licenses for everything vendore
 ## Maintaining the toolkit
 
 Every maintenance command is **stdlib-only and read-only** — they report, they never commit
-or push. `release.py` writes files and tags locally, then prints the exact `git push` for you
-to run by hand.
+or push. `release.py` writes files, then prints the exact `git commit`, `git tag` and `git push`
+for you to run by hand (the tag is created after the release commit so it points at it).
 
 - **Health-check** — `python3 scripts/doctor.py` (or the **`/doctor`** command) checks your
   settings, plugins, marketplace, and optional tools, printing the inline fix for each issue.
@@ -324,8 +340,8 @@ to run by hand.
   upstream HEAD. The **`upstream-drift.yml`** Action runs this weekly and upserts a single
   rolling **"Upstream drift report"** issue.
 - **Release** — `python3 scripts/release.py --bump <level>` is the one-command release: it
-  bumps the version, scaffolds the CHANGELOG section, and creates the local tag — then prints
-  the push command. It **never auto-pushes**. Add `--dry-run` to preview. Pushing the `vX.Y.Z`
+  bumps the version and promotes the `[Unreleased]` CHANGELOG block into the new section — then
+  prints the commit/tag/push commands. It **never commits, tags, or pushes**. Add `--dry-run` to preview. Pushing the `vX.Y.Z`
   tag triggers `release.yml`, which publishes the GitHub Release.
 - **Validate** — `validate_skills.py` (skills + `SKILLS.md` catalog) and `validate_assets.py`
   (`agents/`, `commands/`, `workflows/`) gate every change; both also run in CI.
@@ -353,7 +369,7 @@ bharats-claude-toolkit/
 │   ├── check_upstream.py    # report vendored-skill drift vs THIRD_PARTY_SOURCES.json
 │   ├── doctor.py            # health-check settings/plugins/tools (backs /doctor)
 │   ├── validate_assets.py   # validate agents/, commands/, workflows/ assets
-│   └── release.py           # bump version + scaffold CHANGELOG + local tag (no push)
+│   └── release.py           # bump version + promote CHANGELOG [Unreleased] (no commit/tag/push)
 ├── .github/workflows/
 │   ├── upstream-drift.yml   # weekly cron → rolling "Upstream drift report" issue
 │   └── release.yml          # pushed vX.Y.Z tag → published GitHub Release

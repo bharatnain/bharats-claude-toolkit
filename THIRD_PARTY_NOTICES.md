@@ -47,7 +47,7 @@ Copyright (c) 2026 Christopher Greer
 ### Vercel agent skills — https://github.com/vercel-labs/agent-skills
 Copyright (c) Vercel, Inc.
 
-- Skill: `react-best-practices` (frontmatter name: `vercel-react-best-practices`)
+- Skill: `react-best-practices` (upstream frontmatter name `vercel-react-best-practices`; aligned to the directory name here)
 
 ### FFmpeg skill — https://github.com/ychoi-kr/claude-ffmpeg-skill
 Copyright (c) the claude-ffmpeg-skill authors
@@ -247,6 +247,9 @@ Authored for this toolkit (not third-party), MIT-licensed under this repo:
 
 - `security-questionnaire-responder` — recurring vendor-security-questionnaire (SIG/CAIQ/VSA)
   workflow with an evidence-mapped answer library; complements `rfp-responder` and the compliance skills.
+- `claude-code-docs` — always fetch current code.claude.com docs before Claude Code feature work.
+- `startup-idea-evaluation` — startup-idea evaluation gauntlet.
+- `team-orchestration` — the brain behind `/team`: maturity-matched multi-agent orchestration with live quality gates.
 
 ---
 
@@ -261,5 +264,11 @@ copied into this repo and stays auto-updated from source:
 - `pm-skills` (`pm-product-discovery`, `pm-product-strategy`, `pm-execution`, …) — https://github.com/phuryn/pm-skills (MIT) — enabled
 - `claude-code-workflows` (`agent-teams`, `agent-orchestration`, `conductor`, role bundles) — https://github.com/wshobson/agents (MIT) — enabled
 - `ecc` — https://github.com/affaan-m/ecc (MIT) — registered, on-demand
-- `superpowers` / `elements-of-style` — https://github.com/obra/superpowers-marketplace (MIT) — registered, on-demand
-- `beads` (`bd`) — https://github.com/steveyegge/beads — agentic issue tracker; the **default task store** for the toolkit. `bootstrap.sh` auto-installs the CLI (non-blocking), a `SessionStart` hook runs `bd init` per git repo, and workflows/teams persist tasks to it — all opt-out via `CLAUDE_BEADS=off`, with the native Task tools as the fallback. Integrated as **CLI only** (MCP deferred). **License unverified → integrated by reference, NOT vendored**; it is therefore intentionally absent from `THIRD_PARTY_SOURCES.json` (that manifest tracks vendored skills for upstream refresh).
+- `superpowers` — https://github.com/obra/superpowers (MIT) — enabled, consumed SHA-pinned via `claude-plugins-official`
+- `mattpocock-skills` — https://github.com/mattpocock/skills (MIT) — enabled, consumed SHA-pinned via `claude-plugins-official`
+- `security-guidance`, `plugin-dev`, `claude-security`, `session-report`, `skill-creator` — Anthropic, `claude-plugins-official` — enabled
+- `differential-review`, `fp-check` — https://github.com/trailofbits/skills (CC-BY-SA-4.0) — enabled; `security-awareness` — https://github.com/trailofbits/skills-curated (CC-BY-SA-4.0) — enabled; remaining Trail of Bits plugins registered, on-demand
+- `probity` — https://github.com/nizos/probity (MIT) — registered, on-demand
+- `memsearch` — https://github.com/zilliztech/memsearch (MIT) — registered, on-demand
+- `openai-codex` — https://github.com/openai/codex-plugin-cc (Apache-2.0) — registered, on-demand
+- `beads` (`bd`) — https://github.com/gastownhall/beads — agentic issue tracker; the **default task store** for the toolkit. `bootstrap.sh` auto-installs the CLI (non-blocking), a `SessionStart` hook runs `bd init` per git repo, and workflows/teams persist tasks to it — all opt-out via `CLAUDE_BEADS=off`, with the native Task tools as the fallback. Integrated as **CLI only** (MCP deferred). **License unverified → integrated by reference, NOT vendored**; it is therefore intentionally absent from `THIRD_PARTY_SOURCES.json` (that manifest tracks vendored skills for upstream refresh).

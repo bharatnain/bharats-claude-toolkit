@@ -62,11 +62,13 @@ models **Fable 5.1** (`claude-fable-5-1`), **Opus 5.5** (`claude-opus-5-5`, GA 2
 
 ## Maintainer-only
 
-- Run `/skill-doctor` once (2.1.261+) and prune never-invoked vendored skills.
-- Run `bash scripts/bootstrap.sh` on each machine so the roster change lands
+- Prune never-invoked vendored skills. `/skill-doctor` reports are not available on this
+  connection, so use the local stand-in: `python3 scripts/skill_usage.py --days 30` (add
+  `--prune-list` for bare directory names). Review the list by hand before removing anything.
+- Run `bash scripts/bootstrap.sh` on each other machine so the roster change lands (done on the primary machine 2026-09-22)
   (`superpowers@superpowers-marketplace` and `mattpocock-skills@mattpocock` flip to `false`,
   the five new `claude-plugins-official` plugins enable — `bootstrap.sh` now forces repo-side
   `false` values, which its add-only merge previously could not). Fully quit and reopen Claude Code.
-- Local CLI is 2.1.92 while the desktop app bundles 2.1.280: run `claude update`.
-- Set the `ANTHROPIC_API_KEY` repo secret if you want `plugin-eval.yml` to run.
+- Set the `ANTHROPIC_API_KEY` repo secret if you want `plugin-eval.yml` to run:
+  `bash scripts/set_eval_secret.sh` (hidden prompt, or reads `$ANTHROPIC_API_KEY`).
 - Watch the model deprecations page for Sonnet 4.5 and the Sonnet 5.5 / Haiku 5.5 launches.

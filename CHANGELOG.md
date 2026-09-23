@@ -5,6 +5,8 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-09-22
+
 ### 2026-09-22 — Backlog execution: full re-vendor wave, roster consolidation, agent-teams removal
 
 - **Changed: re-synced 52 vendored skill directories against 8 upstream HEADs** (47 changed;
@@ -180,6 +182,27 @@ All notable changes to this project are documented here. Format follows
   `bd add` / `--depends-on` do not exist in current beads.
 - **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and
   start a new chat.
+
+### Commits
+
+- feat: execute Sep-2026 housekeeping backlog
+- feat: Sep-2026 latest-model refresh + housekeeping backlog
+- Merge pull request #7 from bharatnain/claude/evaluate-awesome-toolkit-ff3e40
+- feat: enable mattpocock-skills by default; adopt writing-for-agents as authoring standard
+- Merge pull request #6 from bharatnain/claude/evaluate-awesome-toolkit-ff3e40
+- fix: neutralize hallmark upstream-escaping links; make --strict-yaml report parse errors
+- feat: Aug-2026 ecosystem upgrade wave — 18 vendored skills, plugin enables, hooks hardening
+- refactor: move research library to bharatnain/research repo
+- feat(skills): startup-idea-evaluation gauntlet skill
+- docs(research): playbook synthesis + library index
+- docs(research): startup business-model evaluation library (12 deep dives)
+- feat(bootstrap): install default global CLAUDE.md (Karpathy rules)
+- feat(beads): default task store + beads-backed workflows
+- Merge pull request #2 from bharatnain/fix/enabledplugins-object-format
+- fix(bootstrap): load plugins reliably — enabledPlugins object + bash 3.2
+- bootstrap: carry permissions.allow into user settings
+- 0.8.1: fix duplicate-hooks load + validate_assets false positives
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and start a new chat.
 
 ## [0.8.1] - 2026-06-24
 

@@ -61,8 +61,8 @@ Sort every component into a bucket:
 
 Identify the following problem patterns:
 
-- **Bloated agent descriptions** — description >30 words in frontmatter loads into every Task tool invocation
-- **Heavy agents** — files >200 lines inflate Task tool context on every spawn
+- **Bloated agent descriptions** — description >30 words in frontmatter loads into every Agent tool invocation
+- **Heavy agents** — files >200 lines inflate Agent tool context on every spawn
 - **Redundant components** — skills that duplicate agent logic, rules that duplicate CLAUDE.md
 - **MCP over-subscription** — >10 servers, or servers wrapping CLI tools available for free
 - **CLAUDE.md bloat** — verbose explanations, outdated sections, instructions that should be rules
@@ -131,6 +131,6 @@ Skill: Current overhead 33% → adding 5 servers (~50 tools) would add ~25,000 t
 
 - **Token estimation**: use `words × 1.3` for prose, `chars / 4` for code-heavy files
 - **MCP is the biggest lever**: each tool schema costs ~500 tokens; a 30-tool server costs more than all your skills combined
-- **Agent descriptions are loaded always**: even if the agent is never invoked, its description field is present in every Task tool context
+- **Agent descriptions are loaded always**: even if the agent is never invoked, its description field is present in every Agent tool context
 - **Verbose mode for debugging**: use when you need to pinpoint the exact files driving overhead, not for regular audits
 - **Audit after changes**: run after adding any agent, skill, or MCP server to catch creep early

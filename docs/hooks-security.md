@@ -1,6 +1,6 @@
 # Hook-layer security
 
-This toolkit ships five hook registrations across four scripts (`hooks/hooks.json` →
+This toolkit ships eleven hook registrations across four scripts (`hooks/hooks.json` →
 `beads_init.py`, `notify.py`, `secret_scan.py`, `team_gate.py`). This doc covers three
 things: an **opt-in** tamper-proofing pattern for consumers, the stdin/exit-code contract
 every hook in this repo follows, and the Claude Code v2.1.207 / v2.1.214 constraints

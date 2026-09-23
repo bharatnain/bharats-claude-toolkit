@@ -1,8 +1,11 @@
 {
-  "_comment": "Provenance + deterministic-refresh manifest for VENDORED skills. 'upstream_head_at_manifest' is the upstream HEAD SHA recorded 2026-06-23 (NOT necessarily the exact commit each skill was vendored from \u2014 vendoring predates this manifest). LOCAL DIVERGENCE: all vendored skills carry local edits \u2014 descriptions disambiguated (Phase B) and/or dead-link pointers neutralized (Phase D). Re-pulling upstream requires re-applying those edits. See git history + THIRD_PARTY_NOTICES.md.",
+  "_comment": "Provenance + deterministic-refresh manifest for VENDORED skills. 'upstream_head_at_manifest' is the upstream HEAD SHA recorded 2026-06-23 (NOT necessarily the exact commit each skill was vendored from \u2014 vendoring predates this manifest). Re-recorded 2026-09-22 for sources whose vendored directories were unchanged upstream; sources with real content drift keep the older SHA until re-vendored (see docs/housekeeping-2026-09.md). LOCAL DIVERGENCE: all vendored skills carry local edits \u2014 descriptions disambiguated (Phase B) and/or dead-link pointers neutralized (Phase D). Re-pulling upstream requires re-applying those edits. See git history + THIRD_PARTY_NOTICES.md.",
   "diverged_from_upstream": true,
   "first_party": [
-    "security-questionnaire-responder"
+    "claude-code-docs",
+    "security-questionnaire-responder",
+    "startup-idea-evaluation",
+    "team-orchestration"
   ],
   "sources": [
     {
@@ -92,7 +95,7 @@
       "repo": "https://github.com/vercel-labs/agent-skills",
       "license": "MIT",
       "copyright": "Vercel, Inc.",
-      "upstream_head_at_manifest": "f8a72b9603728bb92a217a879b7e62e43ad76c81",
+      "upstream_head_at_manifest": "063bee94c3f4df8453406c830b0a7df0f2860278",
       "skills": [
         "react-best-practices"
       ]
@@ -140,7 +143,7 @@
       "repo": "https://github.com/OneWave-AI/claude-skills",
       "license": "MIT",
       "copyright": "OneWave AI",
-      "upstream_head_at_manifest": "071454bbe3212a2d9c787f6c3c85660098983011",
+      "upstream_head_at_manifest": "9d3dd456dc4656ee3065a146f35bf7079e13f91f",
       "skills": [
         "sales-methodology-implementer",
         "deal-review-framework",
@@ -200,7 +203,7 @@
       "repo": "https://github.com/anthropics/skills",
       "license": "Apache-2.0",
       "copyright": "Anthropic",
-      "upstream_head_at_manifest": "57546260929473d4e0d1c1bb75297be2fdfa1949",
+      "upstream_head_at_manifest": "34040c9c568585f6929bedeaad110ad08f079624",
       "skills": [
         "theme-factory",
         "brand-guidelines",
@@ -238,7 +241,7 @@
       "repo": "https://github.com/openfga/agent-skills",
       "license": "Apache-2.0",
       "copyright": "OpenFGA",
-      "upstream_head_at_manifest": "7ffd65d59d2d84d7c424686311022a411588acf4",
+      "upstream_head_at_manifest": "e910d26ccb207ecc96748b9e6af0ab821e4b1c56",
       "skills": [
         "openfga"
       ]
@@ -247,7 +250,7 @@
       "repo": "https://github.com/anthropics/defending-code-reference-harness",
       "license": "Apache-2.0",
       "copyright": "Anthropic PBC",
-      "upstream_head_at_manifest": "6de8141b971d917a461bce4193c8b535a6b6cfc1",
+      "upstream_head_at_manifest": "d3bea6b5793b5f3d59a75ebe69a58efa88383145",
       "skills": [
         "threat-model",
         "vuln-scan",
@@ -272,7 +275,7 @@
       "repo": "https://github.com/anthropics/financial-services",
       "license": "Apache-2.0",
       "copyright": "Anthropic, PBC",
-      "upstream_head_at_manifest": "eb0c1ea962d4c6cee07f4920e36b1aa7a025d320",
+      "upstream_head_at_manifest": "574ed3624aebd0418c7e96cd101262f30210ab26",
       "skills": [
         "dcf-model",
         "audit-xls",
@@ -313,7 +316,7 @@
       "repo": "https://github.com/anthropics/knowledge-work-plugins",
       "license": "Apache-2.0",
       "copyright": "Anthropic",
-      "upstream_head_at_manifest": "f32aab8257f3e29910c097143089a35957946cbd",
+      "upstream_head_at_manifest": "1bd42820da111e5f0206e570bf5228a1c35839c7",
       "skills": [
         "plugin-vetting"
       ]

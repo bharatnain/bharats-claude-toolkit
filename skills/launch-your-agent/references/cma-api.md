@@ -30,7 +30,7 @@ python3 -c "import json,sys; d=json.JSONDecoder(strict=False).decode(open('/tmp/
 ```bash
 curl -sS "$BASE/models" "${H[@]:0:4}" | jq -r '.data[].id'
 ```
-Default to the newest Opus-class. Reach for Sonnet-class when speed or run cost matters more for the use case — e.g. high-frequency runs, latency-sensitive paths, or the founder asks for cheaper/faster. Fast mode: pass model as `{"id":"claude-opus-4-8","speed":"fast"}`.
+Default to the newest Opus-class. Reach for Sonnet-class when speed or run cost matters more for the use case — e.g. high-frequency runs, latency-sensitive paths, or the founder asks for cheaper/faster. Fast mode: pass model as `{"id":"claude-opus-5-5","speed":"fast"}`.
 
 ## 1. Agent (versioned; create once)
 
@@ -38,7 +38,7 @@ Default to the newest Opus-class. Reach for Sonnet-class when speed or run cost 
 # curl
 curl -sS --fail-with-body "$BASE/agents" "${H[@]}" -d @agent.json
 # ant
-ant beta:agents create --name "..." --model '{id: claude-opus-4-8}' \
+ant beta:agents create --name "..." --model '{id: claude-opus-5-5}' \
   --system "..." --tool '{type: agent_toolset_20260401}'
 ```
 `agent.json` fields: `name`*, `model`*, `system`, `tools`, `mcp_servers`, `skills`, `multiagent`, `description`, `metadata`.

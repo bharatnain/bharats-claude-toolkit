@@ -132,7 +132,7 @@ In this toolkit, `hooks/team_gate.py` runs the quality gate automatically on
 session sentinel is active).
 
 When wiring verification into your own `Stop` or `SubagentStop` hooks, prefer
-returning `hookSpecificOutput.additionalContext` (Claude Code v2.1.163+): it
+returning `hookSpecificOutput.additionalContext`: it
 feeds the verification report back to Claude and keeps the turn going without
 the output being labeled a hook error. Reserve a blocking response (exit code 2
 with the failure on stderr) for genuinely blocking gate failures — do not fake

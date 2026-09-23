@@ -10,9 +10,10 @@ front is what sits in my *always-on* index vs. what stays *one command away*.
 **Always-on = 26 enabled plugins**, which bring **134 vendored skills + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
 *enable* is the plugin; the 134 skills + 8 agents are what *this* repo's plugin contributes,
-and the other 24 plugins layer their skills on top.
+and the other 25 plugins layer their skills on top.
 
-See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
+See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
+[`docs/housekeeping-2026-09.md`](docs/housekeeping-2026-09.md) for the open maintenance backlog.
 
 ---
 
@@ -21,7 +22,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history.
 | Tier | What | How it's wired |
 |---|---|---|
 | **Always-on** | This plugin + a few best-in-class external plugins, enabled in every directory | `enabledPlugins` in user-global `~/.claude/settings.json` |
-| **On-demand** | The ECC firehose + superpowers — registered but *not* enabled | `extraKnownMarketplaces`; install when relevant |
+| **On-demand** | The ECC firehose and other registered-but-not-enabled plugins | `extraKnownMarketplaces`; install when relevant |
 | **Vendored** | Curated skills copied *into* this plugin (so it's self-contained) | `skills/` and `agents/` in this repo |
 
 **Always-on plugins**
@@ -60,7 +61,7 @@ It safely deep-merges this repo's [`settings.json`](settings.json) (both
 `extraKnownMarketplaces` and `enabledPlugins`) into your user-global
 `~/.claude/settings.json`, writing a timestamped backup first, and is idempotent — re-running
 it never duplicates or removes entries. Open Claude Code in any directory and the always-on
-tier is live; `ecc`/`superpowers` are registered and one command away.
+tier is live; `ecc` is registered and one command away.
 
 It also installs this repo's [`CLAUDE.md`](CLAUDE.md) (Andrej Karpathy's LLM-coding guidelines)
 to `~/.claude/CLAUDE.md` so the rules apply in **every** project by default. It writes the file

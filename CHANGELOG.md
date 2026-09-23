@@ -5,6 +5,33 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### 2026-09-22 — Latest-model refresh (Opus 5.5 / Fable 5.1 / Sonnet 5) + housekeeping backlog
+
+- **Changed: model defaults bumped to the current lineup.** `cost-aware-llm-pipeline` routes
+  `claude-sonnet-5` / `claude-haiku-4-5` (was Sonnet 4.6 / dated Haiku pin); its pricing table is
+  re-cached Sep 2026 with Sonnet 5 ($2/$10), Opus 5.5 ($4/$20) and Fable 5.1 ($10/$50); cache-minimum
+  prose updated. `launch-your-agent` examples use `claude-opus-5-5` and the fast-mode model list is
+  corrected (Opus 5.5 / Opus 5 / Opus 4.8). The three `references/claude-api/*.md` files are
+  re-vendored from the `claude-api` skill bundled with Claude Code 2.1.280, with a dated freshness
+  banner (Opus 5.5 GA 2026-09-22; Opus 4.1 retired 2026-08-05).
+- **Changed: docs swept for Claude Code 2.1.280.** README tier table / bootstrap paragraph and
+  THIRD_PARTY_NOTICES no longer describe `superpowers` as on-demand; README "other 25 plugins";
+  `/toolkit` headline 26 plugins / 134 skills / 8 agents; `docs/hooks-security.md` counts eleven hook
+  registrations; "Task tool" → "Agent tool" in `threat-model` and `context-budget`; version
+  qualifier dropped in `verification-loop`. Agent-teams events verified still documented as
+  experimental (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`); `agent-teams@claude-code-workflows`
+  stays disabled (upstream still calls `TeamCreate`).
+- **Changed: hygiene.** Dead `scripts/db-probe.sh` permission removed from `settings.json`;
+  `.gitignore` covers `.claude/team-profile.json`, `__pycache__/`, `*.pyc`, `.pytest_cache/`.
+  `THIRD_PARTY_SOURCES.json` `first_party` now lists `claude-code-docs`, `startup-idea-evaluation`,
+  `team-orchestration`; upstream SHAs re-recorded for the 7 sources with no content drift in our
+  vendored directories (16 of 22 sources had moved), with the manifest `_comment` noting the
+  2026-09-22 re-record.
+- **Added: `docs/housekeeping-2026-09.md`** — the ranked open backlog from the sweep (release 0.9.0
+  cut + `release.py` Unreleased-insertion bug, GRC v2.0.0 re-vendor, agent-teams probe-or-remove
+  decision, ecc drift policy, marketingskills/workos/hallmark re-pulls, secret-scan pattern refresh,
+  `/skill-doctor` pruning, supply-chain pinning).
+
 ### 2026-08-07 — mattpocock-skills enabled by default; house skill-authoring standard
 
 - **Enabled: `mattpocock-skills@mattpocock`** (github.com/mattpocock/skills, MIT, v1.2.3) —

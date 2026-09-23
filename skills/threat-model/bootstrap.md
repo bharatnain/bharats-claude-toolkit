@@ -100,7 +100,7 @@ State files in `./.threat-model-state/`:
 ## Stage 1 — Research swarm
 
 Goal: gather everything needed to fill sections 1-3 and the vuln working table, in
-parallel. Spawn the agents below **in a single batch** with the Task tool so
+parallel. Spawn the agents below **in a single batch** with the Agent tool so
 they run concurrently. Each agent gets a narrow brief, the absolute path to
 `<target-dir>`, and the read-only restriction verbatim. Each returns a
 structured text block; you synthesize in Stage 2.

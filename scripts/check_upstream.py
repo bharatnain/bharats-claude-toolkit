@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Check vendored-skill upstreams for drift vs THIRD_PARTY_SOURCES.json. Stdlib only.
+"""Check vendored-skill upstreams for drift vs THIRD_PARTY_SOURCES.json, and SHA-pinned
+marketplaces in settings.json for drift vs their pins. Stdlib only.
 
 For each source in the manifest, runs `git ls-remote <repo> HEAD` and compares
 the current upstream HEAD SHA against the recorded `upstream_head_at_manifest`.
@@ -94,7 +95,34 @@ def build_results(manifest_path):
     return results
 
 
-def render_human(results):
+def build_marketplace_results(settings_path):
+    """Return per-marketplace pin drift for SHA-pinned extraKnownMarketplaces entries.
+
+    Unpinned entries (no source.sha) are skipped: there is no pin to drift from.
+    """
+    try:
+        data = json.loads(settings_path.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 - a bad settings file must not crash the report
+        return []
+    results = []
+    for name, entry in (data.get("extraKnownMarketplaces") or {}).items():
+        src = (entry or {}).get("source") or {}
+        pinned = src.get("sha")
+        repo = src.get("repo") or src.get("url")
+        if not pinned or not repo:
+            continue
+        url = f"https://github.com/{repo}" if src.get("source") == "github" else repo
+        current = resolve_head(url)
+        if current is None:
+            status = STATUS_UNKNOWN
+            current = "unknown"
+        else:
+            status = STATUS_UP_TO_DATE if current == pinned else STATUS_UPDATE_AVAILABLE
+        results.append({"repo": f"{name} ({repo})", "recorded": pinned, "current": current, "status": status})
+    return results
+
+
+def render_human(results, marketplaces=None):
     total = len(results)
     n = sum(1 for r in results if r["status"] == STATUS_UPDATE_AVAILABLE)
     k = sum(1 for r in results if r["status"] == STATUS_UNKNOWN)
@@ -117,10 +145,22 @@ def render_human(results):
             "Update: re-copy upstream + re-apply de-branding "
             "(see README “Maintaining vendored skills”)."
         )
+    if marketplaces:
+        m = sum(1 for r in marketplaces if r["status"] == STATUS_UPDATE_AVAILABLE)
+        lines.append("")
+        lines.append(f"Marketplace pins: {m} of {len(marketplaces)} have moved past their pinned sha")
+        lines.append("")
+        lines.append("| marketplace | pinned | current | status |")
+        lines.append("|---|---|---|---|")
+        for r in marketplaces:
+            lines.append(f"| {r['repo']} | {r['recorded'][:12]} | {r['current'][:12]} | {r['status']} |")
+        if m > 0:
+            lines.append("")
+            lines.append("Bump a pin only after re-vetting the new revision (docs/supply-chain.md).")
     return "\n".join(lines)
 
 
-def render_json(results):
+def render_json(results, marketplaces=None):
     total = len(results)
     n = sum(1 for r in results if r["status"] == STATUS_UPDATE_AVAILABLE)
     k = sum(1 for r in results if r["status"] == STATUS_UNKNOWN)
@@ -128,6 +168,8 @@ def render_json(results):
         "summary": {"total": total, "update_available": n, "unknown": k},
         "sources": results,
     }
+    if marketplaces is not None:
+        obj["marketplaces"] = marketplaces
     return json.dumps(obj, indent=2)
 
 
@@ -149,11 +191,12 @@ def main(argv):
     manifest = root / "THIRD_PARTY_SOURCES.json"
 
     results = build_results(manifest)
+    marketplaces = build_marketplace_results(root / "settings.json")
 
     if args.format == "json":
-        print(render_json(results))
+        print(render_json(results, marketplaces))
     else:
-        print(render_human(results))
+        print(render_human(results, marketplaces))
 
     if args.fail_on_drift and any(r["status"] == STATUS_UPDATE_AVAILABLE for r in results):
         return 1

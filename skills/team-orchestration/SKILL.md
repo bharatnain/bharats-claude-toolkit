@@ -73,22 +73,20 @@ variant, see the `beads-task` workflow template (`workflows/beads-task.workflow.
 ### 5. Spawn the teammates
 
 Spawn each teammate directly via the **Agent tool's `name` parameter** — every session has
-one implicit team, so there is no team setup or teardown tool call (Claude Code v2.1.178
-removed `TeamCreate`/`TeamDelete`; a `team_name` argument is accepted but ignored). Isolate
+one implicit team, so there is no team setup or teardown tool call. Isolate
 teammates in worktrees per the **profile's `isolation.worktree`** flag (the sentinel-resolved
 profile is the runtime source of truth; roster-matrix.md documents the expected value per
 profile). Because the sentinel is live, the **hooks + `quality_gate.py` enforce the gates
 automatically** — each teammate's work is checked against the profile's blocking checks
 without you wiring it up per task.
 
-**Background semantics** (Claude Code v2.1.198+): subagents run in the **background by
+**Background semantics**: subagents run in the **background by
 default** — a spawn is not a synchronous call that returns the result inline. You keep
 orchestrating while teammates work and are notified as each finishes; the gates still fire
-per teammate via the `SubagentStop` / `TaskCompleted` hooks on completion. Teammates'
+per teammate via the `SubagentStop` hook on completion. Teammates'
 permission prompts surface in **your (main) session**, so stay responsive to them. Subagents
-can nest to depth 3, and spawns are capped at 20 concurrent / 200 per session
-(`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` / `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`) — size
-your parallel waves within those caps.
+can nest to depth 3 (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`) and run up to 20 at once
+(`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) — size your parallel waves within those caps.
 
 ### 6. Teardown
 

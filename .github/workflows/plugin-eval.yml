@@ -1,0 +1,24 @@
+name: plugin-eval
+
+# Manual only: each run spends API tokens. Requires the ANTHROPIC_API_KEY repo secret.
+on:
+  workflow_dispatch:
+    inputs:
+      threshold:
+        description: "Minimum passing score (0-1)"
+        default: "0.8"
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - run: npm install -g @anthropic-ai/claude-code@2.1.280
+      - run: claude plugin eval . --json evals/results/ci.json --threshold "${{ inputs.threshold }}" --trust-plugin
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: plugin-eval-results
+          path: evals/results/

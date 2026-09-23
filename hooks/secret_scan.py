@@ -2,7 +2,7 @@
 """Secret-scanning PreToolUse hook for Claude Code.
 
 STDLIB ONLY. Mirrors hooks/notify.py: reads the event JSON on stdin. Fires on
-PreToolUse for Write|Edit|MultiEdit and scans the INCOMING content (not the
+PreToolUse for Write|Edit and scans the INCOMING content (not the
 file on disk) so a leaked credential is blocked before it ever lands.
 
 Exit contract (same convention as hooks/team_gate.py):
@@ -28,8 +28,8 @@ MAX_STDIN = 10 * 1024 * 1024  # 10 MiB
 def _off(name):
     return os.environ.get(name, "").strip().lower() in ("0", "false", "no", "off")
 
-# High-precision patterns first; the last two are broader and get the
-# placeholder filter applied to their matched value.
+# High-precision patterns first; patterns flagged True in the third field are
+# broader and get the placeholder filter applied to their captured value.
 PATTERNS = [
     ("AWS access key", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b"), False),
     ("GitHub token", re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,})"), False),
@@ -37,6 +37,15 @@ PATTERNS = [
     ("Stripe secret key", re.compile(r"\bsk_live_[0-9A-Za-z]{24,}"), False),
     ("Anthropic API key", re.compile(r"\bsk-ant-[A-Za-z0-9_-]{20,}"), False),
     ("Google API key", re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b"), False),
+    ("OpenAI API key", re.compile(r"\bsk-(?:proj|svcacct|admin)-[A-Za-z0-9_-]{20,}"), False),
+    ("npm token", re.compile(r"\bnpm_[A-Za-z0-9]{36}\b"), False),
+    ("PyPI token", re.compile(r"\bpypi-AgEIcHlwaS5vcmc[A-Za-z0-9_-]{20,}"), False),
+    ("Hugging Face token", re.compile(r"\bhf_[A-Za-z0-9]{30,}\b"), False),
+    ("SendGrid API key", re.compile(r"\bSG\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{43}\b"), False),
+    ("Twilio API key", re.compile(r"\bSK[0-9a-fA-F]{32}\b"), False),
+    ("GitLab token", re.compile(r"\bglpat-[A-Za-z0-9_-]{20,}"), False),
+    ("Cloud service-account JSON", re.compile(r"\"type\"\s*:\s*\"service_account\""), False),
+    ("AWS secret access key assignment", re.compile(r"(?i)aws_secret_access_key\s*[:=]\s*[\"']?([A-Za-z0-9/+=]{40})[\"']?"), True),
     ("Private key block", re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY-----"), False),
     ("JWT", re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}"), False),
     ("DB URL with credentials", re.compile(r"\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqp)://[^:/\s]+:([^@\s]+)@"), True),
@@ -72,8 +81,6 @@ def _incoming_content(payload):
         return ti.get("content") or ""
     if tool == "Edit":
         return ti.get("new_string") or ""
-    if tool == "MultiEdit":
-        return "\n".join((e.get("new_string") or "") for e in ti.get("edits") or [])
     return ""
 
 

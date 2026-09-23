@@ -1,6 +1,6 @@
 ---
 name: agentic-engineering
-description: Operate as an agentic engineer using eval-first execution, decomposition, and cost-aware model routing.
+description: Operate as an agentic engineer using eval-first execution, decomposition, and cost-aware model routing. Use when planning or executing engineering work that agents will carry out end to end — defining capability/regression evals, slicing work into agent-sized units, choosing model tiers, and reviewing AI-generated code within a single session. Not for staffing or orchestrating a multi-agent team, spinning up worktree-isolated teammates, or the /team command (use `team-orchestration`).
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
 ---

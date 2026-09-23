@@ -1,5 +1,5 @@
 {
-  "_comment": "Provenance + deterministic-refresh manifest for VENDORED skills. 'upstream_head_at_manifest' is the upstream HEAD SHA recorded 2026-06-23 (NOT necessarily the exact commit each skill was vendored from \u2014 vendoring predates this manifest). Re-recorded 2026-09-22 for sources whose vendored directories were unchanged upstream; sources with real content drift keep the older SHA until re-vendored (see docs/housekeeping-2026-09.md). LOCAL DIVERGENCE: all vendored skills carry local edits \u2014 descriptions disambiguated (Phase B) and/or dead-link pointers neutralized (Phase D). Re-pulling upstream requires re-applying those edits. See git history + THIRD_PARTY_NOTICES.md.",
+  "_comment": "Provenance + deterministic-refresh manifest for VENDORED skills. 'upstream_head_at_manifest' is the upstream HEAD SHA recorded 2026-06-23 (NOT necessarily the exact commit each skill was vendored from \u2014 vendoring predates this manifest). Re-recorded 2026-09-22 after a full re-vendor wave (ecc, marketingskills, GRC, workos, hallmark, alirezarezvani, customer-success, harness-engineering) plus bookkeeping bumps for sources whose vendored directories were unchanged upstream (see docs/housekeeping-2026-09.md). LOCAL DIVERGENCE: all vendored skills carry local edits \u2014 descriptions disambiguated (Phase B) and/or dead-link pointers neutralized (Phase D). Re-pulling upstream requires re-applying those edits. See git history + THIRD_PARTY_NOTICES.md.",
   "diverged_from_upstream": true,
   "first_party": [
     "claude-code-docs",
@@ -12,7 +12,7 @@
       "repo": "https://github.com/affaan-m/ecc",
       "license": "MIT",
       "copyright": "Affaan Mustafa",
-      "upstream_head_at_manifest": "71d22d0a77b7e0684f4e51cba03749b788993cdb",
+      "upstream_head_at_manifest": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
       "skills": [
         "agentic-engineering",
         "article-writing",
@@ -52,7 +52,7 @@
       "repo": "https://github.com/coreyhaines31/marketingskills",
       "license": "MIT",
       "copyright": "Corey Haines",
-      "upstream_head_at_manifest": "8bfcdffb655f16e713940cd04fb08891899c47db",
+      "upstream_head_at_manifest": "5b2c0007766c6a1cf1d53fd8fc73e979e0821022",
       "skills": [
         "copywriting",
         "copy-editing",
@@ -113,7 +113,7 @@
       "repo": "https://github.com/alirezarezvani/claude-skills",
       "license": "MIT",
       "copyright": "Alireza Rezvani",
-      "upstream_head_at_manifest": "4a3c05b69e64f4925f7fc65c88890f614f79caf0",
+      "upstream_head_at_manifest": "19392f7a08264ed00486a251f5b2098321771f94",
       "skills": [
         "pricing-strategist",
         "deal-desk",
@@ -159,7 +159,7 @@
       "repo": "https://github.com/workos/skills",
       "license": "MIT",
       "copyright": "WorkOS",
-      "upstream_head_at_manifest": "2c3acef61ea29296cb6e73e0c59fb5e98f0b1847",
+      "upstream_head_at_manifest": "e25141bae047a7c837d93817347f95977598720f",
       "skills": [
         "workos-enterprise-auth"
       ]
@@ -177,7 +177,7 @@
       "repo": "https://github.com/intense-visions/harness-engineering",
       "license": "MIT",
       "copyright": "Intense Visions, Inc.",
-      "upstream_head_at_manifest": "9bbf0a36a37ccc9e067cac6cdc6b96a45683ce64",
+      "upstream_head_at_manifest": "3b5f4bf4599e684c81370e8e055d6ef8c78ae61d",
       "skills": [
         "security-rbac-design",
         "api-webhook-design",
@@ -190,7 +190,7 @@
       "repo": "https://github.com/Sushegaad/Claude-Skills-Governance-Risk-and-Compliance",
       "license": "MIT",
       "copyright": "Hemant Naik",
-      "upstream_head_at_manifest": "7ec5163f039def01dd6a3e8ce0b0793443ee4639",
+      "upstream_head_at_manifest": "34832771581acef8751b25f284dcf270dc5e40c0",
       "skills": [
         "soc2",
         "iso-27001",
@@ -221,7 +221,7 @@
       "repo": "https://github.com/t0ddc3by/claude-for-customer-success",
       "license": "Apache-2.0",
       "copyright": "SuccessCOACHING",
-      "upstream_head_at_manifest": "b7c22f6556b31ce78cae8a052b4963933a733466",
+      "upstream_head_at_manifest": "08bbd3bc04574159036e25ef51d18f931860a226",
       "skills": [
         "qbr-builder",
         "health-score-review",
@@ -288,7 +288,7 @@
       "repo": "https://github.com/Nutlope/hallmark",
       "license": "MIT",
       "copyright": "Hallmark contributors",
-      "upstream_head_at_manifest": "aeb42fb354ff4efa36ab475773a082315a3af2ce",
+      "upstream_head_at_manifest": "13ac0ec7e148655948100b6396439e481361d690",
       "skills": [
         "hallmark"
       ]
@@ -325,7 +325,7 @@
       "repo": "https://github.com/nizos/probity",
       "license": "MIT",
       "copyright": "Nizar Selander",
-      "upstream_head_at_manifest": "14a92f19b28842beac25a92925d857a34515f224",
+      "upstream_head_at_manifest": "fabb04968f259416645f91f3c62bc12147e714b5",
       "skills": [
         "tdd-workflow"
       ],

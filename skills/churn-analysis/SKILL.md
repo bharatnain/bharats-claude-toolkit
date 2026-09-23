@@ -2,7 +2,7 @@
 name: churn-analysis
 description: "Post-loss review of a SINGLE churned or contracted account: confirm the root cause, capture actionable lessons, reconstruct the warning-sign timeline (did the team notice and escalate in time), and SCAN the active book for other live accounts showing the same signals so you can act pre-emptively. Use when one account has been lost and you want lessons plus a portfolio risk scan — including the dual-intent 'figure out why we lost them AND check which other accounts are at risk' (this skill owns the cross-account scan). Not for deep formal RCA taxonomy/documentation, analyzing a COHORT/batch of losses, or win-back assessment — for those, use `churn-rca`."
 argument-hint: "[<account-name-or-ID>] [--deep | --quick | --portfolio-scan]"
-version: "1.0.0"
+version: "1.1.0"
 deployment_target: plugin
 ---
 
@@ -468,3 +468,28 @@ after close:
 ## Reference Files
 
 - `references/reasoning-blueprint.md` — reasoning framework for this skill
+
+
+---
+
+## FM classification addendum (additive, v1.1.0)
+
+[PROPOSED addendum, 2026-09-02. The skill body above remains VALIDATED as shipped; this
+section adds an output field, changes no existing behavior.]
+
+When a root cause is assigned, ALSO emit the suite-standard failure-mode class so churn
+intelligence aggregates with the Value Registry and the acquisition drift dashboard:
+
+| FM class | Meaning | Typical root-cause mapping |
+|---|---|---|
+| FM-A | Healthy churn (M&A, shutdown, genuine strategic shift; no process failure) | uncontrollable-external |
+| FM-B | Delivery / CS process failure (value deliverable but not delivered or not recognized) | onboarding failure, adoption stall, relationship neglect |
+| FM-C | Sales over-commitment (promises beyond sales-eligible catalog tiers) | expectation mismatch, capability gap vs. promise |
+| FM-D | Discovery failure (the problem or economics were never validated pre-sale) | wrong-fit acquisition, no validated Why Change / Why Now |
+
+Where a `sale-quality-review` record exists for the account's original deal, compare its
+predicted FM exposure with this classification and state match or divergence: matches validate
+the pre-close gate; divergences are calibration input. Deliver the FM class in the analysis
+output and in any digest feeding `churn-signal-scanner`, so FM-C/FM-D share is computable
+portfolio-wide (rising share is the earliest quantitative signal that sellability bias has
+re-entered acquisition).

@@ -165,7 +165,7 @@ fi
 echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules"
 echo
 echo "Activation: restart Claude Code OR run /reload-plugins in an open session"
-echo "for the always-on tier to take effect. ecc and superpowers remain one"
+echo "for the always-on tier to take effect. ecc remains one"
 echo "'/plugin install' away."
 
 # ---------------------------------------------------------------------------

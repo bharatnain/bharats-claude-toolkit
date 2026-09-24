@@ -5,6 +5,11 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Fixed: Trail of Bits marketplace names.** `settings.json` registered `trailofbits/skills` and
+  `trailofbits/skills-curated` as `trailofbits-skills` / `trailofbits-skills-curated`, but Claude Code names a
+  marketplace by the `name` in its `marketplace.json` (`trailofbits` / `skills-curated`), so the three plugins
+  could not be installed. Keys renamed; README and supply-chain doc updated.
+
 - **Changed: smaller always-on roster.** A 30-day audit found 26 of 31 plugins idle, and their agent
   and skill descriptions cost ≈21K tokens in every session. The template now enables 8 plugins
   (this toolkit, `frontend-design`, `superpowers`, `mattpocock-skills`, `codex`, `security-guidance`,

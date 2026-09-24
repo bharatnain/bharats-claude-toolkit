@@ -49,7 +49,7 @@ descriptions cost ≈21K tokens in every session.
 **Registered, never enabled**
 - `ecc@ecc` — the full 271-skill ECC collection
 - `probity` — nizos: TDD/rule-enforcement hooks; `memsearch` — zilliztech: semantic session memory — both registered, not enabled
-- the remaining `trailofbits-skills` / `trailofbits-skills-curated` plugins beyond the three listed above
+- the remaining `trailofbits` / `skills-curated` plugins beyond the three listed above
 - more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `frontend-mobile-development`, …)
 - `beads` — agentic issue tracker (`bd` CLI + plugin); see **Agentic project management** below
 
@@ -121,9 +121,9 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 /plugin install pm-execution@pm-skills
 /plugin install plugin-dev@claude-plugins-official
 /plugin install claude-security@claude-plugins-official
-/plugin install differential-review@trailofbits-skills
-/plugin install fp-check@trailofbits-skills
-/plugin install security-awareness@trailofbits-skills-curated
+/plugin install differential-review@trailofbits
+/plugin install fp-check@trailofbits
+/plugin install security-awareness@skills-curated
 /plugin install agent-orchestration@claude-code-workflows
 /plugin install cloud-infrastructure@claude-code-workflows
 /plugin install kubernetes-operations@claude-code-workflows
@@ -299,7 +299,7 @@ setting (`agentPushNotifEnabled` in `~/.claude/settings.json`, or Settings → C
 /reload-plugins                                       # make them live in THIS session, no restart
 ```
 Also registered (browse with `/plugin` and install from their marketplaces): **probity**
-(TDD/rule-enforcement hooks), **memsearch** (semantic session memory), and the remaining **trailofbits-skills** / **trailofbits-skills-curated**
+(TDD/rule-enforcement hooks), **memsearch** (semantic session memory), and the remaining **trailofbits** / **skills-curated**
 plugins beyond `differential-review` / `fp-check` / `security-awareness`.
 
 Then just work — the newly available skills auto-trigger by description.

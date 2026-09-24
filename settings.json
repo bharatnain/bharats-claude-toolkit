@@ -25,10 +25,10 @@
     "claude-code-workflows": {
       "source": { "source": "github", "repo": "wshobson/agents", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" }
     },
-    "trailofbits-skills": {
+    "trailofbits": {
       "source": { "source": "github", "repo": "trailofbits/skills", "ref": "main", "sha": "32e34f8173796e3566a51aee877dc96bc5191f64" }
     },
-    "trailofbits-skills-curated": {
+    "skills-curated": {
       "source": { "source": "github", "repo": "trailofbits/skills-curated", "ref": "main", "sha": "6d05be4889017b06fb15069f371afd220daffb62" }
     },
     "probity": {
@@ -53,9 +53,9 @@
     "mattpocock-skills@mattpocock": false,
     "security-guidance@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": false,
-    "differential-review@trailofbits-skills": false,
-    "fp-check@trailofbits-skills": false,
-    "security-awareness@trailofbits-skills-curated": false,
+    "differential-review@trailofbits": false,
+    "fp-check@trailofbits": false,
+    "security-awareness@skills-curated": false,
     "vercel@claude-plugins-official": false,
     "agent-teams@claude-code-workflows": false,
     "agent-orchestration@claude-code-workflows": false,

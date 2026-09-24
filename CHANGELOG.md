@@ -5,7 +5,8 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
-- **Added: `/setup-repo` skill** (engine `skills/setup-repo/scripts/repo_setup.py`, 36 tests).
+- **Added: `/setup-repo` skill** (engine `skills/setup-repo/scripts/repo_setup.py`, 38 tests). Also writes
+  `.claude/settings.local.json` (git-ignored) with `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=60` so auto-compact fires at 60% of the window.
 - **Added: orchestrator board** (`scripts/board.py`, `/board`, opt-in refresh hook `hooks/board_refresh.py`, 21 tests).
 
 ## [0.10.0] - 2026-09-24

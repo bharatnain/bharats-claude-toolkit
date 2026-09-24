@@ -299,3 +299,25 @@ def test_hook_skips_files_outside_its_suffix_list(tmp_path):
         return subprocess.run([sys.executable, str(hook)], input=json.dumps({"tool_input": {"file_path": str(target)}}), capture_output=True, text=True, env=env)
     assert run("data.json").stdout == "" and run("data.json").returncode == 0
     assert "E1 finding" in run("mod.py").stdout
+
+def test_plan_local_settings_autocompact_add_only(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    items = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}
+    local = items[".claude/settings.local.json"]
+    assert local["action"] == "create" and json.loads(local["content"])["env"]["CLAUDE_AUTOCOMPACT_PCT_OVERRIDE"] == "60"
+    assert ".claude/settings.local.json" in items[".gitignore"]["content"] and ".claude/team-profile.json" in items[".gitignore"]["content"]
+    (root / ".claude").mkdir(); (root / ".claude/settings.local.json").write_text(json.dumps({"env": {"FOO": "1"}, "model": "opus"}))
+    local = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
+    merged = json.loads(local["content"])
+    assert local["action"] == "update" and merged["env"] == {"FOO": "1", "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60"} and merged["model"] == "opus"
+    (root / ".claude/settings.local.json").write_text(json.dumps({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}}))
+    assert {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]["action"] == "skip"
+
+def test_plan_skips_bad_local_settings(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    (root / ".claude").mkdir(); (root / ".claude/settings.local.json").write_text("{not json")
+    item = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
+    assert item["action"] == "skip" and item["reason"].startswith("unparseable")
+    (root / ".claude/settings.local.json").write_text(json.dumps({"env": ["x"]}))
+    item = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
+    assert item["action"] == "skip" and "env is not an object" in item["reason"]

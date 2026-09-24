@@ -10,7 +10,7 @@ LANG_EXT = {"python": [".py"], "typescript": [".ts", ".tsx"], "javascript": [".j
 PM_FILES = [("uv.lock", "uv"), ("poetry.lock", "poetry"), ("Pipfile.lock", "pipenv"), ("requirements.txt", "pip"),
             ("pnpm-lock.yaml", "pnpm"), ("yarn.lock", "yarn"), ("bun.lock", "bun"), ("bun.lockb", "bun"),
             ("package-lock.json", "npm"), ("go.mod", "go"), ("Cargo.toml", "cargo"), ("Gemfile.lock", "bundler")]
-EXISTING = ["CLAUDE.md", ".claude/CLAUDE.md", "AGENTS.md", "CLAUDE.local.md", ".claude/settings.json",
+EXISTING = ["CLAUDE.md", ".claude/CLAUDE.md", "AGENTS.md", "CLAUDE.local.md", ".claude/settings.json", ".claude/settings.local.json",
             ".claude/team-profile.json", ".claude/hooks/lint_on_edit.py", ".beads", ".claude/rules"]
 
 def _git(root, *args):
@@ -219,6 +219,16 @@ def _hookable_lint_cmd(profile):
             return (cmd, glob, exts) if any(l in profile["languages"] for l in langs) else None
     return None
 
+AUTOCOMPACT_PCT = "60"  # auto-compact fires at this percentage of the auto-compact window (machine-local, never shared)
+
+def merge_local_settings(existing):
+    """Add-only merge into .claude/settings.local.json: env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE when absent. None when env is not an object."""
+    st = json.loads(json.dumps(existing)) if existing else {}
+    env = st.setdefault("env", {})
+    if not isinstance(env, dict): return None
+    env.setdefault("CLAUDE_AUTOCOMPACT_PCT_OVERRIDE", AUTOCOMPACT_PCT)
+    return st
+
 def _settings_shape_error(st):
     perms = st.get("permissions", {})
     if not isinstance(perms, dict): return "permissions is not an object"
@@ -286,6 +296,22 @@ def plan(profile):
         cur_hook = (root / ".claude/hooks/lint_on_edit.py").read_text(encoding="utf-8", errors="replace") if ex[".claude/hooks/lint_on_edit.py"]["exists"] else None
         hook_action = "skip" if cur_hook is not None and hook == cur_hook else ("create" if not ex[".claude/hooks/lint_on_edit.py"]["exists"] else "update")
         items.append({"path": ".claude/hooks/lint_on_edit.py", "action": hook_action, "reason": "lint on edit", "content": hook})
+    local_rel = ".claude/settings.local.json"; existing_local = None
+    if ex[local_rel]["exists"]:
+        try:
+            parsed = json.loads((root / local_rel).read_text(encoding="utf-8"))
+            if not isinstance(parsed, dict): raise ValueError("settings.local.json must be a JSON object")
+            existing_local = parsed
+        except (ValueError, UnicodeDecodeError, OSError) as e:
+            items.append({"path": local_rel, "action": "skip", "reason": f"unparseable: {e}", "content": None}); existing_local = "bad"
+    if existing_local != "bad":
+        merged_local = merge_local_settings(existing_local)
+        if merged_local is None:
+            items.append({"path": local_rel, "action": "skip", "reason": "unexpected shape: env is not an object", "content": None})
+        else:
+            local_action = "skip" if existing_local is not None and merged_local == existing_local else ("create" if existing_local is None else "update")
+            items.append({"path": local_rel, "action": local_action, "reason": f"auto-compact at {AUTOCOMPACT_PCT}% of the window (machine-local)",
+                          "content": json.dumps(merged_local, indent=2, ensure_ascii=False) + "\n"})
     tp = profile.get("team_profile")
     if tp:
         if ex[".claude/team-profile.json"]["exists"]:
@@ -293,8 +319,9 @@ def plan(profile):
         else:
             items.append({"path": ".claude/team-profile.json", "action": "create", "reason": "team profile for /team", "content": json.dumps({"maturity": tp["maturity"], "detected_by": "setup-repo"}, indent=2) + "\n"})
     gi = (root / ".gitignore").read_text(encoding="utf-8", errors="replace") if (root / ".gitignore").exists() else ""
-    if ".claude/team-profile.json" not in gi:
-        items.append({"path": ".gitignore", "action": "update" if gi else "create", "reason": "ignore the machine-local team profile", "content": gi.rstrip("\n") + ("\n" if gi else "") + ".claude/team-profile.json\n"})
+    missing = [l for l in (".claude/team-profile.json", ".claude/settings.local.json") if l not in gi]
+    if missing:
+        items.append({"path": ".gitignore", "action": "update" if gi else "create", "reason": "ignore machine-local files", "content": gi.rstrip("\n") + ("\n" if gi else "") + "".join(l + "\n" for l in missing)})
     recs = ["Turn on the sandbox (`/sandbox`) so allowlisted commands run inside OS boundaries.",
             "Project allow rules and hooks apply only after you trust this folder (workspace trust dialog).",
             "Set `syncClaudeAiSkills: true` in ~/.claude/settings.json if you want claude.ai skills here."]

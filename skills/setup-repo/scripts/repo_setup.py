@@ -178,4 +178,5 @@ def render_claude_md(profile, existing_text):
             out = pat.sub(lambda m: _wrap(n, b) if b else "", out)
         elif b:
             out = out.rstrip("\n") + "\n\n" + _wrap(n, b) + "\n"
+    out = re.sub(r"\n{3,}", "\n\n", out)
     return out

@@ -78,3 +78,11 @@ def test_render_omits_unknown_blocks(tmp_path):
     prof = rs.detect(make_repo(tmp_path, {"README.md": "x\n"}))
     text = rs.render_claude_md(prof, None)
     assert "setup-repo:verify" not in text and "setup-repo:working" in text
+
+def test_render_removes_collapsed_block_cleanly(tmp_path):
+    prof = rs.detect(make_repo(tmp_path, {"README.md": "x\n"}))
+    existing = "Keep this line.\n\n<!-- setup-repo:verify -->\nold\n<!-- /setup-repo:verify -->\n\nSome text after.\n"
+    text = rs.render_claude_md(prof, existing)
+    assert "setup-repo:verify" not in text
+    assert "Keep this line.\n\nSome text after." in text
+    assert "\n\n\n" not in text

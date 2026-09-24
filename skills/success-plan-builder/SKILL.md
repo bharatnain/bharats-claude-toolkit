@@ -9,6 +9,7 @@ description: >
 argument-hint: "[account name] [--new | --reset | --review]"
 version: "1.0.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 # /success-plan-builder

@@ -3,6 +3,7 @@ name: customer-research
 description: "CUSTOMER VOICE research — mine what individual customers say, feel, and struggle with from primary sources, then synthesize it. Analyzes existing assets (interview/sales-call transcripts, survey results, support tickets, win/loss & churn notes, NPS verbatims) and gathers new voice from online watering holes (Reddit, G2/Capterra reviews, Hacker News, forums, community posts). Extracts Jobs-to-be-Done, pains, trigger events, desired outcomes, and verbatim language; clusters themes with confidence scoring; builds VOC quote banks and research-backed personas. Use when the user mentions customer interviews, survey/ticket/review mining, VOC, JTBD, personas, customer sentiment, or why customers churn/convert/buy. Not for external market intel like market sizing/TAM, investor/fund diligence, technology scans, or competitive landscape (use `market-research`); not for current-web lookups or company enrichment (use `research-ops`); not for the internal positioning/ICP context document (use `product-marketing`)."
 metadata:
   version: 2.0.2
+disable-model-invocation: true
 ---
 
 # Customer Research

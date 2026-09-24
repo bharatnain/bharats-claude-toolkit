@@ -1,6 +1,7 @@
 ---
 name: sales-forecast-builder
 description: Rep/pipeline weighted forecast by deal probability — roll up open deals, track historical rep forecast accuracy, compare commit vs best-case, and surface deal-slippage patterns. Use when forecasting a rep's or team's pipeline from individual open deals weighted by stage probability, or analyzing called-vs-actual accuracy and slippage. Not for board-level bookings/ARR/NRR with cohort and per-stage conversion modeling (use `commercial-forecaster`); not for front-of-funnel lead lifecycle, scoring, routing, or CRM hygiene (use `revops`); not for per-deal close review of discounts, redlines, margin, or approvals (use `deal-desk`); not for designing the discount/approver policy framework (use `commercial-policy`).
+disable-model-invocation: true
 ---
 
 # Sales Forecast Builder

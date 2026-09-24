@@ -13,6 +13,7 @@ description: >
 argument-hint: "[account name] [--brief | --timeline | --customer-summary]"
 version: "1.0.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 # /renewal-readiness

@@ -17,6 +17,7 @@ description: |
   - Distressed/bankrupt companies
   - Pre-revenue startups
   - Companies with unique business models
+disable-model-invocation: true
 ---
 
 # Comparable Company Analysis

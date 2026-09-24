@@ -10,6 +10,7 @@ metadata:
   updated: 2026-03-05
   python-tools: marketing_budget_modeler.py, growth_model_simulator.py
   frameworks: brand-positioning, growth-frameworks, marketing-org
+disable-model-invocation: true
 ---
 
 # CMO Advisor

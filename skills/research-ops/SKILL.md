@@ -3,6 +3,7 @@ name: research-ops
 description: Evidence-first current-state research workflow. Use when the user wants fresh facts, comparisons, enrichment, or a recommendation built from current public evidence and any supplied local context. Owns the general lookup lane — 'research this', 'look up', 'what's the latest', 'compare these options', 'who should I talk to', enriching a person or company, and turning a repeated lookup into a monitor. Not for structured market-intelligence deliverables — TAM/SAM/SOM sizing, investor/fund diligence dossiers, technology-trend scans (use `market-research`); not for customer-voice work — interviews, surveys, review/ticket mining, JTBD, personas, VOC (use `customer-research`).
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
+disable-model-invocation: true
 ---
 
 # Research Ops

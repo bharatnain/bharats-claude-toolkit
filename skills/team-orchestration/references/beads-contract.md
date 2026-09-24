@@ -23,7 +23,7 @@ persisted. The lifecycle — verified against **bd 1.0.4**; note the commands ar
 
 | Step | Command | Purpose |
 |---|---|---|
-| Create | `bd create "<title>" --type task --acceptance "<criteria>" [--parent <epic>] [--labels <label>] [--deps "<prereq-id>"] --json` | Create the task. Acceptance criteria go in the first-class `--acceptance` flag (JSON field `acceptance_criteria`); put the maturity target in `--description`. `--deps "<id>"` records that this task is **blocked by** `<id>` (the prerequisite), so it stays out of `bd ready` until that id closes. `--json` returns the new id. |
+| Create | `bd create "<title>" --type task --acceptance "<criteria>" [--parent <epic>] [--labels <label>] [--deps "<prereq-id>"] --json` | Create the task. Acceptance criteria go in the first-class `--acceptance` flag (JSON field `acceptance_criteria`); put the maturity target in `--description`. `--deps "<id>"` records that this task is **blocked by** `<id>` (the prerequisite), so it stays out of `bd ready` until that id closes. **One id per `--deps` flag**; add further blockers with `bd dep add <task> <blocker>`. `--json` returns the new id. |
 | Ready | `bd ready [--parent <epic>] [--label <label>] --exclude-type epic --json` | Surface the workable queue — open tasks whose blockers are all closed. `bd ready` has **no `--type` flag**; scope with `--parent` / `--label` and drop the epic with `--exclude-type epic`. Add `--claim` to atomically claim the first match. |
 | Update | `bd update <id> --claim` (start) · `bd update <id> --status <s> --append-notes "<note>"` (progress) | `--claim` is idempotent (sets assignee=you, status=in_progress). Record progress as a teammate advances a task. |
 | Close | `bd close <id> --reason "<why>"` | Mark done — **only** once the task's acceptance criteria are met and the live gate is green for its scope. Close **exits non-zero and refuses** if the issue is still blocked by open issues; do not `--force` — report the blocker instead. |
@@ -36,6 +36,20 @@ is not ready to assign.
 `bd init --quiet --non-interactive --skip-agents --skip-hooks`. A bare `bd init` writes
 `CLAUDE.md` / `AGENTS.md` / `.claude/` and installs git hooks — which would clobber an existing
 project. `bd init` does not gitignore `.beads/` itself, so add that line separately.
+
+## CLI gotchas (bd 1.0.4, verified live)
+
+- `--deps` takes **one id per flag**. A comma-separated list silently breaks the create and
+  echoes usage text (grepping that output for an id then matches `--deps`). Wire extra
+  blockers afterwards: `bd dep add <task> <blocker>`.
+- Attach an existing task to an epic: `bd update <id> --parent <epic>`.
+- In a git **worktree**, `bd` resolves the store to the **main checkout's `.beads/`** (shared
+  across worktrees, id prefix = worktree name). No `.beads/` appears in the worktree itself;
+  do not `bd init` there.
+- `bd ready` and `bd list` have **no `--type` flag**: drop epics with `--exclude-type epic`.
+- `bd close <id> --reason "<why>"` is the only close form; it refuses while blockers are open.
+  Report the blocker instead of `--force`.
+- `bd add` and `--depends-on` do not exist in 1.0.4; the commands are `bd create` / `--deps`.
 
 ## Native Task tools fallback
 

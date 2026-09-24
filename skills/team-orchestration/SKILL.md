@@ -73,7 +73,8 @@ variant, see the `beads-task` workflow template (`workflows/beads-task.workflow.
 ### 5. Spawn the teammates
 
 Spawn each teammate directly via the **Agent tool's `name` parameter** — every session has
-one implicit team, so there is no team setup or teardown tool call. Isolate
+one implicit team, so there is no team setup or teardown tool call. Every spawn prompt is a
+full [teammate brief](#teammate-brief); size waves per [Waves and scopes](#waves-and-scopes). Isolate
 teammates in worktrees per the **profile's `isolation.worktree`** flag (the sentinel-resolved
 profile is the runtime source of truth; roster-matrix.md documents the expected value per
 profile). Because the sentinel is live, the **hooks + `quality_gate.py` enforce the gates
@@ -98,3 +99,95 @@ python3 scripts/team_sentinel.py clear --session <id>
 ```
 
 After teardown the gate hooks return to no-ops. Never leave a session active.
+
+## Teammate brief
+
+Teammates start with no history. Every spawn prompt carries, in this order:
+
+1. **Objective** — the deliverable plus its acceptance criteria as a `/goal`-style condition.
+2. **Write scope** — an explicit directory/file list: "write only inside …; do not touch …".
+3. **Output** — the report path in the scratchpad and the reply format (see
+   [Progress contract](#progress-contract)).
+4. **Check after each unit** — the exact validator/test command to run after each completed
+   unit, with its output pasted into the report.
+5. **Out-of-scope findings** — "report them, don't fix them".
+6. **Context** — worktree path, branch, do-not-commit rule, spec to read first.
+7. **Autonomy block** (unattended runs only) — "You are operating autonomously. The user is
+   not watching in real time … Stop only for destructive actions or genuine scope changes."
+
+Full template: [references/teammate-brief.md](references/teammate-brief.md). Copy it; do
+not paraphrase it per spawn.
+
+## Waves and scopes
+
+- 3–5 teammates per wave. More than that and review cost outgrows the parallelism win.
+- Partition by file: no two teammates in a wave may write the same path. If two tasks need
+  the same file, put them in different waves or merge them into one brief.
+- The orchestrator owns shared files — `README.md`, `CHANGELOG.md`, manifests
+  (`.claude-plugin/plugin.json`), catalogs (`SKILLS.md`), settings templates. Teammates never
+  edit them; a teammate that needs a shared-file change lists the exact lines in its report,
+  and the orchestrator applies them after the wave.
+- Keep working while a wave runs (spawns are background by default); do not poll.
+- Next wave starts only after every teammate in the current wave has reported and the
+  [review loop](#review-loop) for that wave has passed.
+
+## Progress contract
+
+**Orchestrator → user**
+
+- One line of intent when a wave starts ("Wave 2: three teammates on hooks, agents, docs").
+- At most one short line per completed teammate.
+- No narration of tool calls, spawns, or file reads.
+- A closing recap that stands alone — the reader has none of the transcript: what was found,
+  what changed (paths), what is next, and what was verified **with evidence** (the command and
+  its output, not "validators pass").
+
+**Teammate → orchestrator**
+
+- First line of the reply is exactly one of `DONE` / `DONE_WITH_CONCERNS` / `NEEDS_CONTEXT`
+  / `BLOCKED`.
+- Then at most 10 lines: paths touched, validator result, open findings, report path.
+- `NEEDS_CONTEXT` names the missing fact; `BLOCKED` names the blocker and what was tried.
+- Everything longer goes in the report file, not the reply.
+
+## Review loop
+
+After each wave, before the next:
+
+1. Spawn `code-reviewer` with the diff scope (the wave's write scopes) and the wave's
+   acceptance criteria. Tell it: report gaps only; it may run the project's checks
+   (validators, tests, quality gate) read-only.
+2. Fix every reported gap. Do not argue with the reviewer in the transcript; fix or record a
+   deliberate deviation in the recap.
+3. Re-send the diff to the **same** reviewer via `SendMessage` so it keeps its context; ask
+   for a verdict on the fixes only.
+4. Repeat until the reviewer returns PASS.
+5. Cap at 3 rounds. On the third FAIL, stop and escalate to the user with the open findings
+   verbatim — do not start the next wave.
+
+## Verification
+
+- Write each task's acceptance criteria as a `/goal`-style condition: one measurable end
+  state, the check that proves it, the constraints. "Add validation" becomes "invalid inputs
+  are rejected — `pytest tests/test_validation.py` passes — no changes outside `validation/`".
+- For unattended runs set `/goal <condition>` on the session so it does not end on "looks
+  done". On the `legacy` profile the Stop-hook gate is the fallback.
+- Close a task only on validator output shown in the report. A claim without the command and
+  its result is not verification.
+
+## Which tool
+
+- **Subagents** (this skill): focused workers with file-partitioned scopes, up to a handful
+  per wave.
+- **A Workflow** (`workflows/README.md`): when the job outgrows a handful of agents, when
+  findings must be cross-checked against each other, or when a verdict must be
+  machine-checkable (`schema` on the verifier). `review-changes` and
+  `implement-task-with-gates` are the templates.
+- **Agent teams** (`TeamCreate`): experimental and off in this toolkit; do not enable.
+
+## Plans from superpowers
+
+superpowers 6.4.1's `executing-plans` runs a written plan natively, without mid-plan review
+pauses. When a plan comes from `writing-plans` / `executing-plans`, this skill's
+[review loop](#review-loop) is the review layer: run it after each wave of the plan, not
+only at the end.

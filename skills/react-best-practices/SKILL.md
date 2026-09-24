@@ -5,6 +5,8 @@ license: MIT
 metadata:
   author: vercel
   version: "1.0.0"
+paths:
+  - "**/*.{tsx,jsx,ts,js}"
 ---
 
 # Vercel React Best Practices

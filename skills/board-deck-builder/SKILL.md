@@ -9,6 +9,7 @@ metadata:
   domain: board-governance
   updated: 2026-03-05
   frameworks: deck-frameworks, board-deck-template
+disable-model-invocation: true
 ---
 
 # Board Deck Builder

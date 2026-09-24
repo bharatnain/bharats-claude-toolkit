@@ -6,6 +6,7 @@ author: claude-code-skills
 license: MIT
 tags: [commercial, forecasting, bookings, arr, nrr, grr, cohort, funnel, pipeline-math]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # commercial-forecaster

@@ -10,6 +10,7 @@ metadata:
   updated: 2026-03-05
   python-tools: scenario_modeler.py
   frameworks: scenario-planning
+disable-model-invocation: true
 ---
 
 # Scenario War Room

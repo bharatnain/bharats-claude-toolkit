@@ -13,6 +13,7 @@ description: >
 argument-hint: "[--full | --cohort 90|60|30 | --segment <name> | --account <name>]"
 version: "1.0.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 # renewal-forecast [VALIDATED]

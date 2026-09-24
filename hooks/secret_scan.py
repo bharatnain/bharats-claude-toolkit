@@ -5,9 +5,12 @@ STDLIB ONLY. Mirrors hooks/notify.py: reads the event JSON on stdin. Fires on
 PreToolUse for Write|Edit and scans the INCOMING content (not the
 file on disk) so a leaked credential is blocked before it ever lands.
 
-Exit contract (same convention as hooks/team_gate.py):
-  exit 0  -> allow (no findings, disabled, or internal error — fail open)
+Exit contract:
+  exit 0  -> allow (no findings, or disabled)
   exit 2  -> BLOCK the tool call; findings are printed to stderr for Claude.
+             Also the outcome of an internal error: this hook is a guardrail,
+             and Claude Code treats any other exit code as "proceed", so a
+             crash must fail CLOSED (unlike notify.py / beads_init.py).
 
 Env vars:
   CLAUDE_SECRET_SCAN=0     disable the scanner entirely
@@ -128,5 +131,6 @@ def main():
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except Exception:
-        sys.exit(0)  # fail open — never wedge a session
+    except Exception as e:  # noqa: BLE001
+        print(f"secret_scan internal error (blocking to fail closed): {e}", file=sys.stderr)
+        sys.exit(2)

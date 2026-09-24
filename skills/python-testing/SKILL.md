@@ -3,6 +3,10 @@ name: python-testing
 description: Python testing strategies using pytest, TDD methodology, fixtures, mocking, parametrization, and coverage requirements. Use when writing pytest tests — fixtures, mocks, parametrization, or coverage. Not for idioms, type hints, or PEP 8 style in the production code under test (use `python-patterns`).
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
+paths:
+  - "**/*.py"
+  - "pyproject.toml"
+  - "requirements*.txt"
 ---
 
 # Python Testing Patterns

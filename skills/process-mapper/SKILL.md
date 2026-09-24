@@ -6,6 +6,7 @@ author: claude-code-skills
 license: MIT
 tags: [bizops, process, bpmn, bottleneck, cycle-time, lean, six-sigma, value-stream]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # process-mapper

@@ -8,6 +8,7 @@ metadata:
   category: c-level
   domain: advisor-context
   frameworks: cold-start-interview, company-context-profile
+disable-model-invocation: true
 ---
 
 # Advisor Profile (Cold-Start Interview)

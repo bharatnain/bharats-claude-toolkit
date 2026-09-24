@@ -10,6 +10,7 @@ metadata:
   updated: 2026-05-12
   python-tools: contract_risk_scanner.py, term_sheet_analyzer.py
   frameworks: contract-review, ip-strategy, term-sheet-decoding, regulatory-mapping
+disable-model-invocation: true
 ---
 
 # General Counsel Advisor

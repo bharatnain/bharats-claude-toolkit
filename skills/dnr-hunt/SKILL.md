@@ -32,6 +32,8 @@ allowed-tools:
   - Bash(python3:*)
   - Bash(curl:*)
   - Bash(kill:*)
+context: fork
+agent: general-purpose
 ---
 
 # dnr-hunt

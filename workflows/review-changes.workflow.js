@@ -50,12 +50,13 @@ const FINDING_SCHEMA = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['title', 'severity', 'location', 'evidence'],
+        required: ['title', 'severity', 'file', 'line', 'summary'],
         properties: {
           title: { type: 'string' },
           severity: { type: 'string', enum: ['critical', 'major', 'minor'] },
-          location: { type: 'string', description: 'file:line or function the issue lives at' },
-          evidence: { type: 'string', description: 'the concrete code construct proving the issue' },
+          file: { type: 'string', description: 'repo-relative path the issue lives in' },
+          line: { type: ['integer', 'null'], description: 'line number, or null when not line-anchored' },
+          summary: { type: 'string', description: 'the concrete code construct proving the issue' },
         },
       },
     },
@@ -65,9 +66,9 @@ const FINDING_SCHEMA = {
 const VERDICT_SCHEMA = {
   type: 'object',
   additionalProperties: false,
-  required: ['refuted', 'confidence', 'reason'],
+  required: ['verdict', 'confidence', 'reason'],
   properties: {
-    refuted: { type: 'boolean', description: 'true if the finding is a FALSE ALARM (code is actually fine)' },
+    verdict: { type: 'string', enum: ['CONFIRMED', 'REFUTED'], description: 'REFUTED = false alarm (code is actually fine); CONFIRMED = independently re-confirmed from the current code' },
     confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
     reason: { type: 'string', description: 'why the finding is real, or why it is a false alarm — cite the code you read' },
   },
@@ -81,7 +82,7 @@ phase('Find')
 const finderResults = await parallel(DIMENSIONS.map((dim) => () =>
   agent(
     `You are reviewing ${TARGET} along ONE dimension: ${dim}. READ-ONLY — do not edit, stage, or switch branches.
-Inspect the diff (\`git diff\`, \`git diff --staged\`, and untracked files as relevant). Surface only REAL, evidence-backed candidate findings for the ${dim} dimension — quote the exact construct and give file:line. Do not invent issues; an empty findings array is a valid answer for a clean dimension.`,
+Inspect the diff (\`git diff\`, \`git diff --staged\`, and untracked files as relevant). Surface only REAL, evidence-backed candidate findings for the ${dim} dimension — quote the exact construct in \`summary\` and give \`file\` + \`line\`. Do not invent issues; an empty findings array is a valid answer for a clean dimension.`,
     { label: `find:${dim}`, phase: 'Find', schema: FINDING_SCHEMA, agentType: 'code-reviewer' },
   ).then((r) => ({ dim, findings: (r && r.findings) || [] })),
 ))
@@ -102,26 +103,28 @@ const verdicts = toVerify.length
   ? await parallel(toVerify.map((f) => () =>
       agent(
         `Adversarially REFUTE this code-review finding about ${TARGET}. READ-ONLY.
-Read the CURRENT code and any tests yourself. Try HARD to show the code is actually fine: the concern is already handled elsewhere, the input cannot reach the construct, or the finding misread the code. A finding SURVIVES only if you can independently re-confirm it from the current code. Default to refuted=true if you cannot confirm it.
+Read the CURRENT code and any tests yourself. Try HARD to show the code is actually fine: the concern is already handled elsewhere, the input cannot reach the construct, or the finding misread the code. A finding SURVIVES only if you can independently re-confirm it from the current code. Default to verdict "REFUTED" if you cannot confirm it.
 
 FINDING [${f.dim}/${f.severity}] ${f.title}
-  location: ${f.location}
-  evidence: ${f.evidence}`,
+  file: ${f.file}${f.line != null ? `:${f.line}` : ''}
+  evidence: ${f.summary}`,
         { label: `verify:${f.dim}`, phase: 'Verify', schema: VERDICT_SCHEMA, agentType: 'code-reviewer' },
       ).then((v) => ({ finding: f, verdict: v })),
     ))
   : []
 
-// Surviving = not refuted. A null/missing verdict surfaces as unverified (fail-safe toward reporting).
+// Surviving = not REFUTED, decided on the structured `verdict` field only. A
+// null/missing verdict surfaces as unverified (fail-safe toward reporting).
+const isRefuted = (x) => !!(x.verdict && x.verdict.verdict === 'REFUTED')
 const survived = [
-  ...verdicts.filter((x) => !(x.verdict && x.verdict.refuted === true)).map((x) => ({
+  ...verdicts.filter((x) => !isRefuted(x)).map((x) => ({
     ...x.finding,
     unverified: !x.verdict,
     reConfirm: x.verdict && x.verdict.reason,
   })),
   ...overflow.map((f) => ({ ...f, unverified: true, reConfirm: null })),
 ].sort((a, b) => (sevRank[a.severity] ?? 9) - (sevRank[b.severity] ?? 9))
-const refutedCount = verdicts.filter((x) => x.verdict && x.verdict.refuted === true).length
+const refutedCount = verdicts.filter(isRefuted).length
 
 // ---- Phase 4: synthesize ----------------------------------------------------
 phase('Synthesize')

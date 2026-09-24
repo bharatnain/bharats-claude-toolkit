@@ -8,6 +8,7 @@ description: >
   Python CLI to TypeScript", "should we rewrite this in Go?"), or asks for a
   migration feasibility assessment. Not for incremental JS→TS adoption — that
   needs no machinery — or single-file conversions.
+disable-model-invocation: true
 ---
 
 # Code migration (six-step process)

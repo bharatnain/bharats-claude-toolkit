@@ -1,5 +1,7 @@
 ---
+name: doctor
 description: Health-check the toolkit setup — settings, plugins, tools — and walk through the exact fixes
+disable-model-invocation: true
 ---
 
 Run the toolkit health check and help the user act on it.

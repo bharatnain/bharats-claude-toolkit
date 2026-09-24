@@ -3,6 +3,7 @@ name: revops
 description: "Front-of-funnel revenue operations — the lead lifecycle systems that connect marketing to sales: lead lifecycle stage definitions, lead scoring (fit + engagement), lead routing/speed-to-lead, MQL/SQL definitions, marketing-to-sales handoff SLAs, CRM hygiene/dedup/enrichment, and lifecycle automation workflows. Use when designing how leads are scored, routed, qualified, and handed from marketing to sales, fixing handoff leaks, or building MQL/SQL definitions and CRM lifecycle automation. Not for board-level bookings/ARR/NRR forecasts (use `commercial-forecaster`); not for rep/pipeline weighted forecasts by deal probability or slippage (use `sales-forecast-builder`); not for per-deal review at close — discount-above-authority, MSA redline, margin/approval routing (use `deal-desk`); not for designing the discount-matrix/approver-threshold/exception policy framework (use `commercial-policy`)."
 metadata:
   version: 2.0.0
+disable-model-invocation: true
 ---
 
 # RevOps

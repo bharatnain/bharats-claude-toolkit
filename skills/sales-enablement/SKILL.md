@@ -3,6 +3,7 @@ name: sales-enablement
 description: "Produce the sales COLLATERAL reps use to sell: pitch/sales decks, one-pagers and leave-behinds, objection-handling docs, demo scripts and talk tracks, ROI calculators, case-study briefs, proposal templates, sales playbooks, and buyer persona cards. Use when you need to WRITE or BUILD a specific asset — 'sales deck,' 'pitch deck,' 'one-pager,' 'objection handling doc,' 'demo script,' 'talk track,' 'proposal template,' 'persona card,' 'help me make sales materials,' or 'what should I give my reps.' Not for adopting or rolling out a sales methodology like MEDDIC/BANT/Challenger/SPIN/Sandler — its framework questions, scorecards, or rep training (use `sales-methodology-implementer`). Not for scoring or coaching a single live deal for risk and red flags (use `deal-review-framework`). Not for mining lost/won deal notes to surface recurring objection patterns and build response playbooks (use `objection-pattern-detector`)."
 metadata:
   version: 2.0.1
+disable-model-invocation: true
 ---
 
 # Sales Enablement

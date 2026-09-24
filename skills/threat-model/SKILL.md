@@ -26,6 +26,8 @@ allowed-tools:
   - Bash(cat:*)
   - AskUserQuestion
   - Task
+context: fork
+agent: general-purpose
 ---
 
 # threat-model

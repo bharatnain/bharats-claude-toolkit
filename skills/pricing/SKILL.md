@@ -3,6 +3,7 @@ name: pricing
 description: "Tactical, hands-on PLG/SaaS pricing & packaging toolkit: building, improving, and auditing a pricing page, freemium vs free-trial mechanics, executing price increases (grandfathering, announcement timing), displaying a value metric, packaging/feature-gating tiers on the page, pricing-page psychology (anchoring, charm pricing, decoy), and pricing-page teardowns scored for clarity, transparency, and AI-agent readability. Use when you want concrete guidance, templates, or best practices to BUILD, refine, or AUDIT pricing: 'build my pricing page', 'pricing page teardown', 'audit my pricing page', 'is my pricing page AI-readable', 'freemium vs free trial', 'how to raise prices', 'annual vs monthly', 'where to place each feature', 'pricing best practices'. Not for DECIDING which pricing model fits, analyzing willingness-to-pay survey data, or getting a recommended price range — for model selection, Van Westendorp WTP analysis, and from-scratch tier-scheme design, use `pricing-strategist`."
 metadata:
   version: 2.1.1
+disable-model-invocation: true
 ---
 
 # Pricing Strategy

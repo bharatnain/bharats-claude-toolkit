@@ -10,6 +10,7 @@ metadata:
   updated: 2026-03-05
   python-tools: burn_rate_calculator.py, unit_economics_analyzer.py, fundraising_model.py
   frameworks: financial-planning, fundraising-playbook, cash-management
+disable-model-invocation: true
 ---
 
 # CFO Advisor

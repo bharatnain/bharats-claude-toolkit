@@ -6,6 +6,7 @@ metadata:
   author: "todd@successhacker.co"
   tags: "renewals churn rca root-cause customer-success"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 # churn-rca [VALIDATED]

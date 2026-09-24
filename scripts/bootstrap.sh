@@ -95,20 +95,27 @@ if src_plugins:
             dest_map[p] = False  # repo-side disable wins (see settings.json $comment)
     merged["enabledPlugins"] = dest_map
 
-# permissions.allow: order-preserving union nested under the permissions
-# object. Existing dest allow rules are kept first, then any source rules
-# not already present. Other permissions keys (deny, ask,
-# additionalDirectories) and any dest-only fields are preserved untouched.
-src_allow = src.get("permissions", {}).get("allow", [])
-if src_allow:
+# permissions.allow / permissions.deny: order-preserving unions nested under
+# the permissions object. Existing dest rules are kept first, then any source
+# rules not already present. permissions.defaultMode is set only when the dest
+# has none (a mode the user chose is never overridden). Other permissions keys
+# (ask, additionalDirectories) and any dest-only fields are preserved untouched.
+src_perms = src.get("permissions", {})
+if src_perms:
     dest_perms = dict(merged.get("permissions", {}))
-    dest_allow = list(dest_perms.get("allow", []))
-    seen = set(dest_allow)
-    for rule in src_allow:
-        if rule not in seen:
-            dest_allow.append(rule)
-            seen.add(rule)
-    dest_perms["allow"] = dest_allow
+    for key in ("allow", "deny"):
+        src_rules = src_perms.get(key, [])
+        if not src_rules:
+            continue
+        dest_rules = list(dest_perms.get(key, []))
+        seen = set(dest_rules)
+        for rule in src_rules:
+            if rule not in seen:
+                dest_rules.append(rule)
+                seen.add(rule)
+        dest_perms[key] = dest_rules
+    if src_perms.get("defaultMode") and not dest_perms.get("defaultMode"):
+        dest_perms["defaultMode"] = src_perms["defaultMode"]
     merged["permissions"] = dest_perms
 
 # The source $comment documents the template, not the user config: never
@@ -119,9 +126,12 @@ with open(tmp_path, "w", encoding="utf-8") as f:
     f.write("\n")
 
 mkt_count = len(merged.get("extraKnownMarketplaces", {}))
-plugin_count = len(merged.get("enabledPlugins", []))
+ep = merged.get("enabledPlugins", {})
+plugin_count = sum(1 for v in ep.values() if v) if isinstance(ep, dict) else len(ep)
 allow_count = len(merged.get("permissions", {}).get("allow", []))
-print(f"{mkt_count} {plugin_count} {allow_count}")
+deny_count = len(merged.get("permissions", {}).get("deny", []))
+mode = merged.get("permissions", {}).get("defaultMode") or "unset"
+print(f"{mkt_count} {plugin_count} {allow_count} {deny_count} {mode}")
 PY
 )"; then
   echo "Error: merge failed." >&2
@@ -129,7 +139,7 @@ PY
   exit 1
 fi
 
-read -r MKT_COUNT PLUGIN_COUNT ALLOW_COUNT <<<"$COUNTS"
+read -r MKT_COUNT PLUGIN_COUNT ALLOW_COUNT DENY_COUNT DEFAULT_MODE <<<"$COUNTS"
 
 # Idempotent no-op: if the merged output is byte-identical to what is already
 # on disk, skip the write entirely — no backup churn, no mtime churn.
@@ -162,7 +172,7 @@ else
   fi
 fi
 
-echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules"
+echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules, $DENY_COUNT deny rules, defaultMode $DEFAULT_MODE"
 echo
 echo "Activation: restart Claude Code OR run /reload-plugins in an open session"
 echo "for the always-on tier to take effect. ecc remains one"
@@ -170,7 +180,8 @@ echo "'/plugin install' away."
 
 # ---------------------------------------------------------------------------
 # Install the default global CLAUDE.md (Andrej Karpathy's LLM-coding guidelines,
-# shipped as this repo's own CLAUDE.md) to the user-level memory file so the
+# shipped as templates/user-CLAUDE.md; the repo's own CLAUDE.md holds repo
+# facts only) to the user-level memory file so the
 # rules apply in every project by default. NON-BLOCKING and non-destructive:
 #   - default on; set CLAUDE_DEFAULT_CLAUDE_MD=off to skip.
 #   - writes the file only when absent (or byte-identical -> reported no-op).
@@ -181,7 +192,7 @@ echo "'/plugin install' away."
 # arrays, lives outside the python here-doc.
 # ---------------------------------------------------------------------------
 if [ "${CLAUDE_DEFAULT_CLAUDE_MD:-on}" != "off" ]; then
-  SRC_CLAUDE_MD="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/CLAUDE.md"
+  SRC_CLAUDE_MD="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/templates/user-CLAUDE.md"
   DEST_CLAUDE_MD="${CLAUDE_MD:-$HOME/.claude/CLAUDE.md}"
   if [ ! -f "$SRC_CLAUDE_MD" ]; then
     echo "CLAUDE.md: source not found at $SRC_CLAUDE_MD; skipping."

@@ -11,6 +11,49 @@ All notable changes to this project are documented here. Format follows
   `scripts/set_eval_secret.sh`** — stores the `ANTHROPIC_API_KEY` repo secret for `plugin-eval.yml`
   via a hidden prompt piped to `gh secret set`.
 
+### 2026-09-24 — Claude Code practice updates: fewer prompts, tiered skills, agent/CLAUDE.md hygiene
+
+- **Changed: fewer permission prompts and notifications.** `settings.json` ships `permissions.defaultMode: auto`
+  (applied only where the user has none), a `permissions.allow` list of routine developer commands
+  drawn from real transcripts (`python3`, `uv`, `sqlite3`, `git add/commit/status/log/diff`, `gh` reads,
+  test runners, `mkdir/cp/mv`, plus `WebFetch`/`WebSearch`/`Agent`/`Skill`), and a `permissions.deny`
+  list for credential reads and destructive git/rm forms. `bootstrap.sh` merges allow/deny as unions
+  and `defaultMode` only if absent. The `Notification` hook now matches `permission_prompt|idle_prompt`
+  only, and `notify.py` stays silent inside the desktop app (`CLAUDE_CODE_ENTRYPOINT=claude-desktop`,
+  which notifies on its own) unless `CLAUDE_NOTIFY_FORCE=1`.
+- **Changed: skill listing tiered.** 82 business-domain skills (sales/CS/revops, marketing, C-suite/
+  finance/legal, plus hallmark, code-migration and launch-your-agent, which are explicit-invocation
+  tools) and the 3 migrated commands are `disable-model-invocation: true` — still
+  available as `/name`, zero always-on cost. 12 language/framework skills carry `paths:` so they load
+  only for matching files; 10 research-heavy skills run in `context: fork`. Always-on listing:
+  134 skills / ~77k chars → 52 skills / ~21k chars (`validate_skills.py` prints the live figure). `SKILLS.md` is split into always-on and
+  user-invoked sections; `validate_skills.py` validates the new keys and prints the listing size.
+- **Changed: CLAUDE.md split.** `templates/user-CLAUDE.md` (Karpathy rules + compaction and
+  follow-up sections) is what bootstrap installs to `~/.claude/CLAUDE.md`; the repo `CLAUDE.md` now
+  holds repo facts only (validators, release flow, etiquette, vendoring and beads gotchas, ≤60 lines).
+  New path-scoped rules in `.claude/rules/` for `skills/`, `hooks/`+`scripts/`, and `agents/`.
+- **Changed: agents.** `effort:` frontmatter on all 8 (`xhigh` reviewer, `high` orchestration/
+  design roles, `medium` builders) because `model: opus` now resolves to Opus 5.5 whose default
+  effort is `medium`; the repeated "Prompt Defense Baseline" boilerplate removed (guardrails live in
+  hooks/permissions); `code-reviewer` may run the project's verification commands, reports gaps only,
+  and gains `memory: project`; `tech-lead` uses `team_sentinel.py` as the single sentinel mechanism.
+- **Changed: `team-orchestration`** gains a teammate-brief template (`references/teammate-brief.md`),
+  waves-and-scopes rules, a progress contract (DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED,
+  stand-alone recap), a bounded review loop with `code-reviewer`, `/goal`-style verification, the
+  subagents-vs-workflow ladder, beads CLI gotchas in `references/beads-contract.md`, and a note on
+  superpowers 6.4.1 native execution.
+- **Changed: `commands/` → skills.** `/doctor`, `/toolkit`, `/team` are now
+  `skills/<name>/SKILL.md` with `disable-model-invocation: true` (docs prefer skills; commands remain
+  supported but gain nothing). `validate_assets.py` accepts list-valued `tools:`.
+- **Added: `output-styles/toolkit.md`** (intent line first, evidence over assertion, stand-alone
+  closing recap; `keep-coding-instructions: true`, not forced). **Changed: workflows** —
+  `implement-task-with-gates` gains a structured `Review` phase and integrates only on a
+  `PASS` verdict; `review-changes` uses structured findings/verdicts; README documents when a
+  workflow beats subagents.
+- **Changed: `secret_scan.py` fails closed** (exit 2 on internal error) since Claude Code treats any
+  other exit code as "proceed"; `docs/hooks-security.md` records the fail-open/fail-closed split and
+  the notification routing.
+
 ## [0.9.0] - 2026-09-22
 
 ### 2026-09-22 — Backlog execution: full re-vendor wave, roster consolidation, agent-teams removal

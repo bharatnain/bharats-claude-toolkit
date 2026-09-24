@@ -13,6 +13,7 @@ description: >
 argument-hint: "[<account-name-or-ID>] [--account | --portfolio | --patterns]"
 version: "1.0.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 <!-- Status: [PROPOSED] -->

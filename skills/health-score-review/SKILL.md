@@ -8,6 +8,7 @@ description: >
 argument-hint: "[account name | --portfolio] [--triage | --deep]"
 version: "1.0.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 # /health-score-review

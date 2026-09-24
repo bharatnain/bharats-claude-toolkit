@@ -1,65 +1,45 @@
-# CLAUDE.md
+# bharats-claude-toolkit
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+Claude Code plugin + marketplace (vendored skills, role agents, hooks, scripts). Behavioural rules live in the user-level `~/.claude/CLAUDE.md` that `scripts/bootstrap.sh` installs from `templates/user-CLAUDE.md`; this file holds repo facts only.
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+## Verify before done
 
-## 1. Think Before Coding
+- `python3 scripts/validate_skills.py --strict-yaml`
+- `python3 scripts/validate_skills.py --check-catalog` (regenerate with `--catalog`)
+- `python3 scripts/validate_assets.py`
+- `python3 scripts/validate_profiles.py`
+- `uv run --quiet --python 3.12 --with pytest pytest -q skills/_lib`
+- `scripts/quality_gate.py` detects no stack here, so its pass is vacuous; do not cite it as evidence.
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+## Release
 
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+- `python3 scripts/release.py --bump <level>`, commit, then `git tag vX.Y.Z`, then push. Never tag before the release commit.
+- CHANGELOG edits go under `## [Unreleased]`.
 
-## 2. Simplicity First
+## Etiquette
 
-**Minimum code that solves the problem. Nothing speculative.**
+- Branches `claude/<topic>`; PRs to `main`, merged with merge commits; no force-push.
+- Commit attribution trailer as configured for the session.
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+## Vendored skills
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+- Keep `name` == directory; keep disambiguated descriptions verbatim; neutralize links that escape the skill directory.
+- To re-vendor: find local edits with `git diff $(git log --diff-filter=A --format=%H -- skills/<name>/SKILL.md | tail -1)..HEAD -- skills/<name>`, copy upstream, re-apply them, record the upstream HEAD in `THIRD_PARTY_SOURCES.json`.
 
-## 3. Surgical Changes
+## Beads
 
-**Touch only what you must. Clean up only your own mess.**
+- `bd create ... --acceptance ... --deps <one id>`: one id per `--deps`; add more with `bd dep add`.
+- In a worktree the store resolves to the main checkout's `.beads/`.
+- `bd ready --exclude-type epic`; `bd close --reason "..."`.
 
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
+## Team sessions
 
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
+- `python3 scripts/team_sentinel.py set|clear --session <id>` is the only sentinel mechanism; always pair `set` with `clear`.
 
-The test: Every changed line should trace directly to the user's request.
+## Bootstrap
 
-## 4. Goal-Driven Execution
+- `bash scripts/bootstrap.sh` merges `settings.json` into `~/.claude/settings.json` add-only, except repo-side `false` plugin values, which are enforced.
 
-**Define success criteria. Loop until verified.**
+## Compaction
 
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+When compacting, preserve: the list of files modified this session, the last validator/test results, open task ids, and any decision stated exactly.

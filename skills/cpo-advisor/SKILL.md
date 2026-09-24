@@ -10,6 +10,7 @@ metadata:
   updated: 2026-03-05
   python-tools: pmf_scorer.py, portfolio_analyzer.py
   frameworks: pmf-playbook, product-strategy, product-org-design
+disable-model-invocation: true
 ---
 
 # CPO Advisor

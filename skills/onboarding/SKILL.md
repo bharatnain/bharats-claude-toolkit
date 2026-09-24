@@ -3,6 +3,7 @@ name: onboarding
 description: PLG product-UX post-signup activation — designing the in-app, self-serve first-run EXPERIENCE so users reach their "aha moment" and activate (no human CSM, no named account, no contract). Use when optimizing the first-run experience, onboarding flow UX, activation rate, time-to-value, empty states, onboarding checklists, guided tours/tooltips, or stalled-user in-app re-engagement ("users sign up but don't use the product," "low activation rate," "nobody completes setup," "improve our first session experience"). Not for a B2B customer-facing onboarding PLAN document — the multi-milestone timeline, owners, cadence, success criteria for a signed account (use `onboarding-plan`); not for preparing the onboarding KICKOFF MEETING right after a contract is signed — its agenda, first-priorities, or pre-kickoff checklist (use `kickoff-prep`). This skill never touches a named customer, contract, or CSM workflow. For signup/registration optimization see signup; for email sequences see emails.
 metadata:
   version: 2.0.1
+disable-model-invocation: true
 ---
 
 # Onboarding CRO

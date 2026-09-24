@@ -1,6 +1,7 @@
 ---
 name: lbo-model
 description: This skill should be used when completing LBO (Leveraged Buyout) model templates in Excel for private equity transactions, deal materials, or investment committee presentations. The skill fills in formulas, validates calculations, and ensures professional formatting standards that adapt to any template structure.
+disable-model-invocation: true
 ---
 
 ---

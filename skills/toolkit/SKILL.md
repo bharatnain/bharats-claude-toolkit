@@ -1,5 +1,7 @@
 ---
+name: toolkit
 description: Browse this toolkit — vendored skills grouped by domain + the enabled external plugins
+disable-model-invocation: true
 ---
 
 Present the capabilities of **Bharat's Claude Toolkit** to the user: the vendored
@@ -60,17 +62,18 @@ plugins.
 
 ## Headline counts
 
-State the headline: **always-on = 29 plugins / 134 skills + 8 agents**. Where it's cheap,
+State the headline: **29 plugins / 137 vendored skills (52 always-on, 85 user-invoked via `/name` — see SKILLS.md) / 8 agents**. Where it's cheap,
 compute the live numbers instead of trusting the headline:
 - enabled plugins (this one + 28 external) = count of `enabledPlugins` entries set to `true` in `settings.json` (≈29),
-- vendored skills = count of skill entries in `SKILLS.md` (≈134),
+- vendored skills = count of skill entries in `SKILLS.md` (≈137),
 - vendored agents = count of agent entries in `SKILLS.md` (8),
 and report whichever you actually computed.
 
 ## Reminders to close with
 
-- Skills **auto-trigger by their description** — the user does not invoke them manually; just
-  work and Claude reaches for the right one.
+- Always-on skills **auto-trigger by their description** — just work and Claude reaches for
+  the right one. User-invoked skills (`disable-model-invocation: true` in `SKILLS.md`) run
+  only via `/name`.
 - To pull *more* on demand, the firehose is one command away — point to the README cheatsheet
   (`/plugin install ecc@ecc`, `/plugin install probity@probity`, then
   `/reload-plugins`).

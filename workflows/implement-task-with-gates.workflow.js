@@ -5,6 +5,7 @@
 //
 // Flow: plan -> implement -> runGate -> a BOUNDED Critic fix-loop that iterates
 // ONLY on blocking_failures and stops at a profile-driven max-iterations cap ->
+// structured review (code-reviewer returns {verdict, findings} via schema) ->
 // integrate. The loop ALWAYS terminates: the cap is read from the maturity
 // profile (greenfield:1, active:2, legacy:3) and clamped to a hard ceiling even
 // if the profile name is malformed.
@@ -14,13 +15,14 @@ import { runGate, loadProfileName } from './lib/runner.js'
 export const meta = {
   name: 'implement-task-with-gates',
   description:
-    'Plan -> implement -> quality-gate -> bounded Critic fix-loop on blocking failures -> integrate. The fix-loop iterates only on the gate\'s blocking_failures and is capped by the team maturity profile (more passes on legacy, fewer on greenfield) with a hard ceiling, so it is guaranteed to terminate.',
+    'Plan -> implement -> quality-gate -> bounded Critic fix-loop on blocking failures -> structured review -> integrate. The fix-loop iterates only on the gate\'s blocking_failures and is capped by the team maturity profile (more passes on legacy, fewer on greenfield) with a hard ceiling, so it is guaranteed to terminate. The reviewer returns a schema-bound {verdict, findings} and the script integrates only on verdict === "PASS".',
   phases: [
     { title: 'Plan', detail: 'turn the task into an implementation plan with verifiable success criteria' },
     { title: 'Implement', detail: 'apply the plan as a surgical change' },
     { title: 'Gate', detail: 'runGate over the change; derive blocking_failures' },
     { title: 'Fix-loop', detail: 'bounded Critic loop: fix ONLY blocking_failures, re-gate, stop at the cap' },
-    { title: 'Integrate', detail: 'land the change once the gate is green (or the cap is hit)' },
+    { title: 'Review', detail: 'code-reviewer checks the change against the success criteria; schema-bound PASS/FAIL verdict' },
+    { title: 'Integrate', detail: 'land the change once the gate is green AND the review verdict is PASS' },
   ],
 }
 
@@ -62,6 +64,32 @@ const DONE_SCHEMA = {
   properties: {
     summary: { type: 'string' },
     changedFiles: { type: 'array', items: { type: 'string' } },
+  },
+}
+
+// Structured verdict for the review phase. The script branches on `verdict`,
+// never on prose, so a reviewer that writes "looks fine but..." cannot slip a
+// FAIL through as a PASS.
+const REVIEW_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['verdict', 'findings'],
+  properties: {
+    verdict: { type: 'string', enum: ['PASS', 'FAIL'], description: 'PASS only if every success criterion is met and no finding affects correctness' },
+    findings: {
+      type: 'array',
+      description: 'gaps only — omit praise and optional style remarks',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['file', 'line', 'summary'],
+        properties: {
+          file: { type: 'string' },
+          line: { type: ['integer', 'null'], description: 'line number, or null when the gap is not line-anchored' },
+          summary: { type: 'string' },
+        },
+      },
+    },
   },
 }
 
@@ -127,10 +155,32 @@ if (!gateGreen) {
   log(`Fix-loop exhausted (${iter}/${MAX_FIX_ITERS} passes) with ${gate.blocking_failures.length} blocking failure(s) remaining — NOT integrating.`)
 }
 
-// ---- Phase 5: integrate (only on a green gate) ------------------------------
+// ---- Phase 5: structured review (only on a green gate) ----------------------
+phase('Review')
+let review = null
+if (gateGreen) {
+  review = await agent(
+    `Review the working diff for this task against its success criteria. READ-ONLY: you may run the project's own checks (tests, linters, validators, quality gate) but must not edit, stage, or switch branches. Report GAPS ONLY — anything that breaks a success criterion, a correctness bug, or a change outside the task's scope. Return verdict "PASS" only when every criterion holds and no finding affects correctness; otherwise "FAIL" with line-anchored findings.
+
+TASK: ${TASK}
+
+SUCCESS CRITERIA:
+${criteria.map((c) => `  - ${c}`).join('\n')}
+
+CHANGED FILES (per implementer): ${((impl && impl.changedFiles) || []).join(', ') || '(unknown — inspect git diff)'}`,
+    { label: 'review', phase: 'Review', schema: REVIEW_SCHEMA, agentType: 'code-reviewer' },
+  )
+  log(`Review: verdict=${(review && review.verdict) || 'none'} findings=${((review && review.findings) || []).length}`)
+} else {
+  log('Skipping review — gate is not green.')
+}
+// A missing/malformed verdict is NOT a pass: only the structured field decides.
+const reviewPassed = !!(review && review.verdict === 'PASS')
+
+// ---- Phase 6: integrate (only on a green gate AND a PASS verdict) -----------
 phase('Integrate')
 let integration = null
-if (gateGreen) {
+if (gateGreen && reviewPassed) {
   integration = await agent(
     `The quality gate is GREEN for this task. Integrate the change: ensure the working tree is coherent, the build is green, and the change is ready to land. Report what you did.
 
@@ -139,7 +189,7 @@ TASK: ${TASK}`,
   )
   log(`Integrate: ${(integration && integration.summary) || 'done'}`)
 } else {
-  log('Skipping integrate — gate is not green.')
+  log(gateGreen ? 'Skipping integrate — review verdict is not PASS.' : 'Skipping integrate — gate is not green.')
 }
 
 return {
@@ -149,6 +199,7 @@ return {
   implementation: impl,
   fixLoop: { passes: iter, cap: MAX_FIX_ITERS, exhausted: !gateGreen && iter >= MAX_FIX_ITERS },
   gate: { ok: gate.ok, verdict: gate.verdict, blocking_failures: gate.blocking_failures, checks: gate.checks },
-  integrated: gateGreen,
+  review,
+  integrated: gateGreen && reviewPassed,
   integration,
 }

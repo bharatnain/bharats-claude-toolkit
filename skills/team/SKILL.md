@@ -1,5 +1,8 @@
 ---
+name: team
 description: Spin up a maturity-matched multi-agent team to deliver a goal end-to-end, with quality gates enforced automatically
+disable-model-invocation: true
+argument-hint: "<goal>"
 ---
 
 Run `/team <goal>` to orchestrate a multi-agent build for **<goal>**.

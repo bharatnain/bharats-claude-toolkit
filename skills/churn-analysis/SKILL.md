@@ -4,6 +4,7 @@ description: "Post-loss review of a SINGLE churned or contracted account: confir
 argument-hint: "[<account-name-or-ID>] [--deep | --quick | --portfolio-scan]"
 version: "1.1.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 # churn-analysis [VALIDATED]

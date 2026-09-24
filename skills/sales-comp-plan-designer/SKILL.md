@@ -1,6 +1,7 @@
 ---
 name: sales-comp-plan-designer
 description: Base/variable split recommendations, accelerators, decelerators, quota retirement methods, SPIFs, cost of sales tracking.
+disable-model-invocation: true
 ---
 
 # Sales Comp Plan Designer

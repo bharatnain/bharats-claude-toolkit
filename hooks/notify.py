@@ -7,6 +7,8 @@ Claude finishes a turn (the `Stop` event). Reads the event JSON on stdin.
 
 Env vars:
   CLAUDE_NOTIFY=0           disable all notifications
+  CLAUDE_NOTIFY_FORCE=1     notify even inside the desktop app (which already
+                            shows its own OS notification and phone push)
   CLAUDE_TOOLKIT_HOOKS=off  master off-switch for all toolkit hooks; also set by
                             team_gate.py for gate subprocesses (recursion guard)
   CLAUDE_NOTIFY_ON_STOP=1   also notify when Claude finishes a turn (default: off)
@@ -48,6 +50,11 @@ def is_on(name):
 
 def decide(payload):
     """Return (title, body) to notify, or None to skip."""
+    # The desktop app notifies on its own (OS notification + optional phone
+    # push), so a hook notification there is a duplicate. Opt back in with
+    # CLAUDE_NOTIFY_FORCE=1.
+    if os.environ.get("CLAUDE_CODE_ENTRYPOINT", "") == "claude-desktop" and not is_on("CLAUDE_NOTIFY_FORCE"):
+        return None
     event = payload.get("hook_event_name", "")
     if event == "Stop":
         if not is_on("CLAUDE_NOTIFY_ON_STOP"):
@@ -56,7 +63,8 @@ def decide(payload):
             return None  # paused on background work, not truly done — don't ping
         return ("Claude Code — finished",
                 truncate(payload.get("last_assistant_message") or "Turn complete."))
-    # Notification (or any other attention event routed here)
+    # Notification: hooks.json matches permission_prompt|idle_prompt only, so
+    # auth/elicitation/agent-lifecycle notifications never reach this hook.
     default_title = {
         "permission_prompt": "Claude needs permission",
         "idle_prompt": "Claude is waiting for you",

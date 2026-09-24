@@ -6,6 +6,7 @@ author: claude-code-skills
 license: MIT
 tags: [commercial, partnerships, channel-partners, joint-gtm, revshare, oem, reseller, strategic-alliance]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # partnerships-architect

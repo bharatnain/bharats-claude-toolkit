@@ -1,6 +1,7 @@
 ---
 name: territory-planning-optimizer
 description: Account assignment by revenue potential, geography, relationship. Workload balancing, TAM/SAM calculation, coverage models.
+disable-model-invocation: true
 ---
 
 # Territory Planning Optimizer

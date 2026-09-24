@@ -9,6 +9,9 @@ metadata:
   domain: competitive-strategy
   updated: 2026-03-05
   frameworks: ci-playbook, battlecard-template
+disable-model-invocation: true
+context: fork
+agent: general-purpose
 ---
 
 # Competitive Intelligence

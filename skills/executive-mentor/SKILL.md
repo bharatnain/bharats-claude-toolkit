@@ -10,6 +10,7 @@ metadata:
   updated: 2026-03-05
   python-tools: decision_matrix_scorer.py, stakeholder_mapper.py
   frameworks: pre-mortem, board-prep, hard-call, stress-test, postmortem
+disable-model-invocation: true
 ---
 
 # Executive Mentor

@@ -7,6 +7,7 @@ author: claude-code-skills
 license: MIT
 tags: [bizops, vendor, sla, third-party-risk, vendor-management, saas-management, tprm]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # Vendor Management — Operational Third-Party Performance

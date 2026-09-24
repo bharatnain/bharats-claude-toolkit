@@ -118,3 +118,13 @@ def test_render_escapes_html():
             "now": {"text": "", "session": None, "epic": None}, "beads": {"in_flight": [], "epics": [], "counts": {}, "recent_closed": []}, "sessions": [], "prs": [], "errors": []}
     out = board.render(data)
     assert "<script>alert(1)</script>" not in out and "&lt;script&gt;" in out
+
+def test_build_marks_failed_sources_inline(tmp_path, monkeypatch):
+    repo = tmp_path / "repo"; repo.mkdir()
+    import subprocess as sp; sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    monkeypatch.setattr(board, "collect_sessions", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("boom")))
+    monkeypatch.setattr(board, "collect_beads", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("boom")))
+    data = board.build(repo, projects_dir=tmp_path / "none", now=NOW, run=FakeRun({}))
+    html_text = (repo / ".claude/board/index.html").read_text()
+    assert "unavailable: boom" in html_text
+    assert sum(1 for e in data["errors"] if e.startswith("beads:")) == 1

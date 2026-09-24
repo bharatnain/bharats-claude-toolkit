@@ -179,6 +179,7 @@ def _rel(ts, now):
 
 def render(data, now=None):
     now = now or dt.datetime.now(dt.timezone.utc); m = data["meta"]; parts = []
+    unavail = {e.split(":", 1)[0]: e.split(":", 1)[1].strip() for e in data["errors"] if ":" in e}
     parts.append(f'<h1>{_e(m["repo"])} · orchestrator board</h1><div class="meta">{_e(m["branch"])} {_e(m["head"])} · built {_e(m["built_at"])}</div>')
     w = data["waiting"]
     parts.append('<h2>Waiting on you</h2><div class="card wait">' + ("<ol>" + "".join(f"<li>{_e(x['text'])} <span class='meta'>({_e(x['source'])}, {_rel(x['at'], now)})</span></li>" for x in w) + "</ol>" if w else "Nothing.") + "</div>")
@@ -190,16 +191,22 @@ def render(data, now=None):
     else:
         rows = "".join(f"<tr><td>{_e(i['id'])}</td><td>{_e(i['title'])}</td><td>{_badge(i['status'], 'acc' if i['status']=='in_progress' else '')}</td><td>{_e(i['owner'])}</td><td>{_e(i['model'] or '')}</td><td>{_e(i['tries'] or '')}</td><td class='meta'>{_rel(i['updated'], now)}</td></tr>" for i in b["in_flight"])
         parts.append(f'<h2>In flight · {len(b["in_flight"])}</h2><div class="card"><table><tr><th>id</th><th>task</th><th>state</th><th>owner</th><th>model</th><th>tries</th><th></th></tr>{rows or "<tr><td colspan=7>Nothing in flight.</td></tr>"}</table></div>')
-    srows = []
-    for s in data["sessions"]:
-        srows.append(f"<tr><td>{_badge('running' if s['running'] else 'idle', 'ok' if s['running'] else '')}</td><td>{_e(s['title'])}</td><td>{_e(s['model'] or '')}</td><td>{_e(s['branch'] or '')}</td><td>{s['tokens']:,}</td><td class='meta'>{_rel(s['last_at'], now)}</td></tr>")
-        for a in s["subagents"]:
-            srows.append(f"<tr><td></td><td>↳ {_e(a['name'])}</td><td>{_e(a['model'] or '')}</td><td>{_badge('running' if a['running'] else 'done', 'ok' if a['running'] else '')}</td><td>{a['tool_uses']} tools</td><td class='meta'>{_rel(a['last_at'], now)}</td></tr>")
-    parts.append(f'<h2>Sessions and agents · {len(data["sessions"])}</h2><div class="card"><table><tr><th></th><th>session / agent</th><th>model</th><th>branch</th><th>tokens</th><th></th></tr>{"".join(srows) or "<tr><td colspan=6>No sessions found.</td></tr>"}</table></div>')
+    if "sessions" in unavail:
+        parts.append(f'<h2>Sessions and agents</h2><div class="card unavail">unavailable: {_e(unavail["sessions"])}</div>')
+    else:
+        srows = []
+        for s in data["sessions"]:
+            srows.append(f"<tr><td>{_badge('running' if s['running'] else 'idle', 'ok' if s['running'] else '')}</td><td>{_e(s['title'])}</td><td>{_e(s['model'] or '')}</td><td>{_e(s['branch'] or '')}</td><td>{s['tokens']:,}</td><td class='meta'>{_rel(s['last_at'], now)}</td></tr>")
+            for a in s["subagents"]:
+                srows.append(f"<tr><td></td><td>↳ {_e(a['name'])}</td><td>{_e(a['model'] or '')}</td><td>{_badge('running' if a['running'] else 'done', 'ok' if a['running'] else '')}</td><td>{a['tool_uses']} tools</td><td class='meta'>{_rel(a['last_at'], now)}</td></tr>")
+        parts.append(f'<h2>Sessions and agents · {len(data["sessions"])}</h2><div class="card"><table><tr><th></th><th>session / agent</th><th>model</th><th>branch</th><th>tokens</th><th></th></tr>{"".join(srows) or "<tr><td colspan=6>No sessions found.</td></tr>"}</table></div>')
     parts.append('</div><div>')
-    prs = data["prs"]; cls = {"passed": "ok", "failed": "bad", "pending": "warn", "none": ""}
-    prow = "".join(f"<tr><td><a href='{_e(p['url'])}'>#{p['number']}</a></td><td>{_e(p['title'])}{' ' + _badge('draft') if p['draft'] else ''}</td><td>{_badge(p['checks'], cls[p['checks']])}</td><td class='meta'>{_rel(p['updated'], now)}</td></tr>" for p in prs)
-    parts.append(f'<h2>Merge lane · {len(prs)} open</h2><div class="card"><table>{prow or "<tr><td>No open PRs (or gh unavailable).</td></tr>"}</table></div>')
+    if "prs" in unavail:
+        parts.append(f'<h2>Merge lane</h2><div class="card unavail">unavailable: {_e(unavail["prs"])}</div>')
+    else:
+        prs = data["prs"]; cls = {"passed": "ok", "failed": "bad", "pending": "warn", "none": ""}
+        prow = "".join(f"<tr><td><a href='{_e(p['url'])}'>#{p['number']}</a></td><td>{_e(p['title'])}{' ' + _badge('draft') if p['draft'] else ''}</td><td>{_badge(p['checks'], cls[p['checks']])}</td><td class='meta'>{_rel(p['updated'], now)}</td></tr>" for p in prs)
+        parts.append(f'<h2>Merge lane · {len(prs)} open</h2><div class="card"><table>{prow or "<tr><td>No open PRs (or gh unavailable).</td></tr>"}</table></div>')
     counts = ", ".join(f"{k}: {v}" for k, v in sorted(b.get("counts", {}).items()))
     closed = "".join(f"<li>{_e(i['id'])} {_e(i['title'])}</li>" for i in b.get("recent_closed", []))
     parts.append(f'<h2>Backlog</h2><div class="card">{_e(counts) or "—"}<ul>{closed}</ul></div>')
@@ -224,7 +231,7 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
     r = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], repo_root, run); branch = r.stdout.strip() if r.returncode == 0 else "?"
     r = _run(["git", "rev-parse", "--short", "HEAD"], repo_root, run); head = r.stdout.strip() if r.returncode == 0 else "?"
     sessions = safe("sessions", lambda: collect_sessions(repo_root, projects_dir, now, since_minutes), [])
-    beads = safe("beads", lambda: collect_beads(repo_root, run=run), {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": "collector failed"})
+    beads = safe("beads", lambda: collect_beads(repo_root, run=run), {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": None})
     if beads.get("error"): errors.append("beads: " + beads["error"])
     prs = safe("prs", lambda: collect_prs(repo_root, run=run), [])
     waiting = safe("waiting", lambda: collect_waiting(repo_root, sessions, beads, prs), [])

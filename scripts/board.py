@@ -256,7 +256,7 @@ def main(argv):
                 r = R(); r.returncode = 1; r.stdout = ""; r.stderr = "disabled"; return r
             return subprocess.run(args, **kw)
     data = build(a.repo, a.out, a.projects_dir, run=run, since_minutes=a.since_minutes)
-    out = Path(a.out) if a.out else Path(a.repo).resolve() / ".claude/board"
+    out = Path(a.out).resolve() if a.out else Path(a.repo).resolve() / ".claude/board"
     if not a.quiet:
         print(f"board: {out / 'index.html'} · waiting {len(data['waiting'])} · in flight {len(data['beads'].get('in_flight', []))} · sessions {len(data['sessions'])} · PRs {len(data['prs'])}")
         for e in data["errors"]: print(f"  unavailable: {e}")

@@ -136,3 +136,18 @@ def test_cli_build(tmp_path):
     repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
     r = sp.run([sys.executable, str(Path(board.__file__)), "build", "--repo", str(repo), "--projects-dir", str(tmp_path / "none"), "--quiet"], capture_output=True, text=True)
     assert r.returncode == 0 and (repo / ".claude/board/index.html").exists()
+
+def test_cli_open_relative_out(tmp_path, monkeypatch):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    monkeypatch.chdir(repo)
+    monkeypatch.setattr(board.webbrowser, "open", lambda url: True)
+    rc = board.main(["open", "--repo", ".", "--projects-dir", str(tmp_path / "none"), "--out", "relout", "--quiet"])
+    assert rc == 0 and (repo / "relout" / "index.html").exists()
+
+def test_cli_build_no_gh(tmp_path):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    rc = board.main(["build", "--repo", str(repo), "--projects-dir", str(tmp_path / "none"), "--no-gh", "--quiet"])
+    assert rc == 0
+    assert json.loads((repo / ".claude/board/board.json").read_text())["prs"] == []

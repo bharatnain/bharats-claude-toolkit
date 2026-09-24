@@ -130,3 +130,9 @@ def test_build_marks_failed_sources_inline(tmp_path, monkeypatch):
     assert sum(1 for e in data["errors"] if e.startswith("beads:")) == 1
     in_flight_segment = html_text.split("<h2>In flight", 1)[1].split("<h2", 1)[0]
     assert "unavailable: boom" in in_flight_segment
+
+def test_cli_build(tmp_path):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    r = sp.run([sys.executable, str(Path(board.__file__)), "build", "--repo", str(repo), "--projects-dir", str(tmp_path / "none"), "--quiet"], capture_output=True, text=True)
+    assert r.returncode == 0 and (repo / ".claude/board/index.html").exists()

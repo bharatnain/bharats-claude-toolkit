@@ -241,3 +241,36 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
             "waiting": waiting, "now": now_block, "beads": beads, "sessions": sessions, "prs": prs, "errors": errors}
     _atomic_write(out / "index.html", render(data, now)); _atomic_write(out / "board.json", json.dumps(data, indent=2, default=str))
     return data
+
+def main(argv):
+    ap = argparse.ArgumentParser(description="Orchestrator board (read-only; writes .claude/board/)")
+    ap.add_argument("cmd", choices=["build", "open", "serve"]); ap.add_argument("--repo", default=".")
+    ap.add_argument("--projects-dir", default=None); ap.add_argument("--out", default=None); ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--since-minutes", type=int, default=5); ap.add_argument("--no-gh", action="store_true"); ap.add_argument("--port", type=int, default=4817)
+    a = ap.parse_args(argv)
+    run = subprocess.run
+    if a.no_gh:
+        def run(args, **kw):  # noqa: E306
+            if args and args[0] == "gh":
+                class R: pass
+                r = R(); r.returncode = 1; r.stdout = ""; r.stderr = "disabled"; return r
+            return subprocess.run(args, **kw)
+    data = build(a.repo, a.out, a.projects_dir, run=run, since_minutes=a.since_minutes)
+    out = Path(a.out) if a.out else Path(a.repo).resolve() / ".claude/board"
+    if not a.quiet:
+        print(f"board: {out / 'index.html'} · waiting {len(data['waiting'])} · in flight {len(data['beads'].get('in_flight', []))} · sessions {len(data['sessions'])} · PRs {len(data['prs'])}")
+        for e in data["errors"]: print(f"  unavailable: {e}")
+    if a.cmd == "open":
+        url = (out / "index.html").as_uri(); print(url); webbrowser.open(url)
+    if a.cmd == "serve":
+        import functools, http.server
+        handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(out))
+        print(f"http://127.0.0.1:{a.port}/index.html")
+        http.server.ThreadingHTTPServer(("127.0.0.1", a.port), handler).serve_forever()
+    return 0
+
+if __name__ == "__main__":
+    try: sys.exit(main(sys.argv[1:]))
+    except KeyboardInterrupt: sys.exit(0)
+    except Exception as e:  # noqa: BLE001
+        print(f"internal error: {e}", file=sys.stderr); sys.exit(2)

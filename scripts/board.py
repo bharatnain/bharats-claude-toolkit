@@ -36,9 +36,24 @@ def _objs(path):
         try: yield json.loads(line)
         except Exception: continue  # noqa: BLE001
 
-def project_dirs_for(repo_root, projects_dir):
-    enc = str(Path(repo_root).resolve()).replace("/", "-")
-    return sorted(p for p in Path(projects_dir).glob(enc + "*") if p.is_dir())
+def _encode_project(path):
+    return re.sub(r"[^A-Za-z0-9]", "-", str(Path(path).resolve()))
+
+def _main_root(repo_root, run=subprocess.run):
+    try:
+        r = run(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"], cwd=str(repo_root), capture_output=True, text=True, timeout=10)
+        if r.returncode == 0 and r.stdout.strip():
+            return Path(r.stdout.strip()).parent
+    except Exception:  # noqa: BLE001
+        pass
+    return Path(repo_root).resolve()
+
+def project_dirs_for(repo_root, projects_dir, run=subprocess.run):
+    roots = {Path(repo_root).resolve(), _main_root(repo_root, run)}
+    out = set()
+    for root in roots:
+        out.update(p for p in Path(projects_dir).glob(_encode_project(root) + "*") if p.is_dir())
+    return sorted(out)
 
 def _subagents(sess_dir, now, since):
     out = []
@@ -62,9 +77,9 @@ def _subagents(sess_dir, now, since):
         out.append({"id": aid, "name": meta.get("description") or aid, "model": model, "tool_uses": tools, "running": running, "last_at": last.isoformat() if last else None})
     return out
 
-def collect_sessions(repo_root, projects_dir, now, since_minutes=5):
+def collect_sessions(repo_root, projects_dir, now, since_minutes=5, run=subprocess.run):
     sessions = []
-    for proj in project_dirs_for(repo_root, projects_dir):
+    for proj in project_dirs_for(repo_root, projects_dir, run):
         for f in sorted(proj.glob("*.jsonl")):
             sid = f.stem; title = sid; model = None; branch = None; last = None; tokens = 0; last_text = ""; question = None
             for o in _objs(f):
@@ -231,7 +246,7 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
             errors.append(f"{name}: {e}"); return default
     r = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], repo_root, run); branch = r.stdout.strip() if r.returncode == 0 else "?"
     r = _run(["git", "rev-parse", "--short", "HEAD"], repo_root, run); head = r.stdout.strip() if r.returncode == 0 else "?"
-    sessions = safe("sessions", lambda: collect_sessions(repo_root, projects_dir, now, since_minutes), [])
+    sessions = safe("sessions", lambda: collect_sessions(repo_root, projects_dir, now, since_minutes, run), [])
     beads = safe("beads", lambda: collect_beads(repo_root, run=run), {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": None})
     if beads.get("error"): errors.append("beads: " + beads["error"])
     prs = safe("prs", lambda: collect_prs(repo_root, run=run), [])

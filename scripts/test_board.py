@@ -9,7 +9,7 @@ def _line(**kw):
     return json.dumps(kw) + "\n"
 
 def make_projects(tmp_path, repo_root):
-    proj = tmp_path / "projects" / str(repo_root).replace("/", "-")
+    proj = tmp_path / "projects" / board._encode_project(repo_root)
     proj.mkdir(parents=True)
     s1 = proj / "sess-1.jsonl"
     s1.write_text(
@@ -43,7 +43,7 @@ def test_collect_sessions(tmp_path):
 
 def test_collect_sessions_edge_cases(tmp_path):
     repo = tmp_path / "repo"; repo.mkdir()
-    proj = tmp_path / "projects" / str(repo).replace("/", "-")
+    proj = tmp_path / "projects" / board._encode_project(repo)
     proj.mkdir(parents=True)
     (proj / "sess-3.jsonl").write_text(
         "{not json\n"
@@ -59,6 +59,47 @@ def test_collect_sessions_edge_cases(tmp_path):
 
     empty = next(s for s in sessions if s["id"] == "empty")
     assert empty["last_at"] is None and empty["running"] is False and empty["tokens"] == 0 and empty["title"] == "empty"
+
+def test_project_dirs_encode_dots(tmp_path):
+    import re
+    repo = tmp_path / "bharat.nain" / "my_repo"
+    repo.mkdir(parents=True)
+    encoded = re.sub(r"[^A-Za-z0-9]", "-", str(repo.resolve()))
+    projects = tmp_path / "projects"
+    projects.mkdir()
+    expected = projects / encoded
+    expected.mkdir()
+    (projects / "-other").mkdir()
+
+    def fake_run(*a, **kw):
+        class R: pass
+        r = R(); r.returncode = 1; r.stdout = ""; r.stderr = ""; return r
+
+    assert board.project_dirs_for(repo, projects, run=fake_run) == [expected]
+
+def test_project_dirs_from_worktree(tmp_path):
+    import re
+    main = tmp_path / "main"
+    worktree = main / ".claude" / "worktrees" / "wt"
+    worktree.mkdir(parents=True)
+    projects = tmp_path / "projects"
+    projects.mkdir()
+    main_dir = projects / re.sub(r"[^A-Za-z0-9]", "-", str(main.resolve()))
+    main_dir.mkdir()
+    wt_dir = projects / re.sub(r"[^A-Za-z0-9]", "-", str(worktree.resolve()))
+    wt_dir.mkdir()
+
+    def fake_run_ok(*a, **kw):
+        class R: pass
+        r = R(); r.returncode = 0; r.stdout = str(main / ".git") + "\n"; r.stderr = ""; return r
+
+    assert board.project_dirs_for(worktree, projects, run=fake_run_ok) == sorted([main_dir, wt_dir])
+
+    def fake_run_fail(*a, **kw):
+        class R: pass
+        r = R(); r.returncode = 1; r.stdout = ""; r.stderr = ""; return r
+
+    assert board.project_dirs_for(worktree, projects, run=fake_run_fail) == [wt_dir]
 
 BD_JSON = json.dumps([
   {"id": "x-1", "title": "Epic A", "issue_type": "epic", "status": "in_progress", "owner": "", "parent": None, "priority": 2, "updated_at": "2026-09-24T11:00:00Z", "dependencies": []},

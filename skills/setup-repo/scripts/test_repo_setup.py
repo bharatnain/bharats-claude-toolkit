@@ -160,3 +160,18 @@ def test_plan_skips_unparseable_settings(tmp_path):
     assert paths[".claude/settings.json"]["action"] == "skip"
     assert paths["CLAUDE.md"]["action"] == "create"
     assert paths[".claude/rules/python.md"]["action"] == "create"
+
+def test_apply_then_check_clean(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    written = rs.apply(rs.plan(rs.detect(root)))
+    assert "CLAUDE.md" in written and (root / ".claude/hooks/lint_on_edit.py").exists()
+    assert rs.check(rs.detect(root)) == []           # idempotent
+    for p in written: assert p == "CLAUDE.md" or p.startswith(".claude/") or p == ".gitignore"
+
+def test_cli_check_exit_code(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    r = subprocess.run([sys.executable, str(Path(rs.__file__)), "check", "--repo", str(root)], capture_output=True, text=True)
+    assert r.returncode == 1 and "CLAUDE.md" in r.stdout
+    rs.apply(rs.plan(rs.detect(root)))
+    r = subprocess.run([sys.executable, str(Path(rs.__file__)), "check", "--repo", str(root)], capture_output=True, text=True)
+    assert r.returncode == 0

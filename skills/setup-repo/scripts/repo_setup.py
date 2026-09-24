@@ -269,3 +269,45 @@ def plan(profile):
         if lang == "python": recs.append("Toolkit skills that load themselves on .py files: python-patterns, python-testing, fastapi-patterns.")
         if lang in ("typescript", "javascript"): recs.append("Toolkit skills that load themselves on .ts/.tsx: react-patterns, react-best-practices, motion-*.")
     return {"root": str(root), "items": items, "recommendations": recs}
+
+ALLOWED = ("CLAUDE.md", ".gitignore")
+
+def _atomic_write(path, text):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=".setup-repo.")
+    with os.fdopen(fd, "w", encoding="utf-8") as fh: fh.write(text)
+    os.replace(tmp, path)
+
+def apply(plan_dict):
+    root = Path(plan_dict["root"]); written = []
+    for item in plan_dict["items"]:
+        if item["action"] == "skip" or item["content"] is None: continue
+        rel = item["path"]
+        if not (rel in ALLOWED or rel.startswith(".claude/")):
+            raise RuntimeError(f"refusing to write outside allowed paths: {rel}")
+        _atomic_write(root / rel, item["content"]); written.append(rel)
+    return written
+
+def check(profile):
+    return [i for i in plan(profile)["items"] if i["action"] != "skip" and i["content"] is not None
+            and (not (Path(profile["root"]) / i["path"]).exists() or (Path(profile["root"]) / i["path"]).read_text(encoding="utf-8", errors="replace") != i["content"])]
+
+def main(argv):
+    ap = argparse.ArgumentParser(description="/setup-repo engine")
+    ap.add_argument("cmd", choices=["detect", "plan", "apply", "check"]); ap.add_argument("--repo", default=".")
+    ap.add_argument("--plan", help="apply: plan JSON file (default: compute now)")
+    a = ap.parse_args(argv); prof = detect(a.repo)
+    if a.cmd == "detect": print(json.dumps(prof, indent=2)); return 0
+    if a.cmd == "plan": print(json.dumps(plan(prof), indent=2)); return 0
+    if a.cmd == "apply":
+        pl = json.load(open(a.plan)) if a.plan else plan(prof)
+        for p in apply(pl): print(f"wrote {p}")
+        drift = check(detect(a.repo)); print("check: clean" if not drift else "check: DRIFT " + ", ".join(i["path"] for i in drift)); return 0 if not drift else 1
+    drift = check(prof)
+    for i in drift: print(f"{i['action']:6} {i['path']}  — {i['reason']}")
+    print("check: clean" if not drift else f"check: {len(drift)} item(s) would change"); return 0 if not drift else 1
+
+if __name__ == "__main__":
+    try: sys.exit(main(sys.argv[1:]))
+    except Exception as e:  # noqa: BLE001
+        print(f"internal error: {e}", file=sys.stderr); sys.exit(2)

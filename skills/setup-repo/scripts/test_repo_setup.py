@@ -27,3 +27,22 @@ def test_detect_empty_repo(tmp_path):
     root = make_repo(tmp_path, {"README.md": "hi\n"})
     p = rs.detect(root)
     assert p["languages"] == {} and p["package_manager"] is None
+
+NODE_PNPM = {"package.json": json.dumps({"name": "x", "scripts": {"test": "vitest run", "lint": "eslint .", "build": "tsc -p .", "typecheck": "tsc --noEmit"}}),
+             "pnpm-lock.yaml": "", "src/index.ts": "export const a=1\n"}
+
+def test_commands_python_uv(tmp_path):
+    p = rs.detect(make_repo(tmp_path, PY_UV))["commands"]
+    assert p["test"] == {"cmd": "uv run pytest", "source": "pyproject.toml"}
+    assert p["lint"] == {"cmd": "uv run ruff check .", "source": "pyproject.toml"}
+    assert "build" not in p
+
+def test_commands_node_pnpm(tmp_path):
+    p = rs.detect(make_repo(tmp_path, NODE_PNPM))["commands"]
+    assert p["test"] == {"cmd": "pnpm test", "source": "package.json"}
+    assert p["typecheck"] == {"cmd": "pnpm typecheck", "source": "package.json"}
+    assert p["build"] == {"cmd": "pnpm build", "source": "package.json"}
+
+def test_commands_makefile(tmp_path):
+    p = rs.detect(make_repo(tmp_path, {"Makefile": "test:\n\tgo test ./...\nlint:\n\tgolangci-lint run\n", "go.mod": "module x\n", "main.go": "package main\n"}))["commands"]
+    assert p["test"] == {"cmd": "make test", "source": "Makefile"}

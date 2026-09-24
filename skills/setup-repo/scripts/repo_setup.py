@@ -51,8 +51,53 @@ def _existing(root):
             out[rel] = {"exists": False, "lines": 0}
     return out
 
+PM_RUN = {"uv": "uv run ", "poetry": "poetry run ", "pipenv": "pipenv run ", "pip": "", None: ""}
+NODE_RUN = {"pnpm": "pnpm", "yarn": "yarn", "bun": "bun run", "npm": "npm run"}
+
+def _read(root, rel):
+    p = root / rel
+    return p.read_text(encoding="utf-8", errors="replace") if p.is_file() else ""
+
+def _commands(root, pm):
+    cmds = {}
+    mk = _read(root, "Makefile")
+    for target in ("test", "lint", "format", "typecheck", "build"):
+        if re.search(rf"^{target}:", mk, re.M):
+            cmds[target] = {"cmd": f"make {target}", "source": "Makefile"}
+    pkg = _read(root, "package.json")
+    if pkg:
+        try:
+            scripts = json.loads(pkg).get("scripts", {})
+        except json.JSONDecodeError:
+            scripts = {}
+        runner = NODE_RUN.get(pm, "npm run")
+        for target in ("test", "lint", "format", "typecheck", "build"):
+            if target in scripts and target not in cmds:
+                cmd = f"{runner} {target}" if not (runner == "npm run" and target == "test") else "npm test"
+                if runner == "pnpm" and target == "test": cmd = "pnpm test"
+                cmds[target] = {"cmd": cmd, "source": "package.json"}
+    py = _read(root, "pyproject.toml")
+    prefix = PM_RUN.get(pm, "")
+    if py or (root / "pytest.ini").exists() or (root / "setup.cfg").exists():
+        has_pytest = "[tool.pytest" in py or (root / "pytest.ini").exists() or any((root / d).is_dir() for d in ("tests", "test"))
+        if has_pytest and "test" not in cmds:
+            cmds["test"] = {"cmd": f"{prefix}pytest", "source": "pyproject.toml" if "[tool.pytest" in py else ("pytest.ini" if (root / "pytest.ini").exists() else "tests/")}
+        if ("[tool.ruff" in py or (root / "ruff.toml").exists()) and "lint" not in cmds:
+            cmds["lint"] = {"cmd": f"{prefix}ruff check .", "source": "pyproject.toml" if "[tool.ruff" in py else "ruff.toml"}
+            cmds.setdefault("format", {"cmd": f"{prefix}ruff format .", "source": cmds["lint"]["source"]})
+        if "[tool.mypy" in py and "typecheck" not in cmds:
+            cmds["typecheck"] = {"cmd": f"{prefix}mypy .", "source": "pyproject.toml"}
+    if (root / "go.mod").exists():
+        cmds.setdefault("test", {"cmd": "go test ./...", "source": "go.mod"})
+        cmds.setdefault("build", {"cmd": "go build ./...", "source": "go.mod"})
+    if (root / "Cargo.toml").exists():
+        cmds.setdefault("test", {"cmd": "cargo test", "source": "Cargo.toml"})
+        cmds.setdefault("build", {"cmd": "cargo build", "source": "Cargo.toml"})
+        cmds.setdefault("lint", {"cmd": "cargo clippy", "source": "Cargo.toml"})
+    return cmds
+
 def detect(root):
     root = Path(root).resolve()
     files = _tracked(root)
     return {"root": str(root), "languages": _languages(files), "package_manager": _package_manager(root),
-            "existing": _existing(root), "commands": {}, "git": {}, "team_profile": None, "size": len(files)}
+            "existing": _existing(root), "commands": _commands(root, _package_manager(root)), "git": {}, "team_profile": None, "size": len(files)}

@@ -40,3 +40,22 @@ def test_collect_sessions(tmp_path):
     assert s1["subagents"][0]["name"] == "Review diff" and s1["subagents"][0]["tool_uses"] == 1
     s2 = next(s for s in sessions if s["id"] == "sess-2")
     assert s2["running"] is False and s2["waiting_question"] == "Ship it?"
+
+def test_collect_sessions_edge_cases(tmp_path):
+    repo = tmp_path / "repo"; repo.mkdir()
+    proj = tmp_path / "projects" / str(repo).replace("/", "-")
+    proj.mkdir(parents=True)
+    (proj / "sess-3.jsonl").write_text(
+        "{not json\n"
+        + _line(type="assistant", timestamp="2026-09-24T11:58:00", sessionId="sess-3",
+                message={"model": "claude-sonnet-5", "content": [{"type": "text", "text": "hi"}]})
+    )
+    (proj / "empty.jsonl").write_text("")
+
+    sessions = board.collect_sessions(repo, tmp_path / "projects", NOW)
+
+    s3 = next(s for s in sessions if s["id"] == "sess-3")
+    assert s3["running"] is True
+
+    empty = next(s for s in sessions if s["id"] == "empty")
+    assert empty["last_at"] is None and empty["running"] is False and empty["tokens"] == 0 and empty["title"] == "empty"

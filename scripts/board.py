@@ -17,7 +17,10 @@ def redact(text):
     return text
 
 def _parse_ts(ts):
-    try: return dt.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    try:
+        t = dt.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        if t.tzinfo is None: t = t.replace(tzinfo=dt.timezone.utc)
+        return t
     except Exception: return None  # noqa: BLE001
 
 def _tail_lines(path):

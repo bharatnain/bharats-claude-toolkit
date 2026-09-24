@@ -84,8 +84,11 @@ empty). Exit codes: 0 clean, 1 drift/plan pending, 2 internal error.
 
 Steps for Claude: run `detect`; read the JSON; run `plan`; present the plan to the user as
 a file list with one line of why each and the recommendations; on yes run `apply`; paste the
-post-apply `check` output as evidence; close with the three things the user should do next
-(trust the folder if new, restart or `/reload-plugins`, run `/context`). With `--check`,
+post-apply `check` output as evidence; close with a short **how to use this setup** note
+(the check to run before done, `/goal` for unattended runs, `/team` for multi-file work with the
+detected profile, the effort guidance) and the **status dashboard option** ("enable it with
+`/board`; it refreshes after every turn"), then the three things to do next (trust the folder if
+new, restart or `/reload-plugins`, run `/context`). With `--check`,
 stop after printing drift. Under 120 lines; the templates and detection rules live in
 `references/` and the script.
 

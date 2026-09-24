@@ -62,7 +62,7 @@ Every hook script in `hooks/` follows the same contract:
   runner's exit codes: runner 0 → hook 0, runner 1 → hook 2 (block), runner 2 →
   hook 0 (fail-open).
 - **Env off-switches**: each hook has its own (`CLAUDE_NOTIFY=0`, `CLAUDE_BEADS=off`,
-  `CLAUDE_SECRET_SCAN=0`), plus `CLAUDE_TOOLKIT_HOOKS=off` which disables all four.
+  `CLAUDE_SECRET_SCAN=0`), plus `CLAUDE_TOOLKIT_HOOKS=off` which disables all five.
 - **Recursion guard**: `team_gate.py` sets `CLAUDE_TOOLKIT_HOOKS=off` in the environment
   of gate subprocesses. Gate checks run profile-configured commands; if one of them
   re-invokes `claude -p`, the nested session inherits the variable and its toolkit hooks
@@ -74,7 +74,8 @@ Every hook script in `hooks/` follows the same contract:
 
 `board_refresh.py` (Stop/SubagentStop) is opt-in per repo (`.claude/board/` present or
 `CLAUDE_BOARD=on`), read-only against beads/git/gh, writes only `.claude/board/`,
-silent, fail-open.
+silent, fail-open. It is registered `async`, so it runs in the background without
+blocking the session; its own 15 s subprocess timeout bounds it.
 
 (The bounded-read, PATH-bootstrap, and recursion-guard patterns are adapted from
 zilliztech/memsearch's `plugins/claude-code/hooks/common.sh`, Apache-2.0 — reimplemented

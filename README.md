@@ -7,9 +7,9 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 29 enabled plugins**, which bring **137 vendored skills (52 always-on, 85 user-invoked via `/name`) + 8 agents** from this
+**Always-on = 29 enabled plugins**, which bring **139 vendored skills (52 always-on, 87 user-invoked via `/name`) + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
-*enable* is the plugin; the 137 skills + 8 agents are what *this* repo's plugin contributes,
+*enable* is the plugin; the 139 skills + 8 agents are what *this* repo's plugin contributes,
 and the other 28 plugins layer their skills on top.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and

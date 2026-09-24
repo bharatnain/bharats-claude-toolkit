@@ -89,9 +89,11 @@ def test_project_dirs_from_worktree(tmp_path):
     wt_dir = projects / re.sub(r"[^A-Za-z0-9]", "-", str(worktree.resolve()))
     wt_dir.mkdir()
 
-    def fake_run_ok(*a, **kw):
+    def fake_run_ok(args, **kw):
         class R: pass
-        r = R(); r.returncode = 0; r.stdout = str(main / ".git") + "\n"; r.stderr = ""; return r
+        r = R(); r.returncode = 0; r.stderr = ""
+        r.stdout = f"worktree {main}\nHEAD abc\n\nworktree {worktree}\nHEAD def\n" if "worktree" in args else str(main / ".git") + "\n"
+        return r
 
     assert board.project_dirs_for(worktree, projects, run=fake_run_ok) == sorted([main_dir, wt_dir])
 
@@ -124,15 +126,15 @@ def test_collect_beads_and_prs(tmp_path):
     b = board.collect_beads(tmp_path, run=run)
     assert [i["id"] for i in b["in_flight"]] == ["x-2", "x-3"] and b["in_flight"][0]["model"] == "opus" and b["in_flight"][0]["tries"] == "2"
     assert b["counts"]["in_progress"] == 2
-    prs = board.collect_prs(tmp_path, run=run)
-    assert prs[0]["checks"] == "failed" and prs[1]["checks"] == "none" and prs[1]["draft"] is True
+    prs, err = board.collect_prs(tmp_path, run=run)
+    assert err is None and prs[0]["checks"] == "failed" and prs[1]["checks"] == "none" and prs[1]["draft"] is True
 
 def test_collect_waiting_and_now(tmp_path):
     repo = tmp_path / "repo"; (repo / ".claude/board").mkdir(parents=True)
     (repo / ".claude/board/waiting.md").write_text("- 2026-09-24 · Approve topic name · reply 'ok'\n")
     run = FakeRun({"bd": BD_JSON, "gh": GH_JSON})
     sessions = board.collect_sessions(repo, make_projects(tmp_path, repo), NOW)
-    beads = board.collect_beads(repo, run=run); prs = board.collect_prs(repo, run=run)
+    beads = board.collect_beads(repo, run=run); prs, _ = board.collect_prs(repo, run=run)
     w = board.collect_waiting(repo, sessions, beads, prs)
     srcs = [x["source"] for x in w]
     assert srcs.count("waiting.md") == 1 and "beads" in srcs and "pr" in srcs and "session" in srcs
@@ -142,7 +144,7 @@ def test_collect_waiting_and_now(tmp_path):
 def test_collectors_fail_soft(tmp_path):
     run = FakeRun({})
     assert board.collect_beads(tmp_path, run=run)["error"].startswith("bd")
-    assert board.collect_prs(tmp_path, run=run) == []
+    assert board.collect_prs(tmp_path, run=run)[0] == []
 
 def test_build_writes_files_and_never_raises(tmp_path):
     repo = tmp_path / "repo"; repo.mkdir()
@@ -203,3 +205,84 @@ def test_hook_noop_without_optin(tmp_path):
     (repo / ".claude/board").mkdir(parents=True)
     r = sp.run([sys.executable, str(hook)], input='{"hook_event_name":"Stop","cwd":"%s"}' % repo, capture_output=True, text=True, cwd=repo, env=env)
     assert r.returncode == 0 and r.stdout == "" and (repo / ".claude/board/index.html").exists()
+
+GHP = "gh" + "p_" + "A1b2C3d4" * 5
+SKA = "sk-" + "ant-" + "Zy9Xw8Vu7Ts6Rq5Po4Nm3"
+
+def test_redacts_every_field(tmp_path):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    (repo / ".claude/board").mkdir(parents=True)
+    (repo / ".claude/board/waiting.md").write_text(f"- rotate {GHP} please\n")
+    proj = tmp_path / "projects" / board._encode_project(repo); proj.mkdir(parents=True)
+    (proj / "s.jsonl").write_text(
+        _line(type="custom-title", customTitle=f"title {SKA}")
+        + _line(type="assistant", timestamp="2026-09-24T11:58:00Z", message={"content": [
+            {"type": "text", "text": "hello"},
+            {"type": "tool_use", "name": "AskUserQuestion", "input": {"questions": [{"question": f"use {GHP}?"}]}}]}))
+    sub = proj / "s" / "subagents"; sub.mkdir(parents=True)
+    (sub / "agent-z.jsonl").write_text(_line(type="assistant", timestamp="2026-09-24T11:59:00Z", message={"content": []}))
+    (sub / "agent-z.meta.json").write_text(json.dumps({"description": f"agent {SKA}"}))
+    bd = json.dumps([
+        {"id": "e-1", "title": f"epic {GHP}", "issue_type": "epic", "status": "in_progress"},
+        {"id": "t-1", "title": f"task {SKA}", "issue_type": "task", "status": "in_progress", "owner": f"o {GHP}", "labels": ["needs-input"], "closed_at": "x"}])
+    gh = json.dumps([{"number": 1, "title": f"pr {SKA}", "headRefName": f"b-{GHP}", "isDraft": False, "updatedAt": "2026-09-24T11:00:00Z", "url": "u",
+                      "statusCheckRollup": [{"conclusion": "FAILURE"}]}])
+    out = tmp_path / "out"
+    data = board.build(repo, out_dir=out, projects_dir=tmp_path / "projects", now=NOW, run=FakeRun({"bd": bd, "gh": gh}))
+    assert data["sessions"] and data["prs"] and data["waiting"]
+    for text in ((out / "index.html").read_text(), (out / "board.json").read_text()):
+        assert GHP not in text and SKA not in text and "[redacted]" in text
+
+def test_prs_unavailable_panel(tmp_path):
+    prs, err = board.collect_prs(tmp_path, run=FakeRun({}))
+    assert prs == [] and err.startswith("gh unavailable")
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    data = board.build(repo, out_dir=tmp_path / "out", projects_dir=tmp_path / "none", now=NOW, run=FakeRun({"bd": BD_JSON}))
+    assert any(e.startswith("prs: gh unavailable") for e in data["errors"]) and data["prs"] == []
+    merge = (tmp_path / "out/index.html").read_text().split("<h2>Merge lane", 1)[1].split("<h2", 1)[0]
+    assert "unavailable: gh unavailable" in merge
+
+def test_session_ai_title(tmp_path):
+    repo = tmp_path / "repo"; repo.mkdir()
+    proj = tmp_path / "projects" / board._encode_project(repo); proj.mkdir(parents=True)
+    (proj / "a.jsonl").write_text(_line(type="ai-title", aiTitle="AI named"))
+    (proj / "b.jsonl").write_text(_line(type="custom-title", customTitle="Mine") + _line(type="ai-title", aiTitle="AI named"))
+    titles = {s["id"]: s["title"] for s in board.collect_sessions(repo, tmp_path / "projects", NOW)}
+    assert titles == {"a": "AI named", "b": "Mine"}
+
+def test_tokens_counted_once_per_message_id(tmp_path):
+    repo = tmp_path / "repo"; repo.mkdir()
+    proj = tmp_path / "projects" / board._encode_project(repo); proj.mkdir(parents=True)
+    msg = lambda block: {"id": "msg_1", "usage": {"input_tokens": 100, "output_tokens": 10}, "content": [block]}
+    (proj / "t.jsonl").write_text(
+        _line(type="assistant", timestamp="2026-09-24T11:00:00Z", message=msg({"type": "text", "text": "a"}))
+        + _line(type="assistant", timestamp="2026-09-24T11:00:01Z", message=msg({"type": "tool_use", "name": "Bash", "input": {}})))
+    assert board.collect_sessions(repo, tmp_path / "projects", NOW)[0]["tokens"] == 110
+
+def test_project_dirs_exact_and_worktrees(tmp_path):
+    repo = tmp_path / "repo"; repo.mkdir()
+    wt = tmp_path / "elsewhere" / "wt"; wt.mkdir(parents=True)
+    projects = tmp_path / "projects"; projects.mkdir()
+    repo_dir = projects / board._encode_project(repo); repo_dir.mkdir()
+    (projects / board._encode_project(tmp_path / "repo-v2")).mkdir()
+    wt_dir = projects / board._encode_project(wt); wt_dir.mkdir()
+    calls = []
+    def fake_run(args, cwd=None, **kw):
+        calls.append((args, cwd))
+        class R: pass
+        r = R(); r.returncode = 0; r.stderr = ""
+        r.stdout = f"worktree {repo}\nHEAD abc\n\nworktree {wt}\nHEAD def\n" if "worktree" in args else str(repo / ".git") + "\n"
+        return r
+    assert board.project_dirs_for(repo, projects, run=fake_run) == sorted([repo_dir, wt_dir])
+    assert any("worktree" in a and c == str(repo.resolve()) for a, c in calls)
+
+def test_bd_list_unlimited(tmp_path):
+    calls = []
+    def run(args, **kw):
+        calls.append(args)
+        class R: pass
+        r = R(); r.returncode = 0; r.stdout = BD_JSON; r.stderr = ""; return r
+    board.collect_beads(tmp_path, run=run)
+    assert len(calls) == 2 and all(a[a.index("--limit") + 1] == "0" for a in calls if "--limit" in a) and all("--limit" in a for a in calls)

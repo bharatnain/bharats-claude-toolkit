@@ -12,6 +12,7 @@ except Exception:  # noqa: BLE001
     _SECRET_PATTERNS = []
 
 def redact(text):
+    if not text: return text
     for _name, rx, _f in _SECRET_PATTERNS:
         text = rx.sub("[redacted]", text)
     return text
@@ -48,12 +49,18 @@ def _main_root(repo_root, run=subprocess.run):
         pass
     return Path(repo_root).resolve()
 
+def _worktrees(main_root, run=subprocess.run):
+    try:
+        r = run(["git", "worktree", "list", "--porcelain"], cwd=str(main_root), capture_output=True, text=True, timeout=10)
+        if r.returncode == 0: return [Path(l[len("worktree "):]) for l in r.stdout.splitlines() if l.startswith("worktree ")]
+    except Exception:  # noqa: BLE001
+        pass
+    return []
+
 def project_dirs_for(repo_root, projects_dir, run=subprocess.run):
-    roots = {Path(repo_root).resolve(), _main_root(repo_root, run)}
-    out = set()
-    for root in roots:
-        out.update(p for p in Path(projects_dir).glob(_encode_project(root) + "*") if p.is_dir())
-    return sorted(out)
+    main = _main_root(repo_root, run)
+    roots = {Path(repo_root).resolve(), main, *_worktrees(main, run)}
+    return sorted(p for p in {Path(projects_dir) / _encode_project(r) for r in roots} if p.is_dir())
 
 def _subagents(sess_dir, now, since):
     out = []
@@ -74,22 +81,25 @@ def _subagents(sess_dir, now, since):
             try: meta = json.loads(mp.read_text(encoding="utf-8"))
             except Exception: meta = {}  # noqa: BLE001
         running = bool(last and (now - last) <= dt.timedelta(minutes=since))
-        out.append({"id": aid, "name": meta.get("description") or aid, "model": model, "tool_uses": tools, "running": running, "last_at": last.isoformat() if last else None})
+        out.append({"id": aid, "name": redact(meta.get("description") or aid), "model": model, "tool_uses": tools, "running": running, "last_at": last.isoformat() if last else None})
     return out
 
 def collect_sessions(repo_root, projects_dir, now, since_minutes=5, run=subprocess.run):
     sessions = []
     for proj in project_dirs_for(repo_root, projects_dir, run):
         for f in sorted(proj.glob("*.jsonl")):
-            sid = f.stem; title = sid; model = None; branch = None; last = None; tokens = 0; last_text = ""; question = None
+            sid = f.stem; custom = None; ai = None; model = None; branch = None; last = None; tokens = 0; last_text = ""; question = None; seen = set()
             for o in _objs(f):
                 t = o.get("type")
-                if t == "custom-title": title = o.get("customTitle") or title
+                if t == "custom-title": custom = o.get("customTitle") or custom
+                if t == "ai-title": ai = o.get("aiTitle") or ai
                 if t != "assistant": continue
                 ts = _parse_ts(o.get("timestamp", "")); last = ts or last
                 branch = o.get("gitBranch") or branch
                 msg = o.get("message") or {}; model = msg.get("model") or model
-                u = msg.get("usage") or {}; tokens += int(u.get("input_tokens", 0)) + int(u.get("output_tokens", 0))
+                mid = msg.get("id")
+                if mid is None or mid not in seen:
+                    seen.add(mid); u = msg.get("usage") or {}; tokens += int(u.get("input_tokens", 0)) + int(u.get("output_tokens", 0))
                 question = None
                 for b in msg.get("content") or []:
                     if not isinstance(b, dict): continue
@@ -98,9 +108,9 @@ def collect_sessions(repo_root, projects_dir, now, since_minutes=5, run=subproce
                         qs = (b.get("input") or {}).get("questions") or []
                         question = qs[0].get("question") if qs and isinstance(qs[0], dict) else "question pending"
             running = bool(last and (now - last) <= dt.timedelta(minutes=since_minutes))
-            sessions.append({"id": sid, "title": title, "model": model, "branch": branch, "last_at": last.isoformat() if last else None,
+            sessions.append({"id": sid, "title": redact(custom or ai or sid), "model": model, "branch": branch, "last_at": last.isoformat() if last else None,
                              "running": running, "tokens": tokens, "last_text": redact(" ".join(last_text.split())[:300]),
-                             "waiting_question": question, "subagents": _subagents(proj / sid, now, since_minutes)})
+                             "waiting_question": redact(question), "subagents": _subagents(proj / sid, now, since_minutes)})
     sessions.sort(key=lambda s: s["last_at"] or "", reverse=True)
     return sessions
 
@@ -117,7 +127,7 @@ def _label(labels, key):
     return None
 
 def collect_beads(repo_root, run=subprocess.run):
-    r = _run(["bd", "list", "--json", "--status", "open,in_progress,blocked"], repo_root, run)
+    r = _run(["bd", "list", "--json", "--status", "open,in_progress,blocked", "--limit", "0"], repo_root, run)
     if r.returncode != 0 or not r.stdout.strip():
         return {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": f"bd unavailable: {(r.stderr or 'no output').strip()[:120]}"}
     try: issues = json.loads(r.stdout)
@@ -126,37 +136,37 @@ def collect_beads(repo_root, run=subprocess.run):
     counts = {}
     for i in issues: counts[i.get("status", "?")] = counts.get(i.get("status", "?"), 0) + 1
     epics = [i for i in issues if i.get("issue_type") == "epic"]
-    in_flight = [{"id": i["id"], "title": i.get("title", ""), "status": i.get("status"), "owner": i.get("owner") or "", "parent": i.get("parent"),
+    in_flight = [{"id": i["id"], "title": redact(i.get("title") or ""), "status": i.get("status"), "owner": redact(i.get("owner") or ""), "parent": i.get("parent"),
                   "model": _label(i.get("labels"), "model"), "tries": _label(i.get("labels"), "tries"), "slice": _label(i.get("labels"), "slice"),
                   "needs_input": "needs-input" in (i.get("labels") or []), "updated": i.get("updated_at")}
                  for i in issues if i.get("issue_type") != "epic" and i.get("status") in ("in_progress", "open", "blocked")]
     in_flight.sort(key=lambda x: (x["status"] != "in_progress", x["updated"] or ""), reverse=False)
-    rc = _run(["bd", "list", "--json", "--status", "closed"], repo_root, run)
+    rc = _run(["bd", "list", "--json", "--status", "closed", "--limit", "0"], repo_root, run)
     recent = []
     if rc.returncode == 0 and rc.stdout.strip():
         try: recent = sorted(json.loads(rc.stdout), key=lambda i: i.get("closed_at") or "", reverse=True)[:5]
         except json.JSONDecodeError: recent = []
-    return {"in_flight": in_flight, "epics": [{"id": e["id"], "title": e.get("title", ""), "status": e.get("status")} for e in epics], "counts": counts,
-            "recent_closed": [{"id": i["id"], "title": i.get("title", "")} for i in recent]}
+    return {"in_flight": in_flight, "epics": [{"id": e["id"], "title": redact(e.get("title") or ""), "status": e.get("status")} for e in epics], "counts": counts,
+            "recent_closed": [{"id": i["id"], "title": redact(i.get("title") or "")} for i in recent]}
 
 def collect_prs(repo_root, run=subprocess.run):
     r = _run(["gh", "pr", "list", "--json", "number,title,headRefName,isDraft,statusCheckRollup,updatedAt,url", "--limit", "30"], repo_root, run)
-    if r.returncode != 0 or not r.stdout.strip(): return []
+    if r.returncode != 0 or not r.stdout.strip(): return [], f"gh unavailable: {(r.stderr or 'no output').strip()[:120]}"
     try: prs = json.loads(r.stdout)
-    except json.JSONDecodeError: return []
+    except json.JSONDecodeError as e: return [], f"gh JSON: {e}"
     out = []
     for p in prs:
         concl = [(c.get("conclusion") or c.get("state") or "").upper() for c in p.get("statusCheckRollup") or []]
         checks = "none" if not concl else ("failed" if any(c in ("FAILURE", "ERROR", "CANCELLED") for c in concl) else ("passed" if all(c in ("SUCCESS", "NEUTRAL", "SKIPPED") for c in concl) else "pending"))
-        out.append({"number": p["number"], "title": p.get("title", ""), "head": p.get("headRefName"), "draft": bool(p.get("isDraft")), "checks": checks, "updated": p.get("updatedAt"), "url": p.get("url")})
-    return out
+        out.append({"number": p["number"], "title": redact(p.get("title") or ""), "head": redact(p.get("headRefName")), "draft": bool(p.get("isDraft")), "checks": checks, "updated": p.get("updatedAt"), "url": p.get("url")})
+    return out, None
 
 def collect_waiting(repo_root, sessions, beads, prs):
     items = []
     wf = Path(repo_root) / ".claude/board/waiting.md"
     if wf.exists():
         for line in wf.read_text(encoding="utf-8", errors="replace").splitlines():
-            if line.strip().startswith("- "): items.append({"source": "waiting.md", "text": line.strip()[2:], "at": None})
+            if line.strip().startswith("- "): items.append({"source": "waiting.md", "text": redact(line.strip()[2:]), "at": None})
     for s in sessions:
         if s.get("waiting_question"): items.append({"source": "session", "text": f"{s['title']}: {s['waiting_question']}", "at": s["last_at"]})
     for i in beads.get("in_flight", []):
@@ -172,7 +182,7 @@ def collect_waiting(repo_root, sessions, beads, prs):
 def collect_now(sessions, beads):
     active = next((s for s in sessions if s["last_text"]), None)
     epic = next((e["title"] for e in beads.get("epics", []) if e.get("status") == "in_progress"), None)
-    return {"text": active["last_text"] if active else "", "session": active["title"] if active else None, "epic": epic}
+    return {"text": redact(active["last_text"]) if active else "", "session": active["title"] if active else None, "epic": epic}
 
 CSS = """:root{--bg:#fff;--fg:#111;--mut:#666;--card:#f6f6f7;--ok:#1a7f37;--bad:#b42318;--warn:#b54708;--acc:#2f5fdc}
 @media(prefers-color-scheme:dark){:root{--bg:#0f1115;--fg:#e6e6e6;--mut:#9a9a9a;--card:#171a21;--ok:#3fb950;--bad:#f85149;--warn:#d29922;--acc:#79a6ff}}
@@ -222,7 +232,7 @@ def render(data, now=None):
     else:
         prs = data["prs"]; cls = {"passed": "ok", "failed": "bad", "pending": "warn", "none": ""}
         prow = "".join(f"<tr><td><a href='{_e(p['url'])}'>#{p['number']}</a></td><td>{_e(p['title'])}{' ' + _badge('draft') if p['draft'] else ''}</td><td>{_badge(p['checks'], cls[p['checks']])}</td><td class='meta'>{_rel(p['updated'], now)}</td></tr>" for p in prs)
-        parts.append(f'<h2>Merge lane · {len(prs)} open</h2><div class="card"><table>{prow or "<tr><td>No open PRs (or gh unavailable).</td></tr>"}</table></div>')
+        parts.append(f'<h2>Merge lane · {len(prs)} open</h2><div class="card"><table>{prow or "<tr><td>No open PRs.</td></tr>"}</table></div>')
     counts = ", ".join(f"{k}: {v}" for k, v in sorted(b.get("counts", {}).items()))
     closed = "".join(f"<li>{_e(i['id'])} {_e(i['title'])}</li>" for i in b.get("recent_closed", []))
     parts.append(f'<h2>Backlog</h2><div class="card">{_e(counts) or "—"}<ul>{closed}</ul></div>')
@@ -249,7 +259,8 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
     sessions = safe("sessions", lambda: collect_sessions(repo_root, projects_dir, now, since_minutes, run), [])
     beads = safe("beads", lambda: collect_beads(repo_root, run=run), {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": None})
     if beads.get("error"): errors.append("beads: " + beads["error"])
-    prs = safe("prs", lambda: collect_prs(repo_root, run=run), [])
+    prs, prs_error = safe("prs", lambda: collect_prs(repo_root, run=run), ([], None))
+    if prs_error: errors.append("prs: " + prs_error)
     waiting = safe("waiting", lambda: collect_waiting(repo_root, sessions, beads, prs), [])
     now_block = safe("now", lambda: collect_now(sessions, beads), {"text": "", "session": None, "epic": None})
     data = {"meta": {"repo": repo_root.name, "branch": branch, "head": head, "built_at": now.strftime("%Y-%m-%d %H:%M %Z")},

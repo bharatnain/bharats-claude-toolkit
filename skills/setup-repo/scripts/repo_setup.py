@@ -131,3 +131,51 @@ def detect(root):
     return {"root": str(root), "languages": _languages(files), "package_manager": _package_manager(root),
             "existing": _existing(root), "commands": _commands(root, _package_manager(root)),
             "git": _git_facts(root), "team_profile": _team_profile(root), "size": len(files)}
+
+BLOCKS = ("verify", "etiquette", "working", "compaction")
+REFS = HERE.parent / "references"
+
+def _templates():
+    text = (REFS / "claude-md-blocks.md").read_text(encoding="utf-8")
+    parts = re.split(r"^## block:(\w+)\n", text, flags=re.M)
+    return {parts[i]: parts[i + 1].strip("\n") for i in range(1, len(parts), 2)}
+
+def _block_text(name, profile):
+    t = _templates()[name]
+    cmds = profile["commands"]
+    if name == "verify":
+        if not cmds:
+            return None
+        lines = "\n".join(f"- `{c['cmd']}` ({k}; from `{c['source']}`)" for k, c in cmds.items())
+        return t.replace("{command_lines}", lines)
+    if name == "etiquette":
+        g = profile["git"]
+        if g["default_branch"] == "unknown":
+            return None
+        prefix = g["branch_prefixes"][0] if g["branch_prefixes"] else "claude/"
+        return t.replace("{default_branch}", g["default_branch"]).replace("{branch_prefix}", prefix).replace("{merge_style}", g["merge_style"] if g["merge_style"] != "unknown" else "merge")
+    if name == "working":
+        tp = profile.get("team_profile") or {}
+        maturity = tp.get("maturity") or "active"
+        effort = "high" if maturity == "legacy" else "medium"
+        return t.replace("{maturity}", maturity).replace("{effort}", effort)
+    return t
+
+def _wrap(name, body):
+    return f"<!-- setup-repo:{name} -->\n{body}\n<!-- /setup-repo:{name} -->"
+
+def render_claude_md(profile, existing_text):
+    blocks = {n: _block_text(n, profile) for n in BLOCKS}
+    if existing_text is None:
+        root = Path(profile["root"])
+        header = _templates()["header"].replace("{repo_name}", root.name).replace("{one_liner}", "Repo facts for Claude Code; behavioural rules live in the user-level CLAUDE.md.")
+        parts = [header] + [_wrap(n, b) for n, b in blocks.items() if b]
+        return "\n\n".join(parts) + "\n"
+    out = existing_text
+    for n, b in blocks.items():
+        pat = re.compile(rf"<!-- setup-repo:{n} -->.*?<!-- /setup-repo:{n} -->", re.S)
+        if pat.search(out):
+            out = pat.sub(lambda m: _wrap(n, b) if b else "", out)
+        elif b:
+            out = out.rstrip("\n") + "\n\n" + _wrap(n, b) + "\n"
+    return out

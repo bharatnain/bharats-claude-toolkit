@@ -58,3 +58,23 @@ def test_git_facts(tmp_path):
 def test_team_profile_present(tmp_path):
     tp = rs.detect(make_repo(tmp_path, PY_UV))["team_profile"]
     assert tp is not None and tp["maturity"] in ("greenfield", "active", "legacy") and isinstance(tp["signals"], dict)
+
+def test_render_claude_md_new(tmp_path):
+    prof = rs.detect(make_repo(tmp_path, PY_UV))
+    text = rs.render_claude_md(prof, None)
+    assert "<!-- setup-repo:verify -->" in text and "uv run pytest" in text
+    assert "{repo_name}" not in text and "{command_lines}" not in text
+    assert text.count("\n") < 60
+
+def test_render_claude_md_preserves_user_text(tmp_path):
+    prof = rs.detect(make_repo(tmp_path, PY_UV))
+    existing = "# My repo\n\nKeep this line.\n\n<!-- setup-repo:verify -->\nold\n<!-- /setup-repo:verify -->\n"
+    text = rs.render_claude_md(prof, existing)
+    assert "Keep this line." in text and "old" not in text
+    assert text.count("<!-- setup-repo:verify -->") == 1
+    assert "<!-- setup-repo:working -->" in text  # missing blocks appended
+
+def test_render_omits_unknown_blocks(tmp_path):
+    prof = rs.detect(make_repo(tmp_path, {"README.md": "x\n"}))
+    text = rs.render_claude_md(prof, None)
+    assert "setup-repo:verify" not in text and "setup-repo:working" in text

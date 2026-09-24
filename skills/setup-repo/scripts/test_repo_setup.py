@@ -266,3 +266,36 @@ def test_etiquette_uses_most_common_branch_prefix(tmp_path):
         subprocess.run(["git", "branch", b], cwd=root, check=True)
     text = rs.render_claude_md(rs.detect(root), None)
     assert "branches `feat/<topic>`" in text
+
+def test_apply_refuses_symlinked_claude_dir(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    outside = tmp_path / "outside"; outside.mkdir()
+    (root / ".claude").symlink_to(outside, target_is_directory=True)
+    try:
+        rs.apply(rs.plan(rs.detect(root)), root); raised = False
+    except RuntimeError:
+        raised = True
+    assert raised and not list(outside.iterdir()) and not (root / "CLAUDE.md").exists()
+
+def test_plan_skips_symlinked_claude_md(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    (root / "AGENTS.md").write_text("# agents\n"); (root / "CLAUDE.md").symlink_to("AGENTS.md")
+    item = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}["CLAUDE.md"]
+    assert item["action"] == "skip" and item["content"] is None and "symlink" in item["reason"]
+    rs.apply(rs.plan(rs.detect(root)), root)
+    assert (root / "CLAUDE.md").is_symlink() and (root / "AGENTS.md").read_text() == "# agents\n"
+
+def test_js_hook_uses_gitignore_style_glob_and_suffix_list():
+    profile = {"languages": ["typescript"], "commands": {"lint": {"cmd": "eslint .", "evidence": "package.json"}}}
+    assert rs._hookable_lint_cmd(profile) == ("eslint", "**/*.[jt]s*", ".js,.jsx,.ts,.tsx")
+    assert rs._hookable_lint_cmd({"languages": ["python"], "commands": {"lint": {"cmd": "eslint .", "evidence": "x"}}}) is None
+
+def test_hook_skips_files_outside_its_suffix_list(tmp_path):
+    hook = tmp_path / "hook.py"; hook.write_text(HOOK.read_text().replace("__EXTS__", ".py"))
+    fake = tmp_path / "fake_lint.py"; fake.write_text("import sys\nprint('E1 finding')\nsys.exit(1)\n")
+    env = dict(__import__("os").environ, SETUP_REPO_LINT_CMD=f"{sys.executable} {fake}")
+    def run(name):
+        target = tmp_path / name; target.write_text("{}\n")
+        return subprocess.run([sys.executable, str(hook)], input=json.dumps({"tool_input": {"file_path": str(target)}}), capture_output=True, text=True, env=env)
+    assert run("data.json").stdout == "" and run("data.json").returncode == 0
+    assert "E1 finding" in run("mod.py").stdout

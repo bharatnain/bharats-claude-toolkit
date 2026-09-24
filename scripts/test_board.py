@@ -286,3 +286,20 @@ def test_bd_list_unlimited(tmp_path):
         r = R(); r.returncode = 0; r.stdout = BD_JSON; r.stderr = ""; return r
     board.collect_beads(tmp_path, run=run)
     assert len(calls) == 2 and all(a[a.index("--limit") + 1] == "0" for a in calls if "--limit" in a) and all("--limit" in a for a in calls)
+
+def test_redact_tolerates_non_strings_and_covers_branch_and_errors(tmp_path):
+    assert board.redact(None) is None and board.redact(5) == 5 and board.redact("") == ""
+    class FailRun:
+        def __call__(self, args, **kw):
+            class R: pass
+            r = R(); r.returncode = 1; r.stdout = ""; r.stderr = f"auth failed for {GHP}"; return r
+    assert GHP not in board.collect_beads(tmp_path, run=FailRun())["error"]
+    assert GHP not in board.collect_prs(tmp_path, run=FailRun())[1]
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", f"claude/{GHP}"], cwd=repo, check=True)
+    proj = tmp_path / "projects" / board._encode_project(repo); proj.mkdir(parents=True)
+    (proj / "s.jsonl").write_text(_line(type="assistant", timestamp="2026-09-24T11:58:00Z", gitBranch=f"feat/{SKA}", message={"content": [{"type": "text", "text": "hi"}]}))
+    out = tmp_path / "out"
+    board.build(repo, out_dir=out, projects_dir=tmp_path / "projects", now=NOW, run=FakeRun({}))
+    for text in ((out / "index.html").read_text(), (out / "board.json").read_text()):
+        assert GHP not in text and SKA not in text

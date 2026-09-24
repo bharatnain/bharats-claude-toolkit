@@ -12,7 +12,7 @@ except Exception:  # noqa: BLE001
     _SECRET_PATTERNS = []
 
 def redact(text):
-    if not text: return text
+    if not isinstance(text, str) or not text: return text
     for _name, rx, _f in _SECRET_PATTERNS:
         text = rx.sub("[redacted]", text)
     return text
@@ -108,7 +108,7 @@ def collect_sessions(repo_root, projects_dir, now, since_minutes=5, run=subproce
                         qs = (b.get("input") or {}).get("questions") or []
                         question = qs[0].get("question") if qs and isinstance(qs[0], dict) else "question pending"
             running = bool(last and (now - last) <= dt.timedelta(minutes=since_minutes))
-            sessions.append({"id": sid, "title": redact(custom or ai or sid), "model": model, "branch": branch, "last_at": last.isoformat() if last else None,
+            sessions.append({"id": sid, "title": redact(custom or ai or sid), "model": model, "branch": redact(branch), "last_at": last.isoformat() if last else None,
                              "running": running, "tokens": tokens, "last_text": redact(" ".join(last_text.split())[:300]),
                              "waiting_question": redact(question), "subagents": _subagents(proj / sid, now, since_minutes)})
     sessions.sort(key=lambda s: s["last_at"] or "", reverse=True)
@@ -129,10 +129,10 @@ def _label(labels, key):
 def collect_beads(repo_root, run=subprocess.run):
     r = _run(["bd", "list", "--json", "--status", "open,in_progress,blocked", "--limit", "0"], repo_root, run)
     if r.returncode != 0 or not r.stdout.strip():
-        return {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": f"bd unavailable: {(r.stderr or 'no output').strip()[:120]}"}
+        return {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": redact(f"bd unavailable: {(r.stderr or 'no output').strip()[:120]}")}
     try: issues = json.loads(r.stdout)
     except json.JSONDecodeError as e:
-        return {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": f"bd JSON: {e}"}
+        return {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": redact(f"bd JSON: {e}")}
     counts = {}
     for i in issues: counts[i.get("status", "?")] = counts.get(i.get("status", "?"), 0) + 1
     epics = [i for i in issues if i.get("issue_type") == "epic"]
@@ -151,9 +151,9 @@ def collect_beads(repo_root, run=subprocess.run):
 
 def collect_prs(repo_root, run=subprocess.run):
     r = _run(["gh", "pr", "list", "--json", "number,title,headRefName,isDraft,statusCheckRollup,updatedAt,url", "--limit", "30"], repo_root, run)
-    if r.returncode != 0 or not r.stdout.strip(): return [], f"gh unavailable: {(r.stderr or 'no output').strip()[:120]}"
+    if r.returncode != 0 or not r.stdout.strip(): return [], redact(f"gh unavailable: {(r.stderr or 'no output').strip()[:120]}")
     try: prs = json.loads(r.stdout)
-    except json.JSONDecodeError as e: return [], f"gh JSON: {e}"
+    except json.JSONDecodeError as e: return [], redact(f"gh JSON: {e}")
     out = []
     for p in prs:
         concl = [(c.get("conclusion") or c.get("state") or "").upper() for c in p.get("statusCheckRollup") or []]
@@ -253,7 +253,7 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
     def safe(name, fn, default):
         try: return fn()
         except Exception as e:  # noqa: BLE001
-            errors.append(f"{name}: {e}"); return default
+            errors.append(redact(f"{name}: {e}")); return default
     r = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], repo_root, run); branch = r.stdout.strip() if r.returncode == 0 else "?"
     r = _run(["git", "rev-parse", "--short", "HEAD"], repo_root, run); head = r.stdout.strip() if r.returncode == 0 else "?"
     sessions = safe("sessions", lambda: collect_sessions(repo_root, projects_dir, now, since_minutes, run), [])
@@ -263,7 +263,7 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
     if prs_error: errors.append("prs: " + prs_error)
     waiting = safe("waiting", lambda: collect_waiting(repo_root, sessions, beads, prs), [])
     now_block = safe("now", lambda: collect_now(sessions, beads), {"text": "", "session": None, "epic": None})
-    data = {"meta": {"repo": repo_root.name, "branch": branch, "head": head, "built_at": now.strftime("%Y-%m-%d %H:%M %Z")},
+    data = {"meta": {"repo": repo_root.name, "branch": redact(branch), "head": head, "built_at": now.strftime("%Y-%m-%d %H:%M %Z")},
             "waiting": waiting, "now": now_block, "beads": beads, "sessions": sessions, "prs": prs, "errors": errors}
     _atomic_write(out / "index.html", render(data, now)); _atomic_write(out / "board.json", json.dumps(data, indent=2, default=str))
     return data

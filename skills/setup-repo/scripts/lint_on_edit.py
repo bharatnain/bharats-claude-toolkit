@@ -4,6 +4,7 @@ Reads the hook JSON on stdin, finds tool_input.file_path, runs LINT_CMD (set by 
 with the file appended, returns findings as PostToolUse additionalContext JSON, always exits 0."""
 import json, os, shlex, subprocess, sys
 LINT_CMD = os.environ.get("SETUP_REPO_LINT_CMD", "__LINT_CMD__")
+EXTS = tuple(e for e in "__EXTS__".split(",") if e and not e.startswith("__"))  # set by /setup-repo; empty = lint any file
 
 def main():
     try:
@@ -12,6 +13,8 @@ def main():
     except Exception:  # noqa: BLE001
         return 0
     if not path or not os.path.isfile(path) or not LINT_CMD.strip() or LINT_CMD.startswith("__"):
+        return 0
+    if EXTS and not str(path).endswith(EXTS):
         return 0
     try:
         p = subprocess.run(shlex.split(LINT_CMD) + [path], capture_output=True, text=True, timeout=60)

@@ -193,7 +193,9 @@ def _gap(m, size):
 
 RULE_GLOBS = {"python": ["**/*.py"], "typescript": ["**/*.{ts,tsx}"], "javascript": ["**/*.{js,jsx,mjs}"], "go": ["**/*.go"], "rust": ["**/*.rs"]}
 RULE_LANGS = {"python": "python", "typescript": "typescript", "javascript": "javascript", "go": "go", "rust": "rust"}
-PY_GLOB, JS_GLOB = ("**/*.py", ("python",)), ("**/*.{js,jsx,ts,tsx}", ("typescript", "javascript"))
+# (edit glob for the hook `if` rule, languages that must be present, exact suffixes the hook lints).
+# Permission-rule globs are gitignore-style (no brace expansion), so the JS glob is a broad pre-filter and the hook checks suffixes.
+PY_GLOB, JS_GLOB = ("**/*.py", ("python",), ".py"), ("**/*.[jt]s*", ("typescript", "javascript"), ".js,.jsx,.ts,.tsx")
 LINTER_GLOBS = {"ruff": PY_GLOB, "flake8": PY_GLOB, "pylint": PY_GLOB, "eslint": JS_GLOB, "biome": JS_GLOB, "prettier": JS_GLOB}
 
 def _rule_content(lang):
@@ -202,7 +204,7 @@ def _rule_content(lang):
     return f"---\npaths: [{globs}]\n---\n\n{body}"
 
 def _hookable_lint_cmd(profile):
-    """(lint command without its target, edit glob) when the linter's language is in the repo, else None."""
+    """(lint command without its target, edit glob, suffix list) when the linter's language is in the repo, else None."""
     lint = profile["commands"].get("lint")
     if not lint:
         return None
@@ -213,8 +215,8 @@ def _hookable_lint_cmd(profile):
             break
     for tok in cmd.split():
         if tok in LINTER_GLOBS:
-            glob, langs = LINTER_GLOBS[tok]
-            return (cmd, glob) if any(l in profile["languages"] for l in langs) else None
+            glob, langs, exts = LINTER_GLOBS[tok]
+            return (cmd, glob, exts) if any(l in profile["languages"] for l in langs) else None
     return None
 
 def _settings_shape_error(st):
@@ -249,7 +251,10 @@ def plan(profile):
     root = Path(profile["root"]); items = []; ex = profile["existing"]
     cur = (root / "CLAUDE.md").read_text(encoding="utf-8", errors="replace") if ex["CLAUDE.md"]["exists"] else None
     new = render_claude_md(profile, cur)
-    items.append({"path": "CLAUDE.md", "action": "create" if cur is None else ("update" if new != cur else "skip"), "reason": "repo facts + verification block", "content": new})
+    if (root / "CLAUDE.md").is_symlink():
+        items.append({"path": "CLAUDE.md", "action": "skip", "reason": "CLAUDE.md is a symlink; add the blocks to its target by hand", "content": None})
+    else:
+        items.append({"path": "CLAUDE.md", "action": "create" if cur is None else ("update" if new != cur else "skip"), "reason": "repo facts + verification block", "content": new})
     total = sum(profile["languages"].values()) or 1
     for lang, n in profile["languages"].items():
         if lang in RULE_GLOBS and n / total >= 0.05:
@@ -270,14 +275,14 @@ def plan(profile):
             items.append({"path": ".claude/settings.json", "action": "skip", "reason": f"unparseable: {e}", "content": None}); existing_st = "bad"
         if existing_st != "bad" and _settings_shape_error(existing_st):
             items.append({"path": ".claude/settings.json", "action": "skip", "reason": f"unexpected shape: {_settings_shape_error(existing_st)}", "content": None}); existing_st = "bad"
-    hook_cmd = (_hookable_lint_cmd(profile) or (None,))[0]
+    hook_spec = _hookable_lint_cmd(profile); hook_cmd = hook_spec[0] if hook_spec else None
     if existing_st != "bad":
         merged_st = merge_settings(existing_st, profile)
         merged = json.dumps(merged_st, indent=2, ensure_ascii=False) + "\n"
         st_action = "skip" if existing_st is not None and merged_st == existing_st else ("create" if existing_st is None else "update")
         items.append({"path": ".claude/settings.json", "action": st_action, "reason": reason, "content": merged})
     if hook_cmd and existing_st != "bad":
-        hook = (HERE / "lint_on_edit.py").read_text(encoding="utf-8").replace("__LINT_CMD__", hook_cmd)
+        hook = (HERE / "lint_on_edit.py").read_text(encoding="utf-8").replace("__LINT_CMD__", hook_cmd).replace("__EXTS__", hook_spec[2])
         cur_hook = (root / ".claude/hooks/lint_on_edit.py").read_text(encoding="utf-8", errors="replace") if ex[".claude/hooks/lint_on_edit.py"]["exists"] else None
         hook_action = "skip" if cur_hook is not None and hook == cur_hook else ("create" if not ex[".claude/hooks/lint_on_edit.py"]["exists"] else "update")
         items.append({"path": ".claude/hooks/lint_on_edit.py", "action": hook_action, "reason": "lint on edit", "content": hook})
@@ -313,6 +318,8 @@ def _atomic_write(path, text):
 def apply(plan_dict, root):
     """Write the plan's items into `root` (plan_dict["root"] is ignored). Every target is checked before any write."""
     root = Path(root).resolve(); claude_dir = (root / ".claude").resolve(); todo = []; written = []
+    if not claude_dir.is_relative_to(root):
+        raise RuntimeError(f"refusing to write: .claude resolves outside the repo ({claude_dir})")
     for item in plan_dict["items"]:
         if item["action"] == "skip" or item["content"] is None: continue
         target = (root / item["path"]).resolve()

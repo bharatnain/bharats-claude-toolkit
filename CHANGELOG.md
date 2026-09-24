@@ -5,8 +5,8 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
-- **Added: `/setup-repo` skill** (engine `skills/setup-repo/scripts/repo_setup.py`, 32 tests).
-- **Added: orchestrator board** (`scripts/board.py`, `/board`, opt-in refresh hook `hooks/board_refresh.py`, 20 tests).
+- **Added: `/setup-repo` skill** (engine `skills/setup-repo/scripts/repo_setup.py`, 36 tests).
+- **Added: orchestrator board** (`scripts/board.py`, `/board`, opt-in refresh hook `hooks/board_refresh.py`, 21 tests).
 
 ## [0.10.0] - 2026-09-24
 

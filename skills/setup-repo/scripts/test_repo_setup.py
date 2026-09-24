@@ -86,3 +86,29 @@ def test_render_removes_collapsed_block_cleanly(tmp_path):
     assert "setup-repo:verify" not in text
     assert "Keep this line.\n\nSome text after." in text
     assert "\n\n\n" not in text
+
+def test_plan_items_python(tmp_path):
+    prof = rs.detect(make_repo(tmp_path, PY_UV))
+    pl = rs.plan(prof)
+    paths = {i["path"]: i for i in pl["items"]}
+    assert paths["CLAUDE.md"]["action"] == "create"
+    assert paths[".claude/rules/python.md"]["action"] == "create" and paths[".claude/rules/python.md"]["content"].startswith("---\npaths:")
+    st = json.loads(paths[".claude/settings.json"]["content"])
+    assert "Bash(uv run pytest *)" in st["permissions"]["allow"]
+    assert st["effortLevel"] == "medium"
+    hook = st["hooks"]["PostToolUse"][0]
+    assert hook["matcher"] == "Edit|Write" and hook["if"] == "Edit(**/*.py)"
+    assert paths[".claude/hooks/lint_on_edit.py"]["content"].count("uv run ruff check") == 1
+    assert any("sandbox" in r for r in pl["recommendations"])
+
+def test_plan_settings_add_only(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    (root / ".claude").mkdir(); (root / ".claude/settings.json").write_text(json.dumps({"effortLevel": "high", "permissions": {"allow": ["Bash(ls *)"]}}))
+    st = json.loads({i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.json"]["content"])
+    assert st["effortLevel"] == "high" and st["permissions"]["allow"][0] == "Bash(ls *)"
+
+def test_plan_skips_existing_rule(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    (root / ".claude/rules").mkdir(parents=True); (root / ".claude/rules/python.md").write_text("mine\n")
+    item = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/rules/python.md"]
+    assert item["action"] == "skip"

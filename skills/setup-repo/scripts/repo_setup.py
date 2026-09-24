@@ -180,3 +180,68 @@ def render_claude_md(profile, existing_text):
             out = out.rstrip("\n") + "\n\n" + _wrap(n, b) + "\n"
     out = re.sub(r"\n{3,}", "\n\n", out)
     return out
+
+RULE_GLOBS = {"python": ["**/*.py"], "typescript": ["**/*.{ts,tsx}"], "javascript": ["**/*.{js,jsx,mjs}"], "go": ["**/*.go"], "rust": ["**/*.rs"]}
+RULE_LANGS = {"python": "python", "typescript": "typescript", "javascript": "typescript", "go": "go", "rust": "rust"}
+
+def _rule_content(lang):
+    body = (REFS / "rules" / f"{RULE_LANGS[lang]}.md").read_text(encoding="utf-8")
+    globs = ", ".join(f'"{g}"' for g in RULE_GLOBS[lang])
+    return f"---\npaths: [{globs}]\n---\n\n{body}"
+
+def merge_settings(existing, profile):
+    st = json.loads(json.dumps(existing)) if existing else {}
+    perms = st.setdefault("permissions", {}); allow = perms.setdefault("allow", [])
+    for c in profile["commands"].values():
+        rule = f"Bash({c['cmd']} *)"
+        if rule not in allow: allow.append(rule)
+    tp = (profile.get("team_profile") or {}).get("maturity") or "active"
+    st.setdefault("effortLevel", "high" if tp == "legacy" else "medium")
+    lint = profile["commands"].get("lint")
+    top = max(profile["languages"], key=profile["languages"].get) if profile["languages"] else None
+    if lint and top in RULE_GLOBS:
+        hooks = st.setdefault("hooks", {}); post = hooks.setdefault("PostToolUse", [])
+        glob = RULE_GLOBS[top][0]
+        entry = {"matcher": "Edit|Write", "if": f"Edit({glob})", "hooks": [{"type": "command", "command": "python3", "args": [".claude/hooks/lint_on_edit.py"], "timeout": 60}]}
+        if not any(e.get("if") == entry["if"] for e in post): post.append(entry)
+    return st
+
+def plan(profile):
+    root = Path(profile["root"]); items = []; ex = profile["existing"]
+    cur = (root / "CLAUDE.md").read_text(encoding="utf-8", errors="replace") if ex["CLAUDE.md"]["exists"] else None
+    new = render_claude_md(profile, cur)
+    items.append({"path": "CLAUDE.md", "action": "create" if cur is None else ("update" if new != cur else "skip"), "reason": "repo facts + verification block", "content": new})
+    total = sum(profile["languages"].values()) or 1
+    for lang, n in profile["languages"].items():
+        if lang in RULE_GLOBS and n / total >= 0.05:
+            rel = f".claude/rules/{RULE_LANGS[lang]}.md"
+            if (root / rel).exists():
+                items.append({"path": rel, "action": "skip", "reason": "exists; not owned", "content": None})
+            elif not any(i["path"] == rel for i in items):
+                items.append({"path": rel, "action": "create", "reason": f"{lang} path-scoped rules", "content": _rule_content(lang)})
+    existing_st = None; reason = "allow rules for detected commands + lint hook + effortLevel"
+    if ex[".claude/settings.json"]["exists"]:
+        try: existing_st = json.loads((root / ".claude/settings.json").read_text(encoding="utf-8"))
+        except json.JSONDecodeError as e:
+            items.append({"path": ".claude/settings.json", "action": "skip", "reason": f"unparseable: {e}", "content": None}); existing_st = "bad"
+    if existing_st != "bad":
+        merged = json.dumps(merge_settings(existing_st, profile), indent=2) + "\n"
+        items.append({"path": ".claude/settings.json", "action": "create" if existing_st is None else "update", "reason": reason, "content": merged})
+    lint = profile["commands"].get("lint")
+    if lint:
+        hook = (HERE / "lint_on_edit.py").read_text(encoding="utf-8").replace("__LINT_CMD__", lint["cmd"])
+        items.append({"path": ".claude/hooks/lint_on_edit.py", "action": "create" if not ex[".claude/hooks/lint_on_edit.py"]["exists"] else "update", "reason": "lint on edit", "content": hook})
+    tp = profile.get("team_profile")
+    if tp:
+        items.append({"path": ".claude/team-profile.json", "action": "create" if not ex[".claude/team-profile.json"]["exists"] else "update", "reason": "team profile for /team", "content": json.dumps({"maturity": tp["maturity"], "detected_by": "setup-repo"}, indent=2) + "\n"})
+    gi = (root / ".gitignore").read_text(encoding="utf-8", errors="replace") if (root / ".gitignore").exists() else ""
+    if ".claude/team-profile.json" not in gi:
+        items.append({"path": ".gitignore", "action": "update" if gi else "create", "reason": "ignore the machine-local team profile", "content": gi.rstrip("\n") + ("\n" if gi else "") + ".claude/team-profile.json\n"})
+    recs = ["Turn on the sandbox (`/sandbox`) so allowlisted commands run inside OS boundaries.",
+            "Project allow rules and hooks apply only after you trust this folder (workspace trust dialog)."]
+    if any(l in ("typescript", "go", "rust") for l in profile["languages"]):
+        recs.append("Install a code-intelligence plugin for typed languages (`/plugin` → code intelligence).")
+    for lang in profile["languages"]:
+        if lang == "python": recs.append("Toolkit skills that load themselves on .py files: python-patterns, python-testing, fastapi-patterns.")
+        if lang in ("typescript", "javascript"): recs.append("Toolkit skills that load themselves on .ts/.tsx: react-patterns, react-best-practices, motion-*.")
+    return {"root": str(root), "items": items, "recommendations": recs}

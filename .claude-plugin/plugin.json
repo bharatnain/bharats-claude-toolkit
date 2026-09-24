@@ -2,7 +2,7 @@
   "name": "bharats-claude-toolkit",
   "displayName": "Bharat's Claude Toolkit",
   "description": "Bharat's personal Claude Code setup, packaged as a plugin + marketplace: 137 vendored skills (52 always-on, 85 user-invoked) and 8 agents spanning engineering, AI, security, product, design, copy/UX, go-to-market, marketing, finance, and enterprise & ops, plus a curated always-on plugin tier and an on-demand firehose one command away.",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "keywords": [
     "claude-code",
     "skills",

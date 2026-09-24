@@ -5,6 +5,8 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-09-24
+
 - **Added: `scripts/skill_usage.py`** — local skill-usage report from `~/.claude/projects` transcripts
   (invoked skills, never-invoked vendored skills by description size, idle plugins, `--prune-list`);
   a read-only stand-in for `/skill-doctor` when usage reports are unavailable. **Added:
@@ -53,6 +55,17 @@ All notable changes to this project are documented here. Format follows
 - **Changed: `secret_scan.py` fails closed** (exit 2 on internal error) since Claude Code treats any
   other exit code as "proceed"; `docs/hooks-security.md` records the fail-open/fail-closed split and
   the notification routing.
+
+### Commits
+
+- feat: Claude Code practice updates — fewer prompts, tiered skills, agent/CLAUDE.md hygiene
+- Merge pull request #10 from bharatnain/claude/cc-practices-gap-analysis
+- docs: Claude Code practice review — surface-by-surface gap analysis (Sep 2026)
+- Merge pull request #9 from bharatnain/claude/skill-usage-script
+- feat(scripts): local skill-usage report + eval-secret helper
+- Merge pull request #8 from bharatnain/claude/silly-raman-f64f90
+- fix(bootstrap): drop stale superpowers mention from activation message
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and start a new chat.
 
 ## [0.9.0] - 2026-09-22
 

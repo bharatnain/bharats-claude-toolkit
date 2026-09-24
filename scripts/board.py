@@ -187,7 +187,8 @@ def render(data, now=None):
     parts.append('<h2>Now</h2><div class="card">' + (f"<div>{_e(n['text'])}</div><div class='meta'>{_e(n['session'] or '')}{' · epic: ' + _e(n['epic']) if n['epic'] else ''}</div>" if n["text"] or n["epic"] else "No recent activity.") + "</div>")
     parts.append('<div class="grid"><div>')
     b = data["beads"]
-    if b.get("error"): parts.append(f'<h2>In flight</h2><div class="card unavail">unavailable: {_e(b["error"])}</div>')
+    beads_reason = b.get("error") or unavail.get("beads")
+    if beads_reason: parts.append(f'<h2>In flight</h2><div class="card unavail">unavailable: {_e(beads_reason)}</div>')
     else:
         rows = "".join(f"<tr><td>{_e(i['id'])}</td><td>{_e(i['title'])}</td><td>{_badge(i['status'], 'acc' if i['status']=='in_progress' else '')}</td><td>{_e(i['owner'])}</td><td>{_e(i['model'] or '')}</td><td>{_e(i['tries'] or '')}</td><td class='meta'>{_rel(i['updated'], now)}</td></tr>" for i in b["in_flight"])
         parts.append(f'<h2>In flight · {len(b["in_flight"])}</h2><div class="card"><table><tr><th>id</th><th>task</th><th>state</th><th>owner</th><th>model</th><th>tries</th><th></th></tr>{rows or "<tr><td colspan=7>Nothing in flight.</td></tr>"}</table></div>')

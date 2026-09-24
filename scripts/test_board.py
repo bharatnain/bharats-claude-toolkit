@@ -128,3 +128,5 @@ def test_build_marks_failed_sources_inline(tmp_path, monkeypatch):
     html_text = (repo / ".claude/board/index.html").read_text()
     assert "unavailable: boom" in html_text
     assert sum(1 for e in data["errors"] if e.startswith("beads:")) == 1
+    in_flight_segment = html_text.split("<h2>In flight", 1)[1].split("<h2", 1)[0]
+    assert "unavailable: boom" in in_flight_segment

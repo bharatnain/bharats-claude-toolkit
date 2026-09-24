@@ -5,6 +5,8 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Added: `/setup-repo` skill** (engine `skills/setup-repo/scripts/repo_setup.py`, 21 tests).
+
 ## [0.10.0] - 2026-09-24
 
 - **Added: `scripts/skill_usage.py`** — local skill-usage report from `~/.claude/projects` transcripts

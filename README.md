@@ -201,6 +201,8 @@ The day-to-day loop the docs recommend, and where each piece of this repo fits:
 5. **Where instructions live.** Always-on facts in `CLAUDE.md` and `.claude/rules/`; procedures
    and reference material in skills (52 always-on, the rest behind `/name`); guarantees in hooks;
    response shape in the `Toolkit` output style.
+6. **Set up a repo.** `/setup-repo` prepares any repo (CLAUDE.md facts + check, rules, permissions,
+   lint hook, team profile); `--check` shows drift.
 
 ## Desktop notifications (when Claude needs you)
 

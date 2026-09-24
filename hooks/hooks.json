@@ -48,6 +48,17 @@
             "timeout": 20
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/board_refresh.py"],
+            "timeout": 20,
+            "async": true
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -85,6 +96,17 @@
             "command": "python3",
             "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/team_gate.py"],
             "timeout": 90
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/board_refresh.py"],
+            "timeout": 20,
+            "async": true
           }
         ]
       }

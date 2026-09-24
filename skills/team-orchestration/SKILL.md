@@ -149,6 +149,7 @@ not paraphrase it per spawn.
 - Then at most 10 lines: paths touched, validator result, open findings, report path.
 - `NEEDS_CONTEXT` names the missing fact; `BLOCKED` names the blocker and what was tried.
 - Everything longer goes in the report file, not the reply.
+- When a task needs the user, append `- <date> · <what> · <how to answer>` to `.claude/board/waiting.md` (if the repo has a board) and remove the line once answered.
 
 ## Review loop
 

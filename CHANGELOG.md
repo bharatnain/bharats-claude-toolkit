@@ -5,6 +5,49 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-09-24
+
+- **Added: `/setup-repo` skill** (engine `skills/setup-repo/scripts/repo_setup.py`, 38 tests). Also writes
+  `.claude/settings.local.json` (git-ignored) with `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=60` so auto-compact fires at 60% of the window.
+- **Added: orchestrator board** (`scripts/board.py`, `/board`, opt-in refresh hook `hooks/board_refresh.py`, 21 tests).
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and start a new chat.
+
+### Commits
+
+- feat(setup-repo): machine-local auto-compact threshold (settings.local.json, 60%)
+- fix: re-review residuals — refuse a .claude that resolves outside the repo, skip a symlinked CLAUDE.md, gitignore-style JS glob with suffix guard, redact branch/error strings
+- docs(housekeeping): record /setup-repo and /board, follow-ups left
+- docs(changelog): setup-repo test count after the fix wave
+- fix(setup-repo): final review — hook context/shape/glob, safe apply paths, marker-only edits, settings robustness
+- fix(board): final review — redact every field, exact project dirs, PR panel, titles, token dedupe, async hook, doc counts
+- fix(board): encode project dirs like Claude Code; discover sessions from the main checkout
+- feat: /board skill, refresh hook wiring, docs
+- feat: /setup-repo skill + docs
+- feat(setup-repo): apply, check, CLI
+- feat(board): opt-in Stop/SubagentStop refresh hook
+- fix(setup-repo): planner fix round 1 — hook gating, idempotency, JS rules, settings robustness
+- fix(board): resolve --out to an absolute path for open
+- feat(board): CLI build/open/serve
+- fix(board): show In-flight unavailable panel when beads collector raises
+- feat(setup-repo): planner (rules, settings merge, lint hook, recommendations)
+- fix(board): render per-source unavailable panels; dedupe beads error
+- fix(setup-repo): collapse blank-line runs left by removed CLAUDE.md blocks
+- feat(setup-repo): CLAUDE.md marker-block renderer + templates
+- feat(board): renderer + build
+- fix(setup-repo): log team-profile failures; require happy path in test
+- feat(board): beads, PR, waiting and now collectors
+- feat(setup-repo): git facts + team profile detection
+- fix(board): normalize naive timestamps to UTC; cover with edge-case tests
+- fix(setup-repo): require config-file evidence for pytest command
+- feat(setup-repo): evidenced command detection
+- feat(board): session + subagent collector with redaction
+- feat(setup-repo): detector core (languages, package manager, existing files)
+- chore: ignore SDD workspace
+- docs: setup-repo closes with a how-to-use note and the /board option
+- docs(plans): /setup-repo and orchestrator board implementation plans
+- docs(spec): orchestrator board design
+- docs(spec): /setup-repo skill design
+
 ## [0.10.0] - 2026-09-24
 
 - **Added: `scripts/skill_usage.py`** — local skill-usage report from `~/.claude/projects` transcripts

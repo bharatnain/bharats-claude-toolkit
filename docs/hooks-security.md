@@ -1,7 +1,7 @@
 # Hook-layer security
 
-This toolkit ships eight hook registrations across four scripts (`hooks/hooks.json` →
-`beads_init.py`, `notify.py`, `secret_scan.py`, `team_gate.py`). This doc covers three
+This toolkit ships ten hook registrations across five scripts (`hooks/hooks.json` →
+`beads_init.py`, `board_refresh.py`, `notify.py`, `secret_scan.py`, `team_gate.py`). This doc covers three
 things: an **opt-in** tamper-proofing pattern for consumers, the stdin/exit-code contract
 every hook in this repo follows, and the Claude Code v2.1.207 / v2.1.214 constraints
 future hook authors must respect.
@@ -62,7 +62,7 @@ Every hook script in `hooks/` follows the same contract:
   runner's exit codes: runner 0 → hook 0, runner 1 → hook 2 (block), runner 2 →
   hook 0 (fail-open).
 - **Env off-switches**: each hook has its own (`CLAUDE_NOTIFY=0`, `CLAUDE_BEADS=off`,
-  `CLAUDE_SECRET_SCAN=0`), plus `CLAUDE_TOOLKIT_HOOKS=off` which disables all four.
+  `CLAUDE_SECRET_SCAN=0`), plus `CLAUDE_TOOLKIT_HOOKS=off` which disables all five.
 - **Recursion guard**: `team_gate.py` sets `CLAUDE_TOOLKIT_HOOKS=off` in the environment
   of gate subprocesses. Gate checks run profile-configured commands; if one of them
   re-invokes `claude -p`, the nested session inherits the variable and its toolkit hooks
@@ -71,6 +71,11 @@ Every hook script in `hooks/` follows the same contract:
   which can be minimal (GUI launch, CI). Hooks that spawn binaries (`bd`,
   `terminal-notifier`, `notify-send`, gate tools) prepend `~/.local/bin`, `~/bin`,
   `/opt/homebrew/bin`, and `/usr/local/bin` to `PATH` when missing before resolving them.
+
+`board_refresh.py` (Stop/SubagentStop) is opt-in per repo (`.claude/board/` present or
+`CLAUDE_BOARD=on`), read-only against beads/git/gh, writes only `.claude/board/`,
+silent, fail-open. It is registered `async`, so it runs in the background without
+blocking the session; its own 15 s subprocess timeout bounds it.
 
 (The bounded-read, PATH-bootstrap, and recursion-guard patterns are adapted from
 zilliztech/memsearch's `plugins/claude-code/hooks/common.sh`, Apache-2.0 — reimplemented

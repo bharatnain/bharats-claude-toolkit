@@ -7,9 +7,9 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 29 enabled plugins**, which bring **137 vendored skills (52 always-on, 85 user-invoked via `/name`) + 8 agents** from this
+**Always-on = 29 enabled plugins**, which bring **139 vendored skills (52 always-on, 87 user-invoked via `/name`) + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
-*enable* is the plugin; the 137 skills + 8 agents are what *this* repo's plugin contributes,
+*enable* is the plugin; the 139 skills + 8 agents are what *this* repo's plugin contributes,
 and the other 28 plugins layer their skills on top.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
@@ -201,6 +201,8 @@ The day-to-day loop the docs recommend, and where each piece of this repo fits:
 5. **Where instructions live.** Always-on facts in `CLAUDE.md` and `.claude/rules/`; procedures
    and reference material in skills (52 always-on, the rest behind `/name`); guarantees in hooks;
    response shape in the `Toolkit` output style.
+6. **Set up a repo.** `/setup-repo` prepares any repo (CLAUDE.md facts + check, rules, permissions,
+   lint hook, team profile, a machine-local auto-compact threshold of 60%); `--check` shows drift.
 
 ## Desktop notifications (when Claude needs you)
 
@@ -283,6 +285,21 @@ above when available.
 **Solo-safe by design:** with no sentinel marker, the gate hooks are pure no-ops — installing
 this changes nothing for solo work until `/team` activates a session, and teardown returns the
 hooks to no-ops.
+
+---
+
+## Orchestrator board
+
+`/board` builds a local status page (`scripts/board.py`, stdlib, read-only) from the repo's own
+data: what's waiting on you, what's happening now, in-flight beads work, sessions and subagents
+with model and token counts, the PR merge lane, and the backlog. `/board` or `/board open` builds
+and opens it in the browser pane; `/board serve` runs a local server for it; `/board publish`
+builds it and hands you a private Artifact link you can open from your phone.
+
+The refresh is opt-in: once a repo has `.claude/board/` (or sets `CLAUDE_BOARD=on`), the
+Stop/SubagentStop hook `hooks/board_refresh.py` keeps the board current after every turn; it
+fails open and stays silent on any error. Everything the board shows is generated locally and
+redacted before it's written — nothing leaves the machine.
 
 ---
 

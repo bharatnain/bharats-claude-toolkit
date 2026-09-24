@@ -1,4 +1,4 @@
-import json, sys, datetime as dt
+import json, os, sys, datetime as dt
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import board
@@ -151,3 +151,14 @@ def test_cli_build_no_gh(tmp_path):
     rc = board.main(["build", "--repo", str(repo), "--projects-dir", str(tmp_path / "none"), "--no-gh", "--quiet"])
     assert rc == 0
     assert json.loads((repo / ".claude/board/board.json").read_text())["prs"] == []
+
+def test_hook_noop_without_optin(tmp_path):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    hook = Path(board.__file__).parent.parent / "hooks" / "board_refresh.py"
+    env = dict(os.environ, CLAUDE_BOARD="", HOME=str(tmp_path))
+    r = sp.run([sys.executable, str(hook)], input='{"hook_event_name":"Stop","cwd":"%s"}' % repo, capture_output=True, text=True, cwd=repo, env=env)
+    assert r.returncode == 0 and r.stdout == "" and not (repo / ".claude/board/index.html").exists()
+    (repo / ".claude/board").mkdir(parents=True)
+    r = sp.run([sys.executable, str(hook)], input='{"hook_event_name":"Stop","cwd":"%s"}' % repo, capture_output=True, text=True, cwd=repo, env=env)
+    assert r.returncode == 0 and r.stdout == "" and (repo / ".claude/board/index.html").exists()

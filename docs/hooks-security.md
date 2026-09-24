@@ -72,6 +72,10 @@ Every hook script in `hooks/` follows the same contract:
   `terminal-notifier`, `notify-send`, gate tools) prepend `~/.local/bin`, `~/bin`,
   `/opt/homebrew/bin`, and `/usr/local/bin` to `PATH` when missing before resolving them.
 
+`board_refresh.py` (Stop/SubagentStop) is opt-in per repo (`.claude/board/` present or
+`CLAUDE_BOARD=on`), read-only against beads/git/gh, writes only `.claude/board/`,
+silent, fail-open.
+
 (The bounded-read, PATH-bootstrap, and recursion-guard patterns are adapted from
 zilliztech/memsearch's `plugins/claude-code/hooks/common.sh`, Apache-2.0 — reimplemented
 here in stdlib Python, no code vendored.)

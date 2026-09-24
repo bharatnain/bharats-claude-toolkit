@@ -48,6 +48,22 @@ notification routing) shipped in the same PR; on other machines run
 `CLAUDE_FORCE_CLAUDE_MD=1 bash scripts/bootstrap.sh` (the force flag replaces an older
 `~/.claude/CLAUDE.md`, with a backup).
 
+## Applied 2026-09-24 (setup-repo + orchestrator board, PR after #11)
+
+Two new user-invoked skills, built from `docs/superpowers/specs/2026-09-24-*-design.md` by
+subagent-driven development (per-task review, one final whole-branch review, one fix wave):
+`/setup-repo` (detect → plan → apply on one yes; `--check` reports drift; owns only the
+`<!-- setup-repo:* -->` blocks of CLAUDE.md, `.claude/rules/`, an add-only settings merge with a
+lint-on-edit hook, and the team profile; closes with a how-to-use note and the `/board` option)
+and `/board` (`scripts/board.py` renders waiting-on-you / now / in-flight beads / sessions and
+subagents / PR lane / backlog from local data; opt-in Stop/SubagentStop refresh hook when
+`.claude/board/` exists or `CLAUDE_BOARD=on`; `publish` sends a private Artifact for the phone).
+Not applied to this repo: `/setup-repo check --repo .` reports 5 items (the toolkit's CLAUDE.md is
+hand-maintained; decide separately). Follow-ups from the final review, deliberately left:
+subagent rows on the board are in file order, not by recency; session token totals cover the
+512 KiB tail only; existing settings with the old top-level `if` hook entry are not migrated;
+`lint_on_edit.py` bounds stdin at 1 MiB where `.claude/rules/hooks-scripts.md` says 10 MiB.
+
 ## Deferred (with reason)
 
 - **11 — SKILL.md splits.** Only `hallmark` (67 k, already diverged) was split into

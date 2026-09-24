@@ -46,3 +46,15 @@ def test_commands_node_pnpm(tmp_path):
 def test_commands_makefile(tmp_path):
     p = rs.detect(make_repo(tmp_path, {"Makefile": "test:\n\tgo test ./...\nlint:\n\tgolangci-lint run\n", "go.mod": "module x\n", "main.go": "package main\n"}))["commands"]
     assert p["test"] == {"cmd": "make test", "source": "Makefile"}
+
+def test_git_facts(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    subprocess.run(["git", "checkout", "-qb", "claude/feature-x"], cwd=root, check=True)
+    g = rs.detect(root)["git"]
+    assert g["default_branch"] in ("main", "unknown")
+    assert "claude/" in g["branch_prefixes"]
+    assert g["merge_style"] == "unknown"
+
+def test_team_profile_present(tmp_path):
+    tp = rs.detect(make_repo(tmp_path, PY_UV))["team_profile"]
+    assert tp is None or tp["maturity"] in ("greenfield", "active", "legacy")

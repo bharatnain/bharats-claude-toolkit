@@ -96,8 +96,37 @@ def _commands(root, pm):
         cmds.setdefault("lint", {"cmd": "cargo clippy", "source": "Cargo.toml"})
     return cmds
 
+def _git_facts(root):
+    head = _git(root, "symbolic-ref", "--short", "refs/remotes/origin/HEAD")
+    default = head.split("/", 1)[1] if "/" in head else ("main" if _git(root, "rev-parse", "--verify", "-q", "main") else "unknown")
+    remote = _git(root, "remote", "get-url", "origin")
+    host = re.sub(r"^(git@|https?://)", "", remote).split(":")[0].split("/")[0] if remote else None
+    branches = _git(root, "branch", "--format=%(refname:short)").splitlines()
+    prefixes = sorted({b.split("/")[0] + "/" for b in branches if "/" in b})
+    log = _git(root, "log", "--merges", "-n", "20", "--format=%s")
+    style = "merge" if "Merge pull request" in log else ("squash" if _git(root, "log", "-n", "20", "--format=%s").count("(#") >= 3 else "unknown")
+    return {"default_branch": default, "remote_host": host, "branch_prefixes": prefixes, "merge_style": style}
+
+def _profile_name(result):
+    if isinstance(result, (tuple, list)) and result:
+        return str(result[0])
+    if isinstance(result, dict):
+        return result.get("maturity") or result.get("profile") or result.get("suggested")
+    return str(result) if result else None
+
+def _team_profile(root):
+    sys.path.insert(0, str(TOOLKIT_SCRIPTS))
+    try:
+        import team_profile_detect as tpd  # noqa: PLC0415
+        signals = tpd.gather_signals(root)
+        name = _profile_name(tpd.classify(signals))
+        return {"maturity": name, "signals": signals if isinstance(signals, dict) else {}} if name else None
+    except Exception:  # noqa: BLE001
+        return None
+
 def detect(root):
     root = Path(root).resolve()
     files = _tracked(root)
     return {"root": str(root), "languages": _languages(files), "package_manager": _package_manager(root),
-            "existing": _existing(root), "commands": _commands(root, _package_manager(root)), "git": {}, "team_profile": None, "size": len(files)}
+            "existing": _existing(root), "commands": _commands(root, _package_manager(root)),
+            "git": _git_facts(root), "team_profile": _team_profile(root), "size": len(files)}

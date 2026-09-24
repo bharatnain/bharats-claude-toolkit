@@ -5,6 +5,9 @@ license: Apache-2.0
 metadata:
   author: openfga
   version: "1.2.1"
+paths:
+  - "**/*.fga"
+  - "**/*.openfga"
 ---
 
 # OpenFGA Best Practices

@@ -3,6 +3,7 @@ name: security-questionnaire-responder
 description: "Use when a prospect or customer sends a recurring vendor security questionnaire — SIG (Lite/Core), CAIQ/CSA STAR, VSA, or a custom buyer spreadsheet — and you need evidence-backed answers fast without a security team. Builds and reuses a control-answer library, maps every answer to a verifiable evidence artifact, scores answer confidence, and gates low-confidence or fabrication-risk items for human review before the questionnaire goes back to the buyer. For founders and engineers selling B2B who face the same questions on every enterprise deal. Owns the STANDALONE security/vendor questionnaire whatever deal it belongs to. NOT pursuit/bid strategy, win-themes, bid/no-bid, or a full RFP/RFI/RFQ response where the questionnaire is one section (use rfp-responder), NOT contract redline (use general-counsel-advisor), NOT achieving the underlying certification (use soc2 / iso-27001 / gdpr / hipaa / pci-dss)."
 license: MIT
 tags: [enterprise, security, sig, caiq, vsa, vendor-assessment, b2b-sales, compliance, trust]
+disable-model-invocation: true
 ---
 
 # security-questionnaire-responder

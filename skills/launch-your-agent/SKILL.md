@@ -4,6 +4,7 @@ description: "Build and deploy a Claude Managed Agent (CMA) — an agent hosted 
 license: Apache-2.0
 version: 0.3.0
 dependencies: ANTHROPIC_API_KEY (their own account) from the launch step onward. `ant` CLI optional — curl forms included for everything.
+disable-model-invocation: true
 ---
 
 <!-- Copyright 2026 Anthropic PBC -->

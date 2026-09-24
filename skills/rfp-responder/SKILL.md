@@ -7,6 +7,7 @@ author: claude-code-skills
 license: MIT
 tags: [commercial, rfp, rfi, rfq, shipley, win-theme, proof-points, structured-response, bid-management]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # rfp-responder

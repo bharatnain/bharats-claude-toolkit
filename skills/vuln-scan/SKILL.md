@@ -23,6 +23,8 @@ allowed-tools:
   - Bash(wc:*)
   - Bash(head:*)
   - Bash(file:*)
+context: fork
+agent: general-purpose
 ---
 
 # /vuln-scan

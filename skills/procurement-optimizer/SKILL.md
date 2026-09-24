@@ -6,6 +6,7 @@ author: claude-code-skills
 license: MIT
 tags: [bizops, procurement, spend-categorization, supplier-consolidation, unspsc, saas-audit, purchasing-cycle]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # Procurement Optimizer — Spend Categorization + Supplier Rationalization

@@ -3,6 +3,9 @@ name: market-research
 description: "EXTERNAL market intelligence from public/secondary sources — TAM/SAM/SOM market sizing, investor/fund diligence dossiers, market-structure / competitive-landscape sizing, and technology/vendor research, delivered with source attribution and a decision (not a summary). Use when sizing a market, vetting an investor or fund, scanning a technology trend, or pressure-testing a thesis before building, funding, or entering a market. Not for one-off profiling competitors from their URLs (use `competitor-profiling`), producing X-vs-Y / alternatives comparison PAGES (use `competitors`), or running an ongoing competitive-intelligence program (use `competitive-intel`). Not for customer-voice research like interviews, surveys, review/ticket mining, personas, JTBD, or VOC (use `customer-research`); not for quick current-web lookups or company/people enrichment (use `research-ops`); not for the internal positioning/ICP context document reused across marketing tasks (use `product-marketing`)."
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
+disable-model-invocation: true
+context: fork
+agent: general-purpose
 ---
 
 # Market Research

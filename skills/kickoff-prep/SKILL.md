@@ -4,6 +4,7 @@ description: "Use when a contract was just signed and the immediate next step is
 argument-hint: "[<account-name-or-ID>] [--prep | --agenda | --checklist]"
 version: "1.0.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 <!-- Status: [PROPOSED] -->

@@ -2,6 +2,7 @@
 name: hallmark
 description: "Anti-AI-slop design review and design-DNA extraction. Use ONLY when the user invokes Hallmark by name, asks whether a design 'looks AI-generated' or wants an anti-slop / slop-test audit of an existing page, or asks to extract/study the design DNA of a site from a screenshot or URL (e.g. 'make it look like stripe.com'). Do NOT use for general 'build an app/landing page' or redesign requests — those are handled by the frontend-design and ui-ux-pro-max plugins."
 version: 1.1.0
+disable-model-invocation: true
 ---
 
 # Hallmark

@@ -6,6 +6,8 @@ category: frontend
 author: jeff
 metadata:
   version: 1.0.0
+paths:
+  - "**/*.{tsx,jsx,ts,js}"
 ---
 
 # Motion Foundations

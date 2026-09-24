@@ -1,6 +1,7 @@
 ---
 name: objection-pattern-detector
 description: "Mines a CORPUS of lost/won deal notes to surface RECURRING objection PATTERNS across many deals, then distills proven rebuttals from won deals into objection-response playbooks. Use when you have a body of past deal notes and want to find which objections keep recurring and what answers actually won. Not for producing rep-facing collateral like decks, one-pagers, objection-handling docs, demo scripts, or talk tracks (use `sales-enablement`); not for adopting a methodology (MEDDIC/BANT/Challenger/SPIN/Sandler) or building scorecards and rep training (use `sales-methodology-implementer`); not for risk-scoring, evidence-by-stage checks, or red-flagging a SINGLE live deal (use `deal-review-framework`)."
+disable-model-invocation: true
 ---
 
 # Objection Pattern Detector

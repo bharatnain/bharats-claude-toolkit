@@ -6,6 +6,7 @@ author: claude-code-skills
 license: MIT
 tags: [commercial, pricing, packaging, wtp, van-westendorp, value-based-pricing, saas-pricing]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # pricing-strategist

@@ -10,6 +10,7 @@ metadata:
   updated: 2026-03-05
   python-tools: strategy_analyzer.py, financial_scenario_analyzer.py
   frameworks: executive-decisions, board-governance, leadership-culture
+disable-model-invocation: true
 ---
 
 # CEO Advisor

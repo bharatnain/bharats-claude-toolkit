@@ -7,8 +7,10 @@ research, Opus 5.5 / Fable 5.1 prompting guides), and the three skill-authoring 
 this toolkit touches (mattpocock `writing-for-agents`, superpowers `writing-skills`,
 Anthropic `skill-creator` / agentskills.io). Mapped against every surface in this repo.
 Research notes with URLs: session scratchpad `research-cc-practices.md`,
-`research-agent-practice.md`. Nothing below is applied yet; each item names the surface,
-the guidance it comes from, and the concrete tweak.
+`research-agent-practice.md`. Status 2026-09-24: applied (see CHANGELOG `[Unreleased]`), except evals-per-family, hook `if:`
+filters, and the optional settings keys (documented in README instead); `plugin-vetting`,
+`agent-wrap-up` and `brand-voice` stay model-invocable (triggered by other skills or by "is this
+plugin safe?" questions). Each item names the surface, the guidance it comes from, and the concrete tweak.
 
 ## The four findings that matter most
 

@@ -9,6 +9,7 @@ metadata:
   domain: startup-strategy
   updated: 2026-07-23
   frameworks: evaluation-gauntlet, business-model-picker, pricing-worksheet, fundraising-readiness
+disable-model-invocation: true
 ---
 
 # Startup Idea Evaluation

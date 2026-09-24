@@ -1,6 +1,7 @@
 ---
 name: quota-setting-calculator
 description: Top-down vs bottom-up quota models. Historical attainment, market growth assumptions, ramp periods, territory complexity.
+disable-model-invocation: true
 ---
 
 # Quota Setting Calculator

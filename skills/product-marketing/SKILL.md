@@ -3,6 +3,7 @@ name: product-marketing
 description: "CREATE and maintain the internal product-marketing CONTEXT document — the canonical positioning/ICP spine at `.agents/product-marketing.md` that every other marketing skill reuses so foundational info (product, audience, positioning, differentiation, brand voice) is never re-entered. Auto-drafts a V1 from the codebase or walks through sections conversationally. Use when setting up or updating product/marketing context, positioning, ICP, target audience, or the shared context doc — run this first on a new project. Not for EXTERNAL market intel like market sizing/TAM, investor/fund diligence, competitor scans, or technology trends (use `market-research`); not for CUSTOMER-VOICE research like interviews, surveys, review/ticket mining, personas, JTBD, or VOC (use `customer-research`)."
 metadata:
   version: 2.1.0
+disable-model-invocation: true
 ---
 
 # Product Marketing Context

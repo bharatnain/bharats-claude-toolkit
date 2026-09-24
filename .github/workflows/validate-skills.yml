@@ -1,9 +1,9 @@
 name: validate-skills
 on:
   push:
-    paths: ['skills/**', 'agents/**', 'commands/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
+    paths: ['skills/**', 'agents/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
   pull_request:
-    paths: ['skills/**', 'agents/**', 'commands/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
+    paths: ['skills/**', 'agents/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
 jobs:
   validate:
     runs-on: ubuntu-latest

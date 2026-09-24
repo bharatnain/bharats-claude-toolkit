@@ -3,6 +3,9 @@ name: seo-audit
 description: When the user wants to audit, review, or diagnose SEO issues on their site. Also use when the user mentions "SEO audit," "technical SEO," "why am I not ranking," "SEO issues," "on-page SEO," "meta tags review," "SEO health check," "my traffic dropped," "lost rankings," "not showing up in Google," "site isn't ranking," "Google update hit me," "page speed," "core web vitals," "crawl errors," or "indexing issues." Use this even if the user just says something vague like "my SEO is bad" or "help with SEO" — start with an audit. Owns traditional search-engine ranking — crawlability, indexing, speed, on-page, E-E-A-T. Not for AI-search visibility — getting cited by ChatGPT/Perplexity/AI Overviews, llms.txt, AEO/GEO, or agent-readiness (use `ai-seo`). For building pages at scale to target keywords, see programmatic-seo. For adding structured data, see schema.
 metadata:
   version: 2.0.1
+disable-model-invocation: true
+context: fork
+agent: general-purpose
 ---
 
 # SEO Audit

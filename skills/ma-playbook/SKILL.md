@@ -8,6 +8,7 @@ metadata:
   category: c-level
   domain: ma-strategy
   updated: 2026-03-05
+disable-model-invocation: true
 ---
 
 # M&A Playbook

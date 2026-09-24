@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate agents/, commands/, and workflows/ assets.
+"""Validate agents/ and workflows/ assets (plus legacy commands/*.md if present).
 
 Stdlib-only for the Python parts; the ONLY external process call is
 `node --check --input-type=module` (fed via stdin; node is already a documented
@@ -56,6 +56,8 @@ def parse_tools_list(raw):
 
     Returns a list of strings on success, or None if not a well-formed list.
     """
+    if isinstance(raw, list):
+        return [str(x) for x in raw]
     s = raw.strip()
     if not (s.startswith("[") and s.endswith("]")):
         return None

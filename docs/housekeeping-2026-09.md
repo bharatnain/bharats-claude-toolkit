@@ -36,6 +36,18 @@ models **Fable 5.1** (`claude-fable-5-1`), **Opus 5.5** (`claude-opus-5-5`, GA 2
 | 20 | Overlap pass | 17 pairs disambiguated in descriptions; SKILLS.md regenerated. |
 | 21 | Cosmetic | `react-best-practices` name aligned (validator allowlist removed); code-migration sample rows show `claude-sonnet-5`. |
 
+## Applied 2026-09-24 (practice review, PR after #10)
+
+All 12 items in `docs/claude-code-practices-gap-2026-09.md` are applied except: evals per skill
+family (one case exists; grow as skills change); `if:` filters on hook entries (matchers are
+already specific); exposing `syncClaudeAiSkills` / `autoMemoryEnabled` / `workflowSizeGuideline`
+in the settings template (user preferences, documented in README instead). Decision recorded:
+`agents/tech-lead.md` stays as the roster's required orchestrator role; the skill casts the main
+session as tech-lead when run via `/team`. Permission-prompt reduction (allow/deny/defaultMode,
+notification routing) shipped in the same PR; on other machines run
+`CLAUDE_FORCE_CLAUDE_MD=1 bash scripts/bootstrap.sh` (the force flag replaces an older
+`~/.claude/CLAUDE.md`, with a backup).
+
 ## Deferred (with reason)
 
 - **11 — SKILL.md splits.** Only `hallmark` (67 k, already diverged) was split into

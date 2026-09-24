@@ -24,6 +24,8 @@ allowed-tools:
   - Bash(ls:*)
   - Bash(wc:*)
   - Bash(python3 skills/_lib/checkpoint.py:*)
+context: fork
+agent: general-purpose
 ---
 
 # vuln-triage

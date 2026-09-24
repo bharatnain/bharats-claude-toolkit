@@ -17,6 +17,7 @@ description: >
 argument-hint: "[<account-name-or-ID>] [--draft | --update | --summary]"
 version: "1.0.0"
 deployment_target: plugin
+disable-model-invocation: true
 ---
 
 <!-- Status: [PROPOSED] -->

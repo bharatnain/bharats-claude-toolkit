@@ -7,9 +7,9 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 29 enabled plugins**, which bring **134 vendored skills + 8 agents** from this
+**Always-on = 29 enabled plugins**, which bring **137 vendored skills (52 always-on, 85 user-invoked via `/name`) + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
-*enable* is the plugin; the 134 skills + 8 agents are what *this* repo's plugin contributes,
+*enable* is the plugin; the 137 skills + 8 agents are what *this* repo's plugin contributes,
 and the other 28 plugins layer their skills on top.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
@@ -57,14 +57,17 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
 bash scripts/bootstrap.sh
 ```
 
-It safely deep-merges this repo's [`settings.json`](settings.json) (both
-`extraKnownMarketplaces` and `enabledPlugins`) into your user-global
-`~/.claude/settings.json`, writing a timestamped backup first, and is idempotent — re-running
-it never duplicates or removes entries. Open Claude Code in any directory and the always-on
+It safely deep-merges this repo's [`settings.json`](settings.json) (`extraKnownMarketplaces`,
+`enabledPlugins`, and the `permissions` allow/deny lists plus `defaultMode`) into your
+user-global `~/.claude/settings.json`, writing a timestamped backup first, and is idempotent —
+re-running it never duplicates or removes entries. Open Claude Code in any directory and the always-on
 tier is live; `ecc` is registered and one command away.
 
-It also installs this repo's [`CLAUDE.md`](CLAUDE.md) (Andrej Karpathy's LLM-coding guidelines)
-to `~/.claude/CLAUDE.md` so the rules apply in **every** project by default. It writes the file
+It also installs [`templates/user-CLAUDE.md`](templates/user-CLAUDE.md) (Andrej Karpathy's
+LLM-coding guidelines plus compaction and follow-up rules) to `~/.claude/CLAUDE.md` so the
+rules apply in **every** project by default. The repo's own [`CLAUDE.md`](CLAUDE.md) holds
+repo facts only (validators, release flow, gotchas), and [`.claude/rules/`](.claude/rules)
+holds path-scoped rules for `skills/`, `hooks/`+`scripts/`, and `agents/`. It writes the file
 only when absent and never clobbers a differing one you already have — opt out with
 `CLAUDE_DEFAULT_CLAUDE_MD=off`, or overwrite-with-backup via `CLAUDE_FORCE_CLAUDE_MD=1`.
 
@@ -130,10 +133,10 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 
 </details>
 
-**Browse the toolkit.** Once the plugin is enabled, run the [`/toolkit`](commands/toolkit.md)
+**Browse the toolkit.** Once the plugin is enabled, run the [`/toolkit`](skills/toolkit/SKILL.md)
 slash command to see every vendored skill grouped by domain plus the enabled external plugins —
 so you never have to remember what's installed. Full catalog: see [`SKILLS.md`](SKILLS.md). Run
-[`/doctor`](commands/doctor.md) to health-check the setup, and note the always-on
+[`/doctor`](skills/doctor/SKILL.md) to health-check the setup, and note the always-on
 `claude-code-docs` skill auto-consults the current official docs before Claude touches any
 Claude Code internals — so explanations track the latest release, not stale memory.
 
@@ -155,6 +158,50 @@ these three lines.
 
 ---
 
+## Fewer permission prompts
+
+The settings template ships a permissions block that bootstrap merges into your global
+settings, so it applies in every project and on every machine you bootstrap:
+
+- `permissions.defaultMode: "auto"` — new terminal sessions start in auto mode (a classifier
+  reviews actions instead of prompting you). Set only when you have no `defaultMode` of your own.
+- `permissions.allow` — the routine developer commands that showed up most in real transcripts
+  (`python3`, `uv`, `sqlite3`, `git add/commit/status/log/diff`, `gh` read operations, test
+  runners, `mkdir/cp/mv`) plus `WebFetch`, `WebSearch`, `Agent` and `Skill`. Allowed calls never
+  prompt in Manual mode and skip the classifier in auto mode.
+- `permissions.deny` — credential reads (`.env` and every `.env.*` variant, `~/.ssh`, `~/.aws`,
+  cloud and registry configs) and destructive git/rm forms, enforced in every mode, including
+  bypass. A deny beats an allow at any scope, so committed templates like `.env.example` are
+  also blocked for the Read tool; view them with `cat` when needed.
+
+Allow and deny merge as unions, so your own rules are kept. Edit the lists in
+`~/.claude/settings.json` afterwards if a rule is too broad for you; a deny at any scope wins
+over an allow at any other. Rules match command text only, so pair them with `/sandbox` for
+hard boundaries. `/permissions` shows what is in effect.
+
+Other settings worth knowing, left to you (not merged by bootstrap): `syncClaudeAiSkills: false`
+stops claude.ai skills from syncing into terminal sessions and inflating the skill listing;
+`autoMemoryEnabled`; `workflowSizeGuideline` (`small`/`medium`/`large`/`unrestricted`);
+`outputStyle: "Toolkit"` selects this plugin's output style.
+
+## Working with this toolkit
+
+The day-to-day loop the docs recommend, and where each piece of this repo fits:
+
+1. **Explore, then plan, then implement.** Use plan mode (`Shift+Tab`) for anything you couldn't
+   describe in one sentence; skip it for small fixes.
+2. **Give Claude a check it can run.** Name the test, build, or validator in the prompt. For
+   unattended runs set `/goal <condition>` so the session doesn't stop at "looks done"; the
+   legacy team profile adds a Stop-hook gate.
+3. **Keep context clean.** `/clear` between unrelated tasks, `/btw` for side questions, `/compact`
+   with instructions; the user-level CLAUDE.md tells Claude what to preserve.
+4. **Delegate reading.** Subagents for investigation and adversarial review (`/code-review`, the
+   `code-reviewer` agent); `/team <goal>` for multi-agent builds with gates; a Workflow when the
+   job outgrows a handful of agents.
+5. **Where instructions live.** Always-on facts in `CLAUDE.md` and `.claude/rules/`; procedures
+   and reference material in skills (52 always-on, the rest behind `/name`); guarantees in hooks;
+   response shape in the `Toolkit` output style.
+
 ## Desktop notifications (when Claude needs you)
 
 A plugin hook pings your desktop the moment Claude is **waiting on you** — a permission prompt or
@@ -170,6 +217,13 @@ then `/reload-plugins` to activate. Tunables (set in your shell, or under `env` 
   quiet while a background task/workflow is still running, so you're only pinged when truly done).
 - `CLAUDE_NOTIFY=0` — turn all notifications off.
 - `CLAUDE_NOTIFY_SOUND=Ping` — macOS sound name (empty string = silent).
+- `CLAUDE_NOTIFY_FORCE=1` — also ping inside the desktop app. By default the hook stays silent
+  there (`CLAUDE_CODE_ENTRYPOINT=claude-desktop`), because the app already shows its own OS
+  notification and can push to your phone; without this, one event produced up to three pings.
+
+The hook is registered with the matcher `permission_prompt|idle_prompt`, so auth, elicitation
+and agent-lifecycle notifications never reach it. Phone pushes are the desktop app's own
+setting (`agentPushNotifEnabled` in `~/.claude/settings.json`, or Settings → Claude Code).
 
 > macOS first run: allow notifications for your terminal app when prompted (or System Settings →
 > Notifications), otherwise pings won't appear.
@@ -351,7 +405,7 @@ for you to run by hand (the tag is created after the release commit so it points
 - **Eval secret** — `bash scripts/set_eval_secret.sh` stores the `ANTHROPIC_API_KEY` repo secret
   for `plugin-eval.yml` (prompts with hidden input, pipes to `gh secret set`, never in argv).
 - **Validate** — `validate_skills.py` (skills + `SKILLS.md` catalog) and `validate_assets.py`
-  (`agents/`, `commands/`, `workflows/`) gate every change; both also run in CI.
+  (`agents/`, `workflows/`) gate every change; both also run in CI.
 
 **Authoring a new skill** — follow the `writing-for-agents` skill from the enabled
 `mattpocock-skills` plugin (context pointers, the two loads, information hierarchy, leading
@@ -369,13 +423,13 @@ bharats-claude-toolkit/
 ├── .claude-plugin/
 │   ├── plugin.json          # this plugin's manifest
 │   └── marketplace.json     # one-plugin marketplace (name: bharats-claude-toolkit-dev)
-├── commands/
-│   ├── toolkit.md           # /toolkit slash command (browse skills by domain)
-│   └── doctor.md            # /doctor slash command (run scripts/doctor.py + walk fixes)
+├── skills/{toolkit,doctor,team}/  # user-invoked skills behind /toolkit, /doctor, /team
+├── output-styles/toolkit.md # optional output style: intent line, evidence, stand-alone recap
+├── evals/                   # `claude plugin eval` cases
 ├── scripts/
 │   ├── check_upstream.py    # report vendored-skill drift vs THIRD_PARTY_SOURCES.json
 │   ├── doctor.py            # health-check settings/plugins/tools (backs /doctor)
-│   ├── validate_assets.py   # validate agents/, commands/, workflows/ assets
+│   ├── validate_assets.py   # validate agents/, workflows/ assets
 │   └── release.py           # bump version + promote CHANGELOG [Unreleased] (no commit/tag/push)
 ├── .github/workflows/
 │   ├── upstream-drift.yml   # weekly cron → rolling "Upstream drift report" issue
@@ -383,7 +437,9 @@ bharats-claude-toolkit/
 ├── settings.json            # template to merge into ~/.claude/settings.json
 ├── skills/<name>/SKILL.md   # vendored skills
 ├── agents/<name>.md         # vendored agents
-├── CLAUDE.md                # behavioral guidelines
+├── CLAUDE.md                # repo facts (commands, release, gotchas); user rules in templates/
+├── templates/user-CLAUDE.md # installed to ~/.claude/CLAUDE.md by bootstrap
+├── .claude/rules/           # path-scoped rules (skills, hooks+scripts, agents)
 ├── THIRD_PARTY_NOTICES.md   # attribution + licenses
 └── README.md
 ```

@@ -6,6 +6,7 @@ author: claude-code-skills
 license: MIT
 tags: [commercial, discount-policy, discount-matrix, exception-flow, governance, deal-framework, commercial-discipline]
 compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+disable-model-invocation: true
 ---
 
 # commercial-policy

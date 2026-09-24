@@ -50,10 +50,12 @@ Every hook script in `hooks/` follows the same contract:
 - **Input**: the hook event JSON arrives on stdin. Reads are **bounded at 10 MiB**
   (`MAX_STDIN`) so a hook never buffers unbounded input; a truncated payload fails JSON
   parsing and falls through to `{}` — i.e. fail-open.
-- **`exit 0`** — allow. Also the outcome for *any* internal error: every entry point is
-  wrapped in `try/except` that exits 0, because a broken guardrail must degrade to
-  "no guardrail", never to "wedged session". `beads_init.py` and `notify.py` always
-  exit 0 (SessionStart/Notification hooks must never block).
+- **`exit 0`** — allow. `beads_init.py`, `notify.py` and `team_gate.py` also exit 0 on
+  any internal error (fail open): a broken convenience hook must degrade to "no hook",
+  never to "wedged session". `secret_scan.py` is the exception: it is a guardrail, and
+  Claude Code treats every exit code other than 2 as "proceed", so its internal errors
+  exit 2 with the reason on stderr (fail closed). Disable it with `CLAUDE_SECRET_SCAN=0`
+  if it misfires.
 - **`exit 2`** — block, with the reason printed to **stderr** (Claude Code feeds stderr
   back to the model). Only `secret_scan.py` (PreToolUse) and `team_gate.py`
   (gate events) ever exit 2. `team_gate.py` translates the `scripts/quality_gate.py`
@@ -93,6 +95,12 @@ here in stdlib Python, no code vendored.)
   600 s default timeout are unchanged. The agent-teams events (`TaskCreated`,
   `TaskCompleted`, `TeammateIdle`) remain experimental behind
   `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`; this repo no longer registers them.
+
+**Notification routing (2026-09-24)**: the `Notification` registration carries the matcher
+`permission_prompt|idle_prompt`, so auth, elicitation and agent-lifecycle notifications never
+spawn the hook. Inside the desktop app (`CLAUDE_CODE_ENTRYPOINT=claude-desktop`) `notify.py`
+exits without notifying, because the app already shows an OS notification and can push to
+your phone; set `CLAUDE_NOTIFY_FORCE=1` to get the hook notification there as well.
 
 **Audit verdict (this repo, 2026-09)**: all 8 registrations in `hooks/hooks.json` use
 exec form (`"command": "python3"` + `"args": [...]`); `${CLAUDE_PLUGIN_ROOT}` appears

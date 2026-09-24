@@ -33,8 +33,8 @@ at the start so a run is debuggable.
 
 | Template | Purpose | Gate stage | Key args |
 | --- | --- | --- | --- |
-| `review-changes.workflow.js` | Adversarial review of the working diff | optional (available, not invoked) | `target`, `dimensions[]`, `maxFindings` |
-| `implement-task-with-gates.workflow.js` **(flagship)** | Plan → implement → gate → bounded Critic fix-loop → integrate | **required** | `task`, `profile`, `checks[]` |
+| `review-changes.workflow.js` | Adversarial review of the working diff; findings are schema-bound (`file`, `line`, `summary`) and each refutation returns a structured `verdict` (`CONFIRMED`/`REFUTED`) | optional (available, not invoked) | `target`, `dimensions[]`, `maxFindings` |
+| `implement-task-with-gates.workflow.js` **(flagship)** | Plan → implement → gate → bounded Critic fix-loop → schema-bound review (`{verdict: PASS/FAIL, findings[]}`) → integrate only on `PASS` | **required** | `task`, `profile`, `checks[]` |
 | `migrate-sweep.workflow.js` | Mechanical migration swept across sites, gated per site | **required (per site)** | `target`, `sites[]`, `profile`, `checks[]`, `maxSites` |
 | `design-panel.workflow.js` | architect + code-architect + planner in parallel → synthesize | none | `target`, `constraints` |
 | `beads-task.workflow.js` **(flagship)** | Beads-backed: decompose → ready → claim → gate → close-when-green, **resumable by epic id** (cross-session memory) | **required (per issue)** | `goal`, `epicId`, `profile`, `checks[]`, `maxStages` |
@@ -43,6 +43,18 @@ The templates use `agentType` strings that map to the existing `agents/`
 definitions — `code-reviewer`, `architect`, `code-architect`, `planner`,
 `integrator` — so the panel/review flows reuse the Phase-F1 role agents rather
 than inventing new ones. (Implementation/transform steps use `general-purpose`.)
+
+## Subagents vs workflow
+
+Reach for **subagents** (the `/team` skill, `skills/team-orchestration/`) for focused
+workers with file-partitioned scopes — a handful per wave. Reach for a **workflow** when
+the job outgrows a handful of agents, when findings must be cross-checked against each
+other (as `review-changes` does with its refute pass), or when a verdict must be
+machine-checkable: pass a `schema` to the verifying `agent()` call and branch on the
+returned field, never on prose. Keep `label` and `phase` on every `agent()` call so runs
+are observable. Two knobs bound a workflow's size: the `workflowSizeGuideline` setting
+(`small` <5 agents, `medium` <10 — the default, `large` <50, `unrestricted`) and
+`CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS` (default 16). Agent teams stay off.
 
 ## The `runGate` contract
 
@@ -136,6 +148,19 @@ precedence exactly. If you change the Python precedence, mirror it here too.
 
 Each source is read defensively; a malformed or inactive marker falls through
 to the next.
+
+## Structured verdicts
+
+Both verdict-bearing templates bind the reviewer's output with a `schema` and decide on
+the structured field only:
+
+- `implement-task-with-gates` — after the gate is green, a `code-reviewer` returns
+  `{ verdict: 'PASS' | 'FAIL', findings: [{ file, line, summary }] }` against the plan's
+  success criteria; the change is integrated only when `verdict === 'PASS'`. A missing or
+  malformed verdict is treated as not-PASS.
+- `review-changes` — each finder returns `findings[{ title, severity, file, line, summary }]`;
+  each refuter returns `{ verdict: 'CONFIRMED' | 'REFUTED', confidence, reason }`, and only
+  `REFUTED` drops a finding.
 
 ## The Critic fix-loop (flagship)
 

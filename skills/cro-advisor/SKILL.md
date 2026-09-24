@@ -10,6 +10,7 @@ metadata:
   updated: 2026-03-05
   python-tools: revenue_forecast_model.py, churn_analyzer.py
   frameworks: sales-playbook, pricing-strategy, nrr-playbook
+disable-model-invocation: true
 ---
 
 # CRO Advisor

@@ -182,12 +182,24 @@ def render_claude_md(profile, existing_text):
     return out
 
 RULE_GLOBS = {"python": ["**/*.py"], "typescript": ["**/*.{ts,tsx}"], "javascript": ["**/*.{js,jsx,mjs}"], "go": ["**/*.go"], "rust": ["**/*.rs"]}
-RULE_LANGS = {"python": "python", "typescript": "typescript", "javascript": "typescript", "go": "go", "rust": "rust"}
+RULE_LANGS = {"python": "python", "typescript": "typescript", "javascript": "javascript", "go": "go", "rust": "rust"}
+FILE_LINTERS = ("ruff", "eslint", "flake8", "pylint", "biome", "prettier")
 
 def _rule_content(lang):
     body = (REFS / "rules" / f"{RULE_LANGS[lang]}.md").read_text(encoding="utf-8")
     globs = ", ".join(f'"{g}"' for g in RULE_GLOBS[lang])
     return f"---\npaths: [{globs}]\n---\n\n{body}"
+
+def _hookable_lint_cmd(profile):
+    lint = profile["commands"].get("lint")
+    if not lint:
+        return None
+    cmd = lint["cmd"]
+    for suffix in (" .", " ./..."):
+        if cmd.endswith(suffix):
+            cmd = cmd[: -len(suffix)]
+            break
+    return cmd if any(tok in FILE_LINTERS for tok in cmd.split()) else None
 
 def merge_settings(existing, profile):
     st = json.loads(json.dumps(existing)) if existing else {}
@@ -197,9 +209,9 @@ def merge_settings(existing, profile):
         if rule not in allow: allow.append(rule)
     tp = (profile.get("team_profile") or {}).get("maturity") or "active"
     st.setdefault("effortLevel", "high" if tp == "legacy" else "medium")
-    lint = profile["commands"].get("lint")
+    hook_cmd = _hookable_lint_cmd(profile)
     top = max(profile["languages"], key=profile["languages"].get) if profile["languages"] else None
-    if lint and top in RULE_GLOBS:
+    if hook_cmd and top in RULE_GLOBS:
         hooks = st.setdefault("hooks", {}); post = hooks.setdefault("PostToolUse", [])
         glob = RULE_GLOBS[top][0]
         entry = {"matcher": "Edit|Write", "if": f"Edit({glob})", "hooks": [{"type": "command", "command": "python3", "args": [".claude/hooks/lint_on_edit.py"], "timeout": 60}]}
@@ -221,19 +233,31 @@ def plan(profile):
                 items.append({"path": rel, "action": "create", "reason": f"{lang} path-scoped rules", "content": _rule_content(lang)})
     existing_st = None; reason = "allow rules for detected commands + lint hook + effortLevel"
     if ex[".claude/settings.json"]["exists"]:
-        try: existing_st = json.loads((root / ".claude/settings.json").read_text(encoding="utf-8"))
-        except json.JSONDecodeError as e:
+        try:
+            raw = (root / ".claude/settings.json").read_text(encoding="utf-8")
+            parsed = json.loads(raw)
+            if not isinstance(parsed, dict):
+                raise json.JSONDecodeError("settings.json must be a JSON object", raw, 0)
+            existing_st = parsed
+        except (json.JSONDecodeError, UnicodeDecodeError, OSError) as e:
             items.append({"path": ".claude/settings.json", "action": "skip", "reason": f"unparseable: {e}", "content": None}); existing_st = "bad"
+    hook_cmd = _hookable_lint_cmd(profile)
     if existing_st != "bad":
         merged = json.dumps(merge_settings(existing_st, profile), indent=2) + "\n"
-        items.append({"path": ".claude/settings.json", "action": "create" if existing_st is None else "update", "reason": reason, "content": merged})
-    lint = profile["commands"].get("lint")
-    if lint:
-        hook = (HERE / "lint_on_edit.py").read_text(encoding="utf-8").replace("__LINT_CMD__", lint["cmd"])
-        items.append({"path": ".claude/hooks/lint_on_edit.py", "action": "create" if not ex[".claude/hooks/lint_on_edit.py"]["exists"] else "update", "reason": "lint on edit", "content": hook})
+        cur_settings = (root / ".claude/settings.json").read_text(encoding="utf-8", errors="replace") if ex[".claude/settings.json"]["exists"] else None
+        st_action = "skip" if cur_settings is not None and merged == cur_settings else ("create" if existing_st is None else "update")
+        items.append({"path": ".claude/settings.json", "action": st_action, "reason": reason, "content": merged})
+    if hook_cmd and existing_st != "bad":
+        hook = (HERE / "lint_on_edit.py").read_text(encoding="utf-8").replace("__LINT_CMD__", hook_cmd)
+        cur_hook = (root / ".claude/hooks/lint_on_edit.py").read_text(encoding="utf-8", errors="replace") if ex[".claude/hooks/lint_on_edit.py"]["exists"] else None
+        hook_action = "skip" if cur_hook is not None and hook == cur_hook else ("create" if not ex[".claude/hooks/lint_on_edit.py"]["exists"] else "update")
+        items.append({"path": ".claude/hooks/lint_on_edit.py", "action": hook_action, "reason": "lint on edit", "content": hook})
     tp = profile.get("team_profile")
     if tp:
-        items.append({"path": ".claude/team-profile.json", "action": "create" if not ex[".claude/team-profile.json"]["exists"] else "update", "reason": "team profile for /team", "content": json.dumps({"maturity": tp["maturity"], "detected_by": "setup-repo"}, indent=2) + "\n"})
+        if ex[".claude/team-profile.json"]["exists"]:
+            items.append({"path": ".claude/team-profile.json", "action": "skip", "reason": "exists; not overwritten", "content": None})
+        else:
+            items.append({"path": ".claude/team-profile.json", "action": "create", "reason": "team profile for /team", "content": json.dumps({"maturity": tp["maturity"], "detected_by": "setup-repo"}, indent=2) + "\n"})
     gi = (root / ".gitignore").read_text(encoding="utf-8", errors="replace") if (root / ".gitignore").exists() else ""
     if ".claude/team-profile.json" not in gi:
         items.append({"path": ".gitignore", "action": "update" if gi else "create", "reason": "ignore the machine-local team profile", "content": gi.rstrip("\n") + ("\n" if gi else "") + ".claude/team-profile.json\n"})

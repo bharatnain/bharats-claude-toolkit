@@ -8,10 +8,10 @@ LINT_CMD = os.environ.get("SETUP_REPO_LINT_CMD", "__LINT_CMD__")
 def main():
     try:
         payload = json.loads(sys.stdin.read(1024 * 1024) or "{}")
+        path = (payload.get("tool_input") or {}).get("file_path")
     except Exception:  # noqa: BLE001
         return 0
-    path = (payload.get("tool_input") or {}).get("file_path")
-    if not path or not os.path.isfile(path) or LINT_CMD.startswith("__"):
+    if not path or not os.path.isfile(path) or not LINT_CMD.strip() or LINT_CMD.startswith("__"):
         return 0
     try:
         p = subprocess.run(shlex.split(LINT_CMD) + [path], capture_output=True, text=True, timeout=60)

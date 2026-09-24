@@ -112,3 +112,51 @@ def test_plan_skips_existing_rule(tmp_path):
     (root / ".claude/rules").mkdir(parents=True); (root / ".claude/rules/python.md").write_text("mine\n")
     item = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/rules/python.md"]
     assert item["action"] == "skip"
+
+def test_plan_hook_command_strips_dot(tmp_path):
+    prof = rs.detect(make_repo(tmp_path, PY_UV))
+    pl = rs.plan(prof)
+    paths = {i["path"]: i for i in pl["items"]}
+    content = paths[".claude/hooks/lint_on_edit.py"]["content"]
+    assert "uv run ruff check" in content
+    assert "check ." not in content
+    st = json.loads(paths[".claude/settings.json"]["content"])
+    assert st["hooks"]["PostToolUse"][0]["if"] == "Edit(**/*.py)"
+
+def test_plan_no_hook_for_make_lint(tmp_path):
+    root = make_repo(tmp_path, {"Makefile": "test:\n\tgo test ./...\nlint:\n\tgolangci-lint run\n", "go.mod": "module x\n", "main.go": "package main\n"})
+    pl = rs.plan(rs.detect(root))
+    paths = {i["path"]: i for i in pl["items"]}
+    assert ".claude/hooks/lint_on_edit.py" not in paths
+    st = json.loads(paths[".claude/settings.json"]["content"])
+    assert "hooks" not in st
+
+def test_plan_rules_js_and_ts(tmp_path):
+    files = dict(NODE_PNPM)
+    files.update({"src/a.js": "var a=1\n", "src/b.js": "var b=1\n", "src/c.js": "var c=1\n"})
+    root = make_repo(tmp_path, files)
+    pl = rs.plan(rs.detect(root))
+    paths = {i["path"]: i for i in pl["items"]}
+    assert paths[".claude/rules/javascript.md"]["action"] == "create"
+    assert paths[".claude/rules/typescript.md"]["action"] == "create"
+    assert paths[".claude/rules/javascript.md"]["content"].startswith('---\npaths: ["**/*.{js,jsx,mjs}"]')
+    assert paths[".claude/rules/typescript.md"]["content"].startswith('---\npaths: ["**/*.{ts,tsx}"]')
+
+def test_plan_second_run_is_all_skip(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    pl = rs.plan(rs.detect(root))
+    for item in pl["items"]:
+        if item["content"] is not None:
+            p = root / item["path"]; p.parent.mkdir(parents=True, exist_ok=True); p.write_text(item["content"])
+    pl2 = rs.plan(rs.detect(root))
+    assert pl2["items"]
+    assert all(i["action"] == "skip" for i in pl2["items"])
+
+def test_plan_skips_unparseable_settings(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    (root / ".claude").mkdir(); (root / ".claude/settings.json").write_text("{not json")
+    pl = rs.plan(rs.detect(root))
+    paths = {i["path"]: i for i in pl["items"]}
+    assert paths[".claude/settings.json"]["action"] == "skip"
+    assert paths["CLAUDE.md"]["action"] == "create"
+    assert paths[".claude/rules/python.md"]["action"] == "create"

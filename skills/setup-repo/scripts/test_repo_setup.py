@@ -57,4 +57,4 @@ def test_git_facts(tmp_path):
 
 def test_team_profile_present(tmp_path):
     tp = rs.detect(make_repo(tmp_path, PY_UV))["team_profile"]
-    assert tp is None or tp["maturity"] in ("greenfield", "active", "legacy")
+    assert tp is not None and tp["maturity"] in ("greenfield", "active", "legacy") and isinstance(tp["signals"], dict)

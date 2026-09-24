@@ -121,7 +121,8 @@ def _team_profile(root):
         signals = tpd.gather_signals(root)
         name = _profile_name(tpd.classify(signals))
         return {"maturity": name, "signals": signals if isinstance(signals, dict) else {}} if name else None
-    except Exception:  # noqa: BLE001
+    except Exception as e:  # noqa: BLE001
+        print(f"setup-repo: team profile unavailable: {e}", file=sys.stderr)
         return None
 
 def detect(root):

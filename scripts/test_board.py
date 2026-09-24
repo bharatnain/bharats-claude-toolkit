@@ -59,3 +59,46 @@ def test_collect_sessions_edge_cases(tmp_path):
 
     empty = next(s for s in sessions if s["id"] == "empty")
     assert empty["last_at"] is None and empty["running"] is False and empty["tokens"] == 0 and empty["title"] == "empty"
+
+BD_JSON = json.dumps([
+  {"id": "x-1", "title": "Epic A", "issue_type": "epic", "status": "in_progress", "owner": "", "parent": None, "priority": 2, "updated_at": "2026-09-24T11:00:00Z", "dependencies": []},
+  {"id": "x-2", "title": "Build parser", "issue_type": "task", "status": "in_progress", "owner": "worker-1", "parent": "x-1", "priority": 2, "updated_at": "2026-09-24T11:30:00Z", "dependencies": [], "labels": ["model:opus", "tries:2"]},
+  {"id": "x-3", "title": "Need decision", "issue_type": "task", "status": "open", "owner": "", "parent": "x-1", "priority": 1, "updated_at": "2026-09-24T10:00:00Z", "dependencies": [], "labels": ["needs-input"]},
+])
+GH_JSON = json.dumps([
+  {"number": 9, "title": "Add parser", "headRefName": "claude/parser", "isDraft": False, "updatedAt": "2026-09-24T11:40:00Z", "url": "https://x/9",
+   "statusCheckRollup": [{"conclusion": "SUCCESS"}, {"conclusion": "FAILURE"}]},
+  {"number": 8, "title": "Docs", "headRefName": "claude/docs", "isDraft": True, "updatedAt": "2026-09-23T11:40:00Z", "url": "https://x/8", "statusCheckRollup": []},
+])
+
+class FakeRun:
+    def __init__(self, outputs): self.outputs = outputs
+    def __call__(self, args, **kw):
+        key = args[0]; out = self.outputs.get(key, "")
+        class R: pass
+        r = R(); r.returncode = 0 if out else 1; r.stdout = out; r.stderr = ""; return r
+
+def test_collect_beads_and_prs(tmp_path):
+    run = FakeRun({"bd": BD_JSON, "gh": GH_JSON})
+    b = board.collect_beads(tmp_path, run=run)
+    assert [i["id"] for i in b["in_flight"]] == ["x-2", "x-3"] and b["in_flight"][0]["model"] == "opus" and b["in_flight"][0]["tries"] == "2"
+    assert b["counts"]["in_progress"] == 2
+    prs = board.collect_prs(tmp_path, run=run)
+    assert prs[0]["checks"] == "failed" and prs[1]["checks"] == "none" and prs[1]["draft"] is True
+
+def test_collect_waiting_and_now(tmp_path):
+    repo = tmp_path / "repo"; (repo / ".claude/board").mkdir(parents=True)
+    (repo / ".claude/board/waiting.md").write_text("- 2026-09-24 · Approve topic name · reply 'ok'\n")
+    run = FakeRun({"bd": BD_JSON, "gh": GH_JSON})
+    sessions = board.collect_sessions(repo, make_projects(tmp_path, repo), NOW)
+    beads = board.collect_beads(repo, run=run); prs = board.collect_prs(repo, run=run)
+    w = board.collect_waiting(repo, sessions, beads, prs)
+    srcs = [x["source"] for x in w]
+    assert srcs.count("waiting.md") == 1 and "beads" in srcs and "pr" in srcs and "session" in srcs
+    now = board.collect_now(sessions, beads)
+    assert now["epic"] == "Epic A" and "Merging now" in now["text"]
+
+def test_collectors_fail_soft(tmp_path):
+    run = FakeRun({})
+    assert board.collect_beads(tmp_path, run=run)["error"].startswith("bd")
+    assert board.collect_prs(tmp_path, run=run) == []

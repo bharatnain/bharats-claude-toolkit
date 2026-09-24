@@ -79,9 +79,9 @@ def _commands(root, pm):
     py = _read(root, "pyproject.toml")
     prefix = PM_RUN.get(pm, "")
     if py or (root / "pytest.ini").exists() or (root / "setup.cfg").exists():
-        has_pytest = "[tool.pytest" in py or (root / "pytest.ini").exists() or any((root / d).is_dir() for d in ("tests", "test"))
+        has_pytest = "[tool.pytest" in py or (root / "pytest.ini").exists()
         if has_pytest and "test" not in cmds:
-            cmds["test"] = {"cmd": f"{prefix}pytest", "source": "pyproject.toml" if "[tool.pytest" in py else ("pytest.ini" if (root / "pytest.ini").exists() else "tests/")}
+            cmds["test"] = {"cmd": f"{prefix}pytest", "source": "pyproject.toml" if "[tool.pytest" in py else "pytest.ini"}
         if ("[tool.ruff" in py or (root / "ruff.toml").exists()) and "lint" not in cmds:
             cmds["lint"] = {"cmd": f"{prefix}ruff check .", "source": "pyproject.toml" if "[tool.ruff" in py else "ruff.toml"}
             cmds.setdefault("format", {"cmd": f"{prefix}ruff format .", "source": cmds["lint"]["source"]})

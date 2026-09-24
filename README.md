@@ -288,6 +288,21 @@ hooks to no-ops.
 
 ---
 
+## Orchestrator board
+
+`/board` builds a local status page (`scripts/board.py`, stdlib, read-only) from the repo's own
+data: what's waiting on you, what's happening now, in-flight beads work, sessions and subagents
+with model and token counts, the PR merge lane, and the backlog. `/board` or `/board open` builds
+and opens it in the browser pane; `/board serve` runs a local server for it; `/board publish`
+builds it and hands you a private Artifact link you can open from your phone.
+
+The refresh is opt-in: once a repo has `.claude/board/` (or sets `CLAUDE_BOARD=on`), the
+Stop/SubagentStop hook `hooks/board_refresh.py` keeps the board current after every turn; it
+fails open and stays silent on any error. Everything the board shows is generated locally and
+redacted before it's written — nothing leaves the machine.
+
+---
+
 ## What's vendored in this plugin
 
 **Workflow & engineering** — `tdd-workflow`, `verification-loop`, `codebase-onboarding`,

@@ -9,3 +9,4 @@ __pycache__/
 .pytest_cache/
 evals/results/
 .superpowers/
+.claude/board/

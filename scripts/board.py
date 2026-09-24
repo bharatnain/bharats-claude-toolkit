@@ -158,3 +158,78 @@ def collect_now(sessions, beads):
     active = next((s for s in sessions if s["last_text"]), None)
     epic = next((e["title"] for e in beads.get("epics", []) if e.get("status") == "in_progress"), None)
     return {"text": active["last_text"] if active else "", "session": active["title"] if active else None, "epic": epic}
+
+CSS = """:root{--bg:#fff;--fg:#111;--mut:#666;--card:#f6f6f7;--ok:#1a7f37;--bad:#b42318;--warn:#b54708;--acc:#2f5fdc}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--fg:#e6e6e6;--mut:#9a9a9a;--card:#171a21;--ok:#3fb950;--bad:#f85149;--warn:#d29922;--acc:#79a6ff}}
+body{margin:0;padding:16px;font:14px/1.45 -apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--fg)}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:20px 0 8px}
+.card{background:var(--card);border-radius:8px;padding:12px}.meta{color:var(--mut)}.grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:900px){.grid{grid-template-columns:3fr 2fr}}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:4px 6px;vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:12px}.b{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;border:1px solid var(--mut)}
+.ok{color:var(--ok);border-color:var(--ok)}.bad{color:var(--bad);border-color:var(--bad)}.warn{color:var(--warn);border-color:var(--warn)}.acc{color:var(--acc);border-color:var(--acc)}
+.wait{border-left:4px solid var(--warn)}.unavail{color:var(--mut);font-style:italic}"""
+
+def _e(x): return html.escape(str(x if x is not None else ""))
+def _badge(text, cls=""): return f'<span class="b {cls}">{_e(text)}</span>'
+def _rel(ts, now):
+    t = _parse_ts(ts) if ts else None
+    if not t: return "?"
+    m = int((now - t).total_seconds() // 60)
+    return f"{m}m ago" if m < 60 else (f"{m // 60}h ago" if m < 1440 else f"{m // 1440}d ago")
+
+def render(data, now=None):
+    now = now or dt.datetime.now(dt.timezone.utc); m = data["meta"]; parts = []
+    parts.append(f'<h1>{_e(m["repo"])} · orchestrator board</h1><div class="meta">{_e(m["branch"])} {_e(m["head"])} · built {_e(m["built_at"])}</div>')
+    w = data["waiting"]
+    parts.append('<h2>Waiting on you</h2><div class="card wait">' + ("<ol>" + "".join(f"<li>{_e(x['text'])} <span class='meta'>({_e(x['source'])}, {_rel(x['at'], now)})</span></li>" for x in w) + "</ol>" if w else "Nothing.") + "</div>")
+    n = data["now"]
+    parts.append('<h2>Now</h2><div class="card">' + (f"<div>{_e(n['text'])}</div><div class='meta'>{_e(n['session'] or '')}{' · epic: ' + _e(n['epic']) if n['epic'] else ''}</div>" if n["text"] or n["epic"] else "No recent activity.") + "</div>")
+    parts.append('<div class="grid"><div>')
+    b = data["beads"]
+    if b.get("error"): parts.append(f'<h2>In flight</h2><div class="card unavail">unavailable: {_e(b["error"])}</div>')
+    else:
+        rows = "".join(f"<tr><td>{_e(i['id'])}</td><td>{_e(i['title'])}</td><td>{_badge(i['status'], 'acc' if i['status']=='in_progress' else '')}</td><td>{_e(i['owner'])}</td><td>{_e(i['model'] or '')}</td><td>{_e(i['tries'] or '')}</td><td class='meta'>{_rel(i['updated'], now)}</td></tr>" for i in b["in_flight"])
+        parts.append(f'<h2>In flight · {len(b["in_flight"])}</h2><div class="card"><table><tr><th>id</th><th>task</th><th>state</th><th>owner</th><th>model</th><th>tries</th><th></th></tr>{rows or "<tr><td colspan=7>Nothing in flight.</td></tr>"}</table></div>')
+    srows = []
+    for s in data["sessions"]:
+        srows.append(f"<tr><td>{_badge('running' if s['running'] else 'idle', 'ok' if s['running'] else '')}</td><td>{_e(s['title'])}</td><td>{_e(s['model'] or '')}</td><td>{_e(s['branch'] or '')}</td><td>{s['tokens']:,}</td><td class='meta'>{_rel(s['last_at'], now)}</td></tr>")
+        for a in s["subagents"]:
+            srows.append(f"<tr><td></td><td>↳ {_e(a['name'])}</td><td>{_e(a['model'] or '')}</td><td>{_badge('running' if a['running'] else 'done', 'ok' if a['running'] else '')}</td><td>{a['tool_uses']} tools</td><td class='meta'>{_rel(a['last_at'], now)}</td></tr>")
+    parts.append(f'<h2>Sessions and agents · {len(data["sessions"])}</h2><div class="card"><table><tr><th></th><th>session / agent</th><th>model</th><th>branch</th><th>tokens</th><th></th></tr>{"".join(srows) or "<tr><td colspan=6>No sessions found.</td></tr>"}</table></div>')
+    parts.append('</div><div>')
+    prs = data["prs"]; cls = {"passed": "ok", "failed": "bad", "pending": "warn", "none": ""}
+    prow = "".join(f"<tr><td><a href='{_e(p['url'])}'>#{p['number']}</a></td><td>{_e(p['title'])}{' ' + _badge('draft') if p['draft'] else ''}</td><td>{_badge(p['checks'], cls[p['checks']])}</td><td class='meta'>{_rel(p['updated'], now)}</td></tr>" for p in prs)
+    parts.append(f'<h2>Merge lane · {len(prs)} open</h2><div class="card"><table>{prow or "<tr><td>No open PRs (or gh unavailable).</td></tr>"}</table></div>')
+    counts = ", ".join(f"{k}: {v}" for k, v in sorted(b.get("counts", {}).items()))
+    closed = "".join(f"<li>{_e(i['id'])} {_e(i['title'])}</li>" for i in b.get("recent_closed", []))
+    parts.append(f'<h2>Backlog</h2><div class="card">{_e(counts) or "—"}<ul>{closed}</ul></div>')
+    if data["errors"]: parts.append('<h2>Unavailable</h2><div class="card unavail">' + "<br>".join(_e(e) for e in data["errors"]) + "</div>")
+    parts.append('</div></div>')
+    return f"<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>{_e(m['repo'])} board</title><style>{CSS}</style>" + "".join(parts)
+
+def _atomic_write(path, text):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=".board.")
+    with os.fdopen(fd, "w", encoding="utf-8") as fh: fh.write(text)
+    os.replace(tmp, path)
+
+def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.run, since_minutes=5):
+    repo_root = Path(repo_root).resolve(); now = now or dt.datetime.now(dt.timezone.utc)
+    projects_dir = Path(projects_dir) if projects_dir else Path(os.path.expanduser("~/.claude/projects"))
+    out = Path(out_dir) if out_dir else repo_root / ".claude/board"; errors = []
+    def safe(name, fn, default):
+        try: return fn()
+        except Exception as e:  # noqa: BLE001
+            errors.append(f"{name}: {e}"); return default
+    r = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], repo_root, run); branch = r.stdout.strip() if r.returncode == 0 else "?"
+    r = _run(["git", "rev-parse", "--short", "HEAD"], repo_root, run); head = r.stdout.strip() if r.returncode == 0 else "?"
+    sessions = safe("sessions", lambda: collect_sessions(repo_root, projects_dir, now, since_minutes), [])
+    beads = safe("beads", lambda: collect_beads(repo_root, run=run), {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": "collector failed"})
+    if beads.get("error"): errors.append("beads: " + beads["error"])
+    prs = safe("prs", lambda: collect_prs(repo_root, run=run), [])
+    waiting = safe("waiting", lambda: collect_waiting(repo_root, sessions, beads, prs), [])
+    now_block = safe("now", lambda: collect_now(sessions, beads), {"text": "", "session": None, "epic": None})
+    data = {"meta": {"repo": repo_root.name, "branch": branch, "head": head, "built_at": now.strftime("%Y-%m-%d %H:%M %Z")},
+            "waiting": waiting, "now": now_block, "beads": beads, "sessions": sessions, "prs": prs, "errors": errors}
+    _atomic_write(out / "index.html", render(data, now)); _atomic_write(out / "board.json", json.dumps(data, indent=2, default=str))
+    return data

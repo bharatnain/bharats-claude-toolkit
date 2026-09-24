@@ -102,3 +102,19 @@ def test_collectors_fail_soft(tmp_path):
     run = FakeRun({})
     assert board.collect_beads(tmp_path, run=run)["error"].startswith("bd")
     assert board.collect_prs(tmp_path, run=run) == []
+
+def test_build_writes_files_and_never_raises(tmp_path):
+    repo = tmp_path / "repo"; repo.mkdir()
+    import subprocess as sp; sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    data = board.build(repo, projects_dir=make_projects(tmp_path, repo), now=NOW, run=FakeRun({}))
+    html_text = (repo / ".claude/board/index.html").read_text()
+    assert "Waiting on you" in html_text and "Merge lane" in html_text and "unavailable" in html_text
+    assert "sk-ant" not in html_text and "[redacted]" in html_text
+    assert json.loads((repo / ".claude/board/board.json").read_text())["meta"]["repo"] == "repo"
+    assert data["errors"] and any(e.startswith("beads") for e in data["errors"])
+
+def test_render_escapes_html():
+    data = {"meta": {"repo": "r", "branch": "b", "head": "h", "built_at": "t"}, "waiting": [{"source": "waiting.md", "text": "<script>alert(1)</script>", "at": None}],
+            "now": {"text": "", "session": None, "epic": None}, "beads": {"in_flight": [], "epics": [], "counts": {}, "recent_closed": []}, "sessions": [], "prs": [], "errors": []}
+    out = board.render(data)
+    assert "<script>alert(1)</script>" not in out and "&lt;script&gt;" in out

@@ -5,9 +5,16 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-09-30
+
 - **Fixed: `autoCompactWindow` is a token count.** v0.12.0 shipped the string `"300k"`, which Claude Code
   rejects and drops from settings. The template, `bootstrap.sh` and `/setup-repo` now write `300000`, and
   both replace a non-integer value they find.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and start a new chat.
+
+### Commits
+
+- fix: autoCompactWindow is a token count (300000), replace v0.12.0's invalid "300k"
 
 ## [0.12.0] - 2026-09-30
 

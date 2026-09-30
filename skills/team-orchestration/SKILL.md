@@ -128,8 +128,8 @@ whole-branch reviews). Orchestration stays in the main session.
 ## Cross-model teammates (Codex)
 
 - Use `codex:codex-rescue` as an implementer for spec-complete, test-backed tasks. Run it in
-  the background; pass `--cwd <worktree>` for parallel waves and `--model` from the aliases
-  in the routing table.
+  the background; pass `--cwd <worktree>` for parallel waves and `--model` with the full id
+  (`gpt-6.1-sol`, `gpt-6-luna`, `gpt-6-astra`); the plugin passes names through unchanged.
 - Add the Codex plugin's `codex:review` or `codex:adversarial-review` command as an extra
   reviewer in the [review loop](#review-loop): run it alongside the Claude reviewer and merge
   both into one fix list.

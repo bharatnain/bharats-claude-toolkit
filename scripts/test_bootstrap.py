@@ -65,7 +65,7 @@ def test_env_is_add_only(tmp_path):
     dest = {"env": {"CLAUDE_CODE_SUBAGENT_MODEL": "haiku", "OTHER": "x"}}
     merged, proc = run_bootstrap(tmp_path, dest)
     assert merged["env"] == {"CLAUDE_CODE_SUBAGENT_MODEL": "haiku", "OTHER": "x"}
-    assert "keeping env.CLAUDE_CODE_SUBAGENT_MODEL=haiku" in proc.stderr
+    assert "keeping env.CLAUDE_CODE_SUBAGENT_MODEL (differs" in proc.stderr and "haiku" not in proc.stderr
     assert "OTHER" not in proc.stderr
 
     merged, _ = run_bootstrap(tmp_path / "b", {"env": {"OTHER": "x"}})

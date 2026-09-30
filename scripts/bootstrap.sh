@@ -121,8 +121,8 @@ if src_perms:
 # model / autoCompactWindow / env: add-only. A top-level key is set only when
 # the dest has no value; a differing dest value is kept and reported on stderr
 # (the summary on stdout stays machine-readable). env is merged per key the same
-# way. Only the keys the template names are touched, and only the model/window
-# values (never secrets) are ever echoed.
+# way. Only the keys the template names are touched. Model/window values are
+# echoed; env values never are (only the key name), since env can hold secrets.
 for key, hint in (("model", "run /model {v} to switch"),
                   ("autoCompactWindow", "edit autoCompactWindow in settings.json to change it")):
     if key not in src:
@@ -140,7 +140,7 @@ if src_env:
         if k not in dest_env:
             dest_env[k] = v
         elif dest_env[k] != v:
-            print(f"bootstrap: keeping env.{k}={dest_env[k]} (toolkit default: {v})",
+            print(f"bootstrap: keeping env.{k} (differs from the toolkit default)",
                   file=sys.stderr)
     merged["env"] = dest_env
 

@@ -127,23 +127,25 @@ def collect_codex_sessions(repo_root, codex_dir, now, since_minutes=5, run=subpr
     except OSError: pass
     sessions = []
     for f in sorted(sdir.rglob("rollout-*.jsonl")):
-        try:
+        try:  # one malformed rollout must not hide the others
             if f.stat().st_mtime < cutoff: continue
-            with f.open("rb") as fh: head = json.loads(fh.readline().decode("utf-8", errors="replace"))
+            with f.open("rb") as fh: head = json.loads(fh.readline(1 << 20).decode("utf-8", errors="replace"))
+            meta = head.get("payload") if isinstance(head, dict) else None
+            cwd = meta.get("cwd") if isinstance(meta, dict) else None
+            if head.get("type") != "session_meta" or not isinstance(cwd, str) or not Path(cwd).is_absolute() or str(Path(cwd).resolve()) not in roots: continue
+            sid = meta.get("id") or meta.get("session_id") or f.stem; model = None; last = None; tokens = 0; last_text = ""
+            for o in _objs(f):
+                if not isinstance(o, dict): continue
+                last = _parse_ts(o.get("timestamp", "")) or last; p = o.get("payload") if isinstance(o.get("payload"), dict) else {}
+                if o.get("type") == "turn_context": model = p.get("model") or model
+                if o.get("type") != "event_msg": continue
+                if p.get("type") == "agent_message" and isinstance(p.get("message"), str): last_text = p["message"]
+                if p.get("type") == "token_count":
+                    tokens = int(((p.get("info") or {}).get("total_token_usage") or {}).get("total_tokens") or tokens)
+            running = bool(last and (now - last) <= dt.timedelta(minutes=since_minutes))
+            sessions.append({"id": redact(str(sid)), "title": redact(titles.get(sid) or str(sid)), "model": redact(model), "branch": None, "last_at": last.isoformat() if last else None, "running": running,
+                             "tokens": tokens, "last_text": redact(" ".join(last_text.split())[:300]), "waiting_question": None, "kind": "codex", "subagents": []})
         except Exception: continue  # noqa: BLE001
-        meta = head.get("payload") or {}
-        if head.get("type") != "session_meta" or str(Path(meta.get("cwd") or "/nonexistent").resolve()) not in roots: continue
-        sid = meta.get("id") or meta.get("session_id") or f.stem; model = None; last = None; tokens = 0; last_text = ""
-        for o in _objs(f):
-            last = _parse_ts(o.get("timestamp", "")) or last; p = o.get("payload") or {}
-            if o.get("type") == "turn_context": model = p.get("model") or model
-            if o.get("type") != "event_msg": continue
-            if p.get("type") == "agent_message" and p.get("message"): last_text = p["message"]
-            if p.get("type") == "token_count":
-                tokens = int(((p.get("info") or {}).get("total_token_usage") or {}).get("total_tokens") or tokens)
-        running = bool(last and (now - last) <= dt.timedelta(minutes=since_minutes))
-        sessions.append({"id": sid, "title": redact(titles.get(sid) or sid), "model": model, "branch": None, "last_at": last.isoformat() if last else None, "running": running,
-                         "tokens": tokens, "last_text": redact(" ".join(last_text.split())[:300]), "waiting_question": None, "kind": "codex", "subagents": []})
     sessions.sort(key=lambda s: s["last_at"] or "", reverse=True)
     return sessions
 

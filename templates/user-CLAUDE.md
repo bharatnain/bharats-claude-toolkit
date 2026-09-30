@@ -76,7 +76,7 @@ The main session plans, decides and reviews. Cheaper models do the reading and t
 - Diff review: `sonnet` for small mechanical diffs; `opus` for security, concurrency, data migrations, public interfaces and whole-branch reviews. Add `/codex:adversarial-review` on risky changes: a second model family catches different mistakes.
 - Architecture, design and hard debugging: `opus`. Use `fable` only after `opus` has failed at it, or when asked.
 - Edit directly only when the change is a few lines in files already in context.
-- Codex models, passed as `--model`: `sol` = `gpt-6.1-sol` (default for delegated coding), `luna` = `gpt-6-luna` (fast, high-volume), `astra` = `gpt-6-astra` (hardest work). Codex runs on the ChatGPT plan, not Claude limits. If an id is rejected or Codex is not set up, run `/codex:setup` and fall back to `sonnet`.
+- Codex models: pass the full id as `--model`; the short names are for conversation. Sol = `gpt-6.1-sol` (default for delegated coding), Luna = `gpt-6-luna` (fast, high-volume), Astra = `gpt-6-astra` (hardest work). Codex runs on the ChatGPT plan, not Claude limits. If an id is rejected or Codex is not set up, run `/codex:setup` and fall back to `sonnet`.
 
 ## Compaction
 

@@ -191,8 +191,8 @@ Most spend is the main session re-reading its own context on every turn, so the 
 that context small and pushes reading and typing to cheaper models. Bootstrap merges these
 settings add-only and prints a notice when a machine already has a different value:
 
-- `model: "opus"` — the alias tracks the recommended Opus (Opus 5.5 today). Switch to `fable`
-  for a hard task, not as the default.
+- `model: "opus"` — the alias tracks the recommended Opus (Opus 5.5 today). Use `fable` only after
+  `opus` has failed at a task, or when you ask for it.
 - `autoCompactWindow: "300k"` — compaction at 300K tokens instead of near the 1M limit. Remove
   any `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`; it would compact at that percentage of 300K.
 - `env.CLAUDE_CODE_SUBAGENT_MODEL: "sonnet"` — a subagent dispatched without a model runs on
@@ -242,7 +242,8 @@ The day-to-day loop the docs recommend, and where each piece of this repo fits:
    and reference material in skills (52 always-on, the rest behind `/name`); guarantees in hooks;
    response shape in the `Toolkit` output style.
 6. **Set up a repo.** `/setup-repo` prepares any repo (CLAUDE.md facts + check, rules, permissions,
-   lint hook, team profile, a machine-local auto-compact threshold of 60%); `--check` shows drift.
+   lint hook, team profile, a machine-local 300K compaction window, and an `AGENTS.md` pointer for
+   Codex when it is installed); `--check` shows drift.
 
 ## Desktop notifications (when Claude needs you)
 

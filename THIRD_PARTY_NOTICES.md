@@ -270,5 +270,5 @@ copied into this repo and stays auto-updated from source:
 - `differential-review`, `fp-check` — https://github.com/trailofbits/skills (CC-BY-SA-4.0) — enabled; `security-awareness` — https://github.com/trailofbits/skills-curated (CC-BY-SA-4.0) — enabled; remaining Trail of Bits plugins registered, on-demand
 - `probity` — https://github.com/nizos/probity (MIT) — registered, on-demand
 - `memsearch` — https://github.com/zilliztech/memsearch (MIT) — registered, on-demand
-- `openai-codex` — https://github.com/openai/codex-plugin-cc (Apache-2.0) — registered, on-demand
+- `openai-codex` — https://github.com/openai/codex-plugin-cc (Apache-2.0) — enabled (`codex@openai-codex`), SHA-pinned
 - `beads` (`bd`) — https://github.com/gastownhall/beads — agentic issue tracker; the **default task store** for the toolkit. `bootstrap.sh` auto-installs the CLI (non-blocking), a `SessionStart` hook runs `bd init` per git repo, and workflows/teams persist tasks to it — all opt-out via `CLAUDE_BEADS=off`, with the native Task tools as the fallback. Integrated as **CLI only** (MCP deferred). **License unverified → integrated by reference, NOT vendored**; it is therefore intentionally absent from `THIRD_PARTY_SOURCES.json` (that manifest tracks vendored skills for upstream refresh).

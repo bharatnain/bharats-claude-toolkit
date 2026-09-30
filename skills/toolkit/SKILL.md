@@ -62,10 +62,10 @@ plugins.
 
 ## Headline counts
 
-State the headline: **29 plugins / 137 vendored skills (52 always-on, 85 user-invoked via `/name` — see SKILLS.md) / 8 agents**. Where it's cheap,
+State the headline: **30 plugins / 139 vendored skills (52 always-on, 87 user-invoked via `/name` — see SKILLS.md) / 8 agents**. Where it's cheap,
 compute the live numbers instead of trusting the headline:
-- enabled plugins (this one + 28 external) = count of `enabledPlugins` entries set to `true` in `settings.json` (≈29),
-- vendored skills = count of skill entries in `SKILLS.md` (≈137),
+- enabled plugins (this one + 29 external) = count of `enabledPlugins` entries set to `true` in `settings.json` (≈30),
+- vendored skills = count of skill entries in `SKILLS.md` (≈139),
 - vendored agents = count of agent entries in `SKILLS.md` (8),
 and report whichever you actually computed.
 

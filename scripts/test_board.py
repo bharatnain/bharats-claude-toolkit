@@ -368,3 +368,13 @@ def test_cli_codex_dir(tmp_path):
     cdir = make_codex(tmp_path, repo, tmp_path / "other"); out = tmp_path / "out"
     assert board.main(["build", "--repo", str(repo), "--out", str(out), "--projects-dir", str(tmp_path / "none"), "--codex-dir", str(cdir), "--no-gh", "--quiet"]) == 0
     assert "cx-in" in (out / "board.json").read_text()
+
+def test_codex_malformed_rollouts_do_not_hide_good_ones(tmp_path):
+    repo = tmp_path / "repo"; repo.mkdir(); other = tmp_path / "other"; other.mkdir()
+    cdir = make_codex(tmp_path, repo, other); day = cdir / "sessions/2026/09/24"
+    (day / "rollout-2026-09-24T10-00-00-bad1.jsonl").write_text("null\n")
+    (day / "rollout-2026-09-24T10-00-01-bad2.jsonl").write_text(_line(type="session_meta", payload={"id": "rel", "cwd": "repo"}))
+    (day / "rollout-2026-09-24T10-00-02-bad3.jsonl").write_text(
+        _line(type="session_meta", payload={"id": "cx-odd", "cwd": str(repo)}) + "[1, 2]\n" + _line(type="event_msg", payload="not-a-dict"))
+    got = {s["id"]: s for s in board.collect_codex_sessions(repo, cdir, NOW, run=FakeRun({}))}
+    assert "cx-in" in got and "rel" not in got and "cx-odd" in got

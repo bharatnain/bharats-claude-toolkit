@@ -130,9 +130,9 @@ whole-branch reviews). Orchestration stays in the main session.
 - Use `codex:codex-rescue` as an implementer for spec-complete, test-backed tasks. Run it in
   the background; pass `--cwd <worktree>` for parallel waves and `--model` from the aliases
   in the routing table.
-- Use the Codex plugin's `codex:review` or `codex:adversarial-review` command (typed with a
-  leading slash) as an extra reviewer in the [review loop](#review-loop): run it alongside the Claude reviewer and merge both into one
-  fix list.
+- Add the Codex plugin's `codex:review` or `codex:adversarial-review` command as an extra
+  reviewer in the [review loop](#review-loop): run it alongside the Claude reviewer and merge
+  both into one fix list.
 - Codex edits skip Claude's PostToolUse hooks, so run the wave's checks on its diff before
   review.
 - Never let Codex commit, merge or push.

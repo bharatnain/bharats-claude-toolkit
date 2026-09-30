@@ -5,6 +5,19 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Changed: cheaper defaults.** `settings.json` ships `model: "opus"` (tracks the recommended Opus),
+  `autoCompactWindow: "300k"`, and `env.CLAUDE_CODE_SUBAGENT_MODEL: "sonnet"`; `bootstrap.sh` merges
+  them add-only, notices differing values, and warns about `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`
+  (`scripts/test_bootstrap.py`). `spec-miner` moves to Sonnet.
+- **Added: model routing rules** in `templates/user-CLAUDE.md` and `team-orchestration` (Haiku for
+  reading, Sonnet for implementation and research, Opus for design and risky review, Codex for
+  delegated coding; every dispatch names its model).
+- **Added: OpenAI delegation.** `codex@openai-codex` is enabled (task delegation through
+  `codex:codex-rescue`, Codex reviews; model aliases sol/luna/astra). `codex:codex-rescue` is an
+  optional role in every team profile. `/setup-repo` detects the Codex CLI, sign-in and plugin,
+  writes an `AGENTS.md` block that points Codex at CLAUDE.md, and switches its machine-local
+  compaction to the 300K window. The board shows Codex sessions for the repo.
+
 ## [0.11.0] - 2026-09-24
 
 - **Added: `/setup-repo` skill** (engine `skills/setup-repo/scripts/repo_setup.py`, 38 tests). Also writes

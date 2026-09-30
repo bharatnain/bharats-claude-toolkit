@@ -5,6 +5,8 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-09-30
+
 - **Changed: cheaper defaults.** `settings.json` ships `model: "opus"` (tracks the recommended Opus),
   `autoCompactWindow: "300k"`, and `env.CLAUDE_CODE_SUBAGENT_MODEL: "sonnet"`; `bootstrap.sh` merges
   them add-only, notices differing values, and warns about `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`
@@ -13,10 +15,20 @@ All notable changes to this project are documented here. Format follows
   reading, Sonnet for implementation and research, Opus for design and risky review, Codex for
   delegated coding; every dispatch names its model).
 - **Added: OpenAI delegation.** `codex@openai-codex` is enabled (task delegation through
-  `codex:codex-rescue`, Codex reviews; model aliases sol/luna/astra). `codex:codex-rescue` is an
+  `codex:codex-rescue`, Codex reviews; Sol, Luna and Astra by full model id). `codex:codex-rescue` is an
   optional role in every team profile. `/setup-repo` detects the Codex CLI, sign-in and plugin,
   writes an `AGENTS.md` block that points Codex at CLAUDE.md, and switches its machine-local
   compaction to the 300K window. The board shows Codex sessions for the repo.
+- **Re-sync:** `git pull && CLAUDE_FORCE_CLAUDE_MD=1 bash scripts/bootstrap.sh` (installs the routing section; backs up
+  the old `~/.claude/CLAUDE.md`), then fully quit and reopen Claude Code and start a new chat.
+
+### Commits
+
+- fix: review round — full Codex model ids, stale counts and notes, env notice without values, per-file Codex parsing
+- docs: model routing and cost, Codex delegation; normalize Codex command refs in skills
+- feat(setup-repo): 300K compaction window, Codex detection and AGENTS.md block
+- feat: default opus + 300k compaction, model routing rules, enable Codex plugin
+- feat(board): show Codex sessions alongside Claude sessions
 
 ## [0.11.0] - 2026-09-24
 

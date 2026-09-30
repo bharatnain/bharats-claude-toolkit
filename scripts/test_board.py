@@ -303,3 +303,68 @@ def test_redact_tolerates_non_strings_and_covers_branch_and_errors(tmp_path):
     board.build(repo, out_dir=out, projects_dir=tmp_path / "projects", now=NOW, run=FakeRun({}))
     for text in ((out / "index.html").read_text(), (out / "board.json").read_text()):
         assert GHP not in text and SKA not in text
+
+def make_codex(tmp_path, repo, other):
+    cdir = tmp_path / "codex"; day = cdir / "sessions/2026/09/24"; day.mkdir(parents=True)
+    def rollout(sid, cwd, msg, model="gpt-5-codex"):
+        (day / f"rollout-2026-09-24T11-00-00-{sid}.jsonl").write_text(
+            _line(timestamp="2026-09-24T11:00:00Z", type="session_meta", payload={"id": sid, "session_id": sid, "cwd": str(cwd), "originator": "codex_cli_rs"})
+            + _line(timestamp="2026-09-24T11:00:01Z", type="turn_context", payload={"turn_id": "t1", "cwd": str(cwd), "model": model})
+            + _line(timestamp="2026-09-24T11:01:00Z", type="event_msg", payload={"type": "token_count", "info": {"total_token_usage": {"total_tokens": 10}}})
+            + _line(timestamp="2026-09-24T11:58:00Z", type="event_msg", payload={"type": "agent_message", "message": msg})
+            + _line(timestamp="2026-09-24T11:58:30Z", type="event_msg", payload={"type": "token_count", "info": {"total_token_usage": {"total_tokens": 4321}}})
+            + _line(timestamp="2026-09-24T11:59:00Z", type="event_msg", payload={"type": "token_count", "info": None}))
+    rollout("cx-in", repo, f"Patched it, key {SKA} rotated")
+    rollout("cx-out", other, "elsewhere")
+    (cdir / "session_index.jsonl").write_text(_line(id="cx-in", thread_name=f"Fix parser {GHP}", updated_at="2026-09-24T11:58:00Z") + _line(id="cx-out", thread_name="Other", updated_at="x"))
+    return cdir
+
+def test_collect_codex_sessions(tmp_path):
+    repo = tmp_path / "repo"; repo.mkdir(); other = tmp_path / "other"; other.mkdir()
+    cdir = make_codex(tmp_path, repo, other)
+    got = board.collect_codex_sessions(repo, cdir, NOW, run=FakeRun({}))
+    assert [s["id"] for s in got] == ["cx-in"]
+    s = got[0]
+    assert s["kind"] == "codex" and s["subagents"] == [] and s["model"] == "gpt-5-codex" and s["tokens"] == 4321 and s["running"] is True
+    assert s["title"].startswith("Fix parser") and GHP not in s["title"] and "[redacted]" in s["title"]
+    assert s["last_text"].startswith("Patched it") and SKA not in s["last_text"] and s["last_at"].startswith("2026-09-24T11:59:00")
+    assert board.collect_codex_sessions(repo, tmp_path / "nope", NOW, run=FakeRun({})) == []
+
+def test_codex_stale_files_skipped_and_worktree_cwd_kept(tmp_path):
+    main = tmp_path / "main"; wt = main / ".claude/worktrees/wt"; wt.mkdir(parents=True)
+    cdir = make_codex(tmp_path, wt, tmp_path / "other")
+    def run(args, **kw):
+        class R: pass
+        r = R(); r.returncode = 0; r.stderr = ""
+        r.stdout = f"worktree {main}\nHEAD a\n\nworktree {wt}\nHEAD b\n" if "worktree" in args else str(main / ".git") + "\n"
+        return r
+    assert [s["id"] for s in board.collect_codex_sessions(main, cdir, NOW, run=run)] == ["cx-in"]
+    old = dt.datetime.now().timestamp() - 30 * 86400
+    for f in cdir.rglob("rollout-*.jsonl"): os.utime(f, (old, old))
+    assert board.collect_codex_sessions(main, cdir, dt.datetime.now(dt.timezone.utc), run=run) == []
+
+def test_build_merges_codex_sessions_and_redacts(tmp_path):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    cdir = make_codex(tmp_path, repo, tmp_path / "other"); out = tmp_path / "out"
+    data = board.build(repo, out_dir=out, projects_dir=make_projects(tmp_path, repo), codex_dir=cdir, now=NOW, run=FakeRun({}))
+    assert [s["id"] for s in data["sessions"]][:2] == ["cx-in", "sess-1"] and len(data["sessions"]) == 3
+    page = (out / "index.html").read_text()
+    assert "codex</span>" in page and "Sessions and agents · 3" in page
+    for text in (page, (out / "board.json").read_text()):
+        assert GHP not in text and SKA not in text and "[redacted]" in text
+
+def test_build_without_codex_dir_is_quiet(tmp_path):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    out = tmp_path / "out"
+    data = board.build(repo, out_dir=out, projects_dir=make_projects(tmp_path, repo), codex_dir=tmp_path / "no-codex", now=NOW, run=FakeRun({}))
+    assert not any(e.startswith("codex") for e in data["errors"]) and len(data["sessions"]) == 2
+    assert "codex" not in (out / "index.html").read_text().lower()
+
+def test_cli_codex_dir(tmp_path):
+    import subprocess as sp
+    repo = tmp_path / "repo"; repo.mkdir(); sp.run(["git", "init", "-q", "-b", "main"], cwd=repo, check=True)
+    cdir = make_codex(tmp_path, repo, tmp_path / "other"); out = tmp_path / "out"
+    assert board.main(["build", "--repo", str(repo), "--out", str(out), "--projects-dir", str(tmp_path / "none"), "--codex-dir", str(cdir), "--no-gh", "--quiet"]) == 0
+    assert "cx-in" in (out / "board.json").read_text()

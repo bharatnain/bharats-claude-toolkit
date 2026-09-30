@@ -1,7 +1,28 @@
-import json, subprocess, sys
+import json, shutil, subprocess, sys
 from pathlib import Path
+import pytest
 sys.path.insert(0, str(Path(__file__).parent))
 import repo_setup as rs
+
+@pytest.fixture(autouse=True)
+def no_real_codex(monkeypatch, tmp_path_factory):
+    """Never see the real codex binary or the real ~/.claude: no codex on PATH, an empty fake home."""
+    monkeypatch.setattr(shutil, "which", lambda name, *a, **k: None)
+    home = tmp_path_factory.mktemp("home"); monkeypatch.setattr(Path, "home", classmethod(lambda cls: home))
+    return home
+
+def fake_codex(monkeypatch, login_rc=0, login_exc=None):
+    """Put a fake codex on PATH; `codex login status` returns login_rc (or raises login_exc). Other subprocess calls pass through."""
+    monkeypatch.setattr(shutil, "which", lambda name, *a, **k: "/fake/bin/codex" if name == "codex" else None)
+    real, calls = subprocess.run, []
+    def run(cmd, *a, **k):
+        if cmd and cmd[0] == "/fake/bin/codex":
+            calls.append((cmd, k.get("timeout")))
+            if login_exc: raise login_exc
+            return subprocess.CompletedProcess(cmd, login_rc, "", "")
+        return real(cmd, *a, **k)
+    monkeypatch.setattr(subprocess, "run", run)
+    return calls
 
 def make_repo(tmp_path, files):
     root = tmp_path / "repo"; root.mkdir()
@@ -304,14 +325,20 @@ def test_plan_local_settings_autocompact_add_only(tmp_path):
     root = make_repo(tmp_path, PY_UV)
     items = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}
     local = items[".claude/settings.local.json"]
-    assert local["action"] == "create" and json.loads(local["content"])["env"]["CLAUDE_AUTOCOMPACT_PCT_OVERRIDE"] == "60"
+    assert local["action"] == "create" and json.loads(local["content"]) == {"autoCompactWindow": "300k"}
+    assert local["reason"] == "auto-compact at 300K tokens (machine-local)"
     assert ".claude/settings.local.json" in items[".gitignore"]["content"] and ".claude/team-profile.json" in items[".gitignore"]["content"]
     (root / ".claude").mkdir(); (root / ".claude/settings.local.json").write_text(json.dumps({"env": {"FOO": "1"}, "model": "opus"}))
     local = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
     merged = json.loads(local["content"])
-    assert local["action"] == "update" and merged["env"] == {"FOO": "1", "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60"} and merged["model"] == "opus"
-    (root / ".claude/settings.local.json").write_text(json.dumps({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}}))
+    assert local["action"] == "update" and merged == {"env": {"FOO": "1"}, "model": "opus", "autoCompactWindow": "300k"}
+    (root / ".claude/settings.local.json").write_text(json.dumps({"autoCompactWindow": "500k"}))
     assert {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]["action"] == "skip"
+
+def test_local_settings_migrates_v0_11_pct_override():
+    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60"}}) == {"autoCompactWindow": "300k"}
+    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60", "FOO": "1"}}) == {"env": {"FOO": "1"}, "autoCompactWindow": "300k"}
+    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}}) == {"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}, "autoCompactWindow": "300k"}
 
 def test_plan_skips_bad_local_settings(tmp_path):
     root = make_repo(tmp_path, PY_UV)
@@ -321,3 +348,65 @@ def test_plan_skips_bad_local_settings(tmp_path):
     (root / ".claude/settings.local.json").write_text(json.dumps({"env": ["x"]}))
     item = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
     assert item["action"] == "skip" and "env is not an object" in item["reason"]
+
+AGENTS_BLOCK = "<!-- setup-repo:agents -->\nRead CLAUDE.md first; it is the source of truth for this repo's commands and conventions.\n<!-- /setup-repo:agents -->\n"
+
+def _agents(root):
+    return {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}.get("AGENTS.md")
+
+def test_detect_codex_absent(tmp_path):
+    assert rs.detect(make_repo(tmp_path, PY_UV))["codex"] == {"cli": None, "logged_in": None, "plugin": False}
+
+def test_detect_codex_login_status(tmp_path, monkeypatch):
+    root = make_repo(tmp_path, PY_UV)
+    calls = fake_codex(monkeypatch, login_rc=0)
+    assert rs.detect(root)["codex"] == {"cli": "/fake/bin/codex", "logged_in": True, "plugin": False}
+    assert calls == [(["/fake/bin/codex", "login", "status"], 10)]
+    fake_codex(monkeypatch, login_rc=1); assert rs.detect(root)["codex"]["logged_in"] is False
+    fake_codex(monkeypatch, login_exc=subprocess.TimeoutExpired("codex", 10)); assert rs.detect(root)["codex"]["logged_in"] is None
+
+def test_detect_codex_plugin_from_home_settings(tmp_path, no_real_codex):
+    root = make_repo(tmp_path, PY_UV); s = no_real_codex / ".claude/settings.json"; s.parent.mkdir()
+    s.write_text(json.dumps({"enabledPlugins": {"codex@openai-codex": True}})); assert rs.detect(root)["codex"]["plugin"] is True
+    s.write_text(json.dumps({"enabledPlugins": {"codex@openai-codex": False}})); assert rs.detect(root)["codex"]["plugin"] is False
+    s.write_text("{not json"); assert rs.detect(root)["codex"]["plugin"] is False
+    s.write_text(json.dumps({"enabledPlugins": ["codex@openai-codex"]})); assert rs.detect(root)["codex"]["plugin"] is False
+
+def test_plan_no_agents_item_without_codex(tmp_path):
+    assert _agents(make_repo(tmp_path, PY_UV)) is None
+
+def test_plan_agents_md_create_apply_idempotent(tmp_path, monkeypatch):
+    root = make_repo(tmp_path, PY_UV); fake_codex(monkeypatch)
+    item = _agents(root)
+    assert item["action"] == "create" and item["content"] == AGENTS_BLOCK
+    assert "AGENTS.md" in rs.apply(rs.plan(rs.detect(root)), root) and (root / "AGENTS.md").read_text() == AGENTS_BLOCK
+    assert _agents(root)["action"] == "skip" and rs.check(rs.detect(root)) == []
+
+def test_plan_agents_md_update_appends_block(tmp_path, monkeypatch):
+    root = make_repo(tmp_path, {**PY_UV, "AGENTS.md": "# Agents\nBe nice.\n"}); fake_codex(monkeypatch)
+    item = _agents(root)
+    assert item["action"] == "update" and item["content"] == "# Agents\nBe nice.\n\n" + AGENTS_BLOCK
+    rs.apply(rs.plan(rs.detect(root)), root)
+    assert _agents(root)["action"] == "skip"
+
+def test_plan_agents_md_skips_when_pointing_at_claude_md_or_symlink(tmp_path, monkeypatch):
+    fake_codex(monkeypatch)
+    root = make_repo(tmp_path, {**PY_UV, "AGENTS.md": "See CLAUDE.md for everything.\n"})
+    item = _agents(root); assert item["action"] == "skip" and item["reason"] and item["content"] is None
+    (root / "AGENTS.md").unlink(); (root / "AGENTS.md").symlink_to("CLAUDE.md")
+    item = _agents(root); assert item["action"] == "skip" and "symlink" in item["reason"]
+
+def test_apply_allows_agents_md_but_not_other_root_files(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    assert rs.apply({"items": [{"path": "AGENTS.md", "action": "create", "content": "x\n"}]}, root) == ["AGENTS.md"]
+    with pytest.raises(RuntimeError): rs.apply({"items": [{"path": "README.md", "action": "create", "content": "x\n"}]}, root)
+
+def test_codex_recommendations(tmp_path, monkeypatch, no_real_codex):
+    root = make_repo(tmp_path, PY_UV); recs = lambda: " | ".join(rs.plan(rs.detect(root))["recommendations"])
+    assert "npm install -g @openai/codex" in recs() and "/codex:setup" in recs() and "sol, luna, astra" in recs() and "codex login" not in recs()
+    fake_codex(monkeypatch, login_rc=1)
+    assert "npm install -g @openai/codex" not in recs() and "Run `codex login` to sign in with your ChatGPT plan." in recs()
+    assert "Enable the Codex plugin: re-run the toolkit's bootstrap.sh (enables codex@openai-codex)." in recs()
+    s = no_real_codex / ".claude/settings.json"; s.parent.mkdir(); s.write_text(json.dumps({"enabledPlugins": {"codex@openai-codex": True}}))
+    fake_codex(monkeypatch, login_rc=0)
+    assert "codex" not in recs().lower()

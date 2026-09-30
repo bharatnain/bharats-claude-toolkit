@@ -118,6 +118,38 @@ if src_perms:
         dest_perms["defaultMode"] = src_perms["defaultMode"]
     merged["permissions"] = dest_perms
 
+# model / autoCompactWindow / env: add-only. A top-level key is set only when
+# the dest has no value; a differing dest value is kept and reported on stderr
+# (the summary on stdout stays machine-readable). env is merged per key the same
+# way. Only the keys the template names are touched. Model/window values are
+# echoed; env values never are (only the key name), since env can hold secrets.
+for key, hint in (("model", "run /model {v} to switch"),
+                  ("autoCompactWindow", "edit autoCompactWindow in settings.json to change it")):
+    if key not in src:
+        continue
+    if not merged.get(key):
+        merged[key] = src[key]
+    elif merged[key] != src[key]:
+        print(f"bootstrap: keeping {key}={merged[key]} (toolkit default: {src[key]}; "
+              + hint.format(v=src[key]) + ")", file=sys.stderr)
+
+src_env = src.get("env", {})
+if src_env:
+    dest_env = dict(merged.get("env", {}))
+    for k, v in src_env.items():
+        if k not in dest_env:
+            dest_env[k] = v
+        elif dest_env[k] != v:
+            print(f"bootstrap: keeping env.{k} (differs from the toolkit default)",
+                  file=sys.stderr)
+    merged["env"] = dest_env
+
+pct = merged.get("env", {}).get("CLAUDE_AUTOCOMPACT_PCT_OVERRIDE")
+if pct is not None:
+    print(f"bootstrap: env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE={pct} compacts at that percentage "
+          f"of the window (60 with a 300k window compacts near 180K); remove it unless intended",
+          file=sys.stderr)
+
 # The source $comment documents the template, not the user config: never
 # propagate it. (Any pre-existing dest $comment is preserved untouched.)
 
@@ -131,7 +163,9 @@ plugin_count = sum(1 for v in ep.values() if v) if isinstance(ep, dict) else len
 allow_count = len(merged.get("permissions", {}).get("allow", []))
 deny_count = len(merged.get("permissions", {}).get("deny", []))
 mode = merged.get("permissions", {}).get("defaultMode") or "unset"
-print(f"{mkt_count} {plugin_count} {allow_count} {deny_count} {mode}")
+model = "".join(str(merged.get("model") or "unset").split())
+window = "".join(str(merged.get("autoCompactWindow") or "unset").split())
+print(f"{mkt_count} {plugin_count} {allow_count} {deny_count} {mode} {model} {window}")
 PY
 )"; then
   echo "Error: merge failed." >&2
@@ -139,7 +173,7 @@ PY
   exit 1
 fi
 
-read -r MKT_COUNT PLUGIN_COUNT ALLOW_COUNT DENY_COUNT DEFAULT_MODE <<<"$COUNTS"
+read -r MKT_COUNT PLUGIN_COUNT ALLOW_COUNT DENY_COUNT DEFAULT_MODE MODEL_VAL WINDOW_VAL <<<"$COUNTS"
 
 # Idempotent no-op: if the merged output is byte-identical to what is already
 # on disk, skip the write entirely — no backup churn, no mtime churn.
@@ -172,7 +206,7 @@ else
   fi
 fi
 
-echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules, $DENY_COUNT deny rules, defaultMode $DEFAULT_MODE"
+echo "merged: $MKT_COUNT marketplaces, $PLUGIN_COUNT enabled plugins, $ALLOW_COUNT allow rules, $DENY_COUNT deny rules, defaultMode $DEFAULT_MODE, model $MODEL_VAL, window $WINDOW_VAL"
 echo
 echo "Activation: restart Claude Code OR run /reload-plugins in an open session"
 echo "for the always-on tier to take effect. ecc remains one"

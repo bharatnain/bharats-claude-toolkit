@@ -57,10 +57,12 @@ def _worktrees(main_root, run=subprocess.run):
         pass
     return []
 
-def project_dirs_for(repo_root, projects_dir, run=subprocess.run):
+def _repo_roots(repo_root, run=subprocess.run):
     main = _main_root(repo_root, run)
-    roots = {Path(repo_root).resolve(), main, *_worktrees(main, run)}
-    return sorted(p for p in {Path(projects_dir) / _encode_project(r) for r in roots} if p.is_dir())
+    return {Path(repo_root).resolve(), main, *_worktrees(main, run)}
+
+def project_dirs_for(repo_root, projects_dir, run=subprocess.run):
+    return sorted(p for p in {Path(projects_dir) / _encode_project(r) for r in _repo_roots(repo_root, run)} if p.is_dir())
 
 def _subagents(sess_dir, now, since):
     out = []
@@ -111,6 +113,39 @@ def collect_sessions(repo_root, projects_dir, now, since_minutes=5, run=subproce
             sessions.append({"id": sid, "title": redact(custom or ai or sid), "model": model, "branch": redact(branch), "last_at": last.isoformat() if last else None,
                              "running": running, "tokens": tokens, "last_text": redact(" ".join(last_text.split())[:300]),
                              "waiting_question": redact(question), "subagents": _subagents(proj / sid, now, since_minutes)})
+    sessions.sort(key=lambda s: s["last_at"] or "", reverse=True)
+    return sessions
+
+def collect_codex_sessions(repo_root, codex_dir, now, since_minutes=5, run=subprocess.run, days=7):
+    sdir = Path(codex_dir) / "sessions"
+    if not sdir.is_dir(): return []
+    roots = {str(r) for r in _repo_roots(repo_root, run)}; cutoff = (now - dt.timedelta(days=days)).timestamp(); titles = {}
+    try:
+        for line in (Path(codex_dir) / "session_index.jsonl").read_text(encoding="utf-8", errors="replace").splitlines():
+            try: e = json.loads(line); titles[e["id"]] = e.get("thread_name") or titles.get(e["id"])
+            except Exception: continue  # noqa: BLE001
+    except OSError: pass
+    sessions = []
+    for f in sorted(sdir.rglob("rollout-*.jsonl")):
+        try:  # one malformed rollout must not hide the others
+            if f.stat().st_mtime < cutoff: continue
+            with f.open("rb") as fh: head = json.loads(fh.readline(1 << 20).decode("utf-8", errors="replace"))
+            meta = head.get("payload") if isinstance(head, dict) else None
+            cwd = meta.get("cwd") if isinstance(meta, dict) else None
+            if head.get("type") != "session_meta" or not isinstance(cwd, str) or not Path(cwd).is_absolute() or str(Path(cwd).resolve()) not in roots: continue
+            sid = meta.get("id") or meta.get("session_id") or f.stem; model = None; last = None; tokens = 0; last_text = ""
+            for o in _objs(f):
+                if not isinstance(o, dict): continue
+                last = _parse_ts(o.get("timestamp", "")) or last; p = o.get("payload") if isinstance(o.get("payload"), dict) else {}
+                if o.get("type") == "turn_context": model = p.get("model") or model
+                if o.get("type") != "event_msg": continue
+                if p.get("type") == "agent_message" and isinstance(p.get("message"), str): last_text = p["message"]
+                if p.get("type") == "token_count":
+                    tokens = int(((p.get("info") or {}).get("total_token_usage") or {}).get("total_tokens") or tokens)
+            running = bool(last and (now - last) <= dt.timedelta(minutes=since_minutes))
+            sessions.append({"id": redact(str(sid)), "title": redact(titles.get(sid) or str(sid)), "model": redact(model), "branch": None, "last_at": last.isoformat() if last else None, "running": running,
+                             "tokens": tokens, "last_text": redact(" ".join(last_text.split())[:300]), "waiting_question": None, "kind": "codex", "subagents": []})
+        except Exception: continue  # noqa: BLE001
     sessions.sort(key=lambda s: s["last_at"] or "", reverse=True)
     return sessions
 
@@ -222,7 +257,7 @@ def render(data, now=None):
     else:
         srows = []
         for s in data["sessions"]:
-            srows.append(f"<tr><td>{_badge('running' if s['running'] else 'idle', 'ok' if s['running'] else '')}</td><td>{_e(s['title'])}</td><td>{_e(s['model'] or '')}</td><td>{_e(s['branch'] or '')}</td><td>{s['tokens']:,}</td><td class='meta'>{_rel(s['last_at'], now)}</td></tr>")
+            srows.append(f"<tr><td>{_badge('running' if s['running'] else 'idle', 'ok' if s['running'] else '')}</td><td>{_e(s['title'])}{' ' + _badge('codex', 'acc') if s.get('kind') == 'codex' else ''}</td><td>{_e(s['model'] or '')}</td><td>{_e(s['branch'] or '')}</td><td>{s['tokens']:,}</td><td class='meta'>{_rel(s['last_at'], now)}</td></tr>")
             for a in s["subagents"]:
                 srows.append(f"<tr><td></td><td>↳ {_e(a['name'])}</td><td>{_e(a['model'] or '')}</td><td>{_badge('running' if a['running'] else 'done', 'ok' if a['running'] else '')}</td><td>{a['tool_uses']} tools</td><td class='meta'>{_rel(a['last_at'], now)}</td></tr>")
         parts.append(f'<h2>Sessions and agents · {len(data["sessions"])}</h2><div class="card"><table><tr><th></th><th>session / agent</th><th>model</th><th>branch</th><th>tokens</th><th></th></tr>{"".join(srows) or "<tr><td colspan=6>No sessions found.</td></tr>"}</table></div>')
@@ -246,9 +281,10 @@ def _atomic_write(path, text):
     with os.fdopen(fd, "w", encoding="utf-8") as fh: fh.write(text)
     os.replace(tmp, path)
 
-def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.run, since_minutes=5):
+def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.run, since_minutes=5, codex_dir=None):
     repo_root = Path(repo_root).resolve(); now = now or dt.datetime.now(dt.timezone.utc)
     projects_dir = Path(projects_dir) if projects_dir else Path(os.path.expanduser("~/.claude/projects"))
+    codex_dir = Path(codex_dir) if codex_dir else Path(os.path.expanduser("~/.codex"))
     out = Path(out_dir) if out_dir else repo_root / ".claude/board"; errors = []
     def safe(name, fn, default):
         try: return fn()
@@ -257,6 +293,8 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
     r = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], repo_root, run); branch = r.stdout.strip() if r.returncode == 0 else "?"
     r = _run(["git", "rev-parse", "--short", "HEAD"], repo_root, run); head = r.stdout.strip() if r.returncode == 0 else "?"
     sessions = safe("sessions", lambda: collect_sessions(repo_root, projects_dir, now, since_minutes, run), [])
+    codex = safe("codex", lambda: collect_codex_sessions(repo_root, codex_dir, now, since_minutes, run), [])
+    sessions = sorted(sessions + codex, key=lambda s: s["last_at"] or "", reverse=True)
     beads = safe("beads", lambda: collect_beads(repo_root, run=run), {"in_flight": [], "epics": [], "counts": {}, "recent_closed": [], "error": None})
     if beads.get("error"): errors.append("beads: " + beads["error"])
     prs, prs_error = safe("prs", lambda: collect_prs(repo_root, run=run), ([], None))
@@ -271,7 +309,7 @@ def build(repo_root, out_dir=None, projects_dir=None, now=None, run=subprocess.r
 def main(argv):
     ap = argparse.ArgumentParser(description="Orchestrator board (read-only; writes .claude/board/)")
     ap.add_argument("cmd", choices=["build", "open", "serve"]); ap.add_argument("--repo", default=".")
-    ap.add_argument("--projects-dir", default=None); ap.add_argument("--out", default=None); ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--projects-dir", default=None); ap.add_argument("--codex-dir", default=None); ap.add_argument("--out", default=None); ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--since-minutes", type=int, default=5); ap.add_argument("--no-gh", action="store_true"); ap.add_argument("--port", type=int, default=4817)
     a = ap.parse_args(argv)
     run = subprocess.run
@@ -281,7 +319,7 @@ def main(argv):
                 class R: pass
                 r = R(); r.returncode = 1; r.stdout = ""; r.stderr = "disabled"; return r
             return subprocess.run(args, **kw)
-    data = build(a.repo, a.out, a.projects_dir, run=run, since_minutes=a.since_minutes)
+    data = build(a.repo, a.out, a.projects_dir, run=run, since_minutes=a.since_minutes, codex_dir=a.codex_dir)
     out = Path(a.out).resolve() if a.out else Path(a.repo).resolve() / ".claude/board"
     if not a.quiet:
         print(f"board: {out / 'index.html'} · waiting {len(data['waiting'])} · in flight {len(data['beads'].get('in_flight', []))} · sessions {len(data['sessions'])} · PRs {len(data['prs'])}")

@@ -64,6 +64,20 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
+## Model routing
+
+The main session plans, decides and reviews. Cheaper models do the reading and the typing.
+
+- Name a model on every Agent call. An unnamed dispatch runs on Sonnet (`CLAUDE_CODE_SUBAGENT_MODEL`); built-in Explore and Plan inherit the session model unless you pass one.
+- Reading, search, log or doc triage: Explore with `model: haiku`. Ask for conclusions with file:line pointers, never file dumps.
+- Web research: one agent per question on `sonnet` (`haiku` for fetch-and-extract). Findings go to a file; the reply stays under 10 lines.
+- Implementing a complete spec or brief: `sonnet`. The same mechanical edit across many files: one `haiku` agent with the whole list.
+- A substantial, well-bounded coding task with its own tests: delegate to Codex through `codex:codex-rescue` (background; `--cwd <worktree>` when other agents edit the same tree). Review its diff like any teammate's.
+- Diff review: `sonnet` for small mechanical diffs; `opus` for security, concurrency, data migrations, public interfaces and whole-branch reviews. Add `/codex:adversarial-review` on risky changes: a second model family catches different mistakes.
+- Architecture, design and hard debugging: `opus`. Use `fable` only after `opus` has failed at it, or when asked.
+- Edit directly only when the change is a few lines in files already in context.
+- Codex models: pass the full id as `--model`; the short names are for conversation. Sol = `gpt-6.1-sol` (default for delegated coding), Luna = `gpt-6-luna` (fast, high-volume), Astra = `gpt-6-astra` (hardest work). Codex runs on the ChatGPT plan, not Claude limits. If an id is rejected or Codex is not set up, run `/codex:setup` and fall back to `sonnet`.
+
 ## Compaction
 
 When compacting, preserve: the list of files modified this session, the last validator/test results, open task ids, and any decision stated exactly.

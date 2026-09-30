@@ -7,10 +7,10 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 29 enabled plugins**, which bring **139 vendored skills (52 always-on, 87 user-invoked via `/name`) + 8 agents** from this
+**Always-on = 30 enabled plugins**, which bring **139 vendored skills (52 always-on, 87 user-invoked via `/name`) + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
 *enable* is the plugin; the 139 skills + 8 agents are what *this* repo's plugin contributes,
-and the other 28 plugins layer their skills on top.
+and the other 29 plugins layer their skills on top.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
 [`docs/housekeeping-2026-09.md`](docs/housekeeping-2026-09.md) for the open maintenance backlog.
@@ -32,6 +32,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
 - `web-quality-skills` — Addy Osmani: accessibility (WCAG 2.2), performance, Core Web Vitals, SEO
 - `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills: discovery, strategy, PRDs/OKRs/roadmaps
 - `superpowers` — obra, consumed from `claude-plugins-official` (SHA-pinned by Anthropic): brainstorm→plan→execute methodology. Note: since v6.4.1 `executing-plans` runs plans natively without pausing for review mid-plan; `diagnosing-superpowers` is its debugging entrypoint
+- `codex` — OpenAI (`openai-codex`, SHA-pinned): delegate coding tasks to Codex models (Sol, Luna, Astra) and get cross-model reviews; see **Model routing and cost**
 - `mattpocock-skills` — Matt Pocock, consumed from `claude-plugins-official` (SHA-pinned by Anthropic): ~30 compact engineering/process skills — grilling (frontier-driven design interviews), domain-modeling (CONTEXT.md + ADRs), wayfinder/triage/to-tickets (tracker-abstracted planning; bind to beads via `/setup-matt-pocock-skills`), diagnosing-bugs (feedback-loop-first), teach, codebase-design. Its `writing-for-agents` is this toolkit's **house standard for skill authoring**.
 - `security-guidance` / `plugin-dev` — Anthropic (`claude-plugins-official`): security guardrails + plugin authoring
 - `claude-security` / `session-report` / `skill-creator` — Anthropic (`claude-plugins-official`): in-session vulnerability scanning with verified patches, explorable session-usage reports, and skill creation/eval tooling (pairs with the `writing-for-agents` authoring standard)
@@ -42,7 +43,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
 
 **On-demand (registered, install when needed)**
 - `ecc@ecc` — the full 271-skill ECC collection
-- `probity` — nizos: TDD/rule-enforcement hooks; `memsearch` — zilliztech: semantic session memory; `openai-codex` — OpenAI: cross-model reviews — all registered, not enabled
+- `probity` — nizos: TDD/rule-enforcement hooks; `memsearch` — zilliztech: semantic session memory — both registered, not enabled
 - the remaining `trailofbits-skills` / `trailofbits-skills-curated` plugins beyond the three enabled above
 - more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `frontend-mobile-development`, …)
 - `beads` — agentic issue tracker (`bd` CLI + plugin); see **Agentic project management** below
@@ -184,6 +185,45 @@ stops claude.ai skills from syncing into terminal sessions and inflating the ski
 `autoMemoryEnabled`; `workflowSizeGuideline` (`small`/`medium`/`large`/`unrestricted`);
 `outputStyle: "Toolkit"` selects this plugin's output style.
 
+## Model routing and cost
+
+Most spend is the main session re-reading its own context on every turn, so the toolkit keeps
+that context small and pushes reading and typing to cheaper models. Bootstrap merges these
+settings add-only and prints a notice when a machine already has a different value:
+
+- `model: "opus"` — the alias tracks the recommended Opus (Opus 5.5 today). Use `fable` only after
+  `opus` has failed at a task, or when you ask for it.
+- `autoCompactWindow: "300k"` — compaction at 300K tokens instead of near the 1M limit. Remove
+  any `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`; it would compact at that percentage of 300K.
+- `env.CLAUDE_CODE_SUBAGENT_MODEL: "sonnet"` — a subagent dispatched without a model runs on
+  Sonnet.
+
+The routing table lives in the user-level CLAUDE.md (`templates/user-CLAUDE.md`, "Model
+routing"): Haiku for reading and search, Sonnet for implementation and research, Opus for
+design and risky reviews, Codex for delegated coding. Bootstrap installs that file only when it
+is absent, so existing machines pick up the table with
+`CLAUDE_FORCE_CLAUDE_MD=1 bash scripts/bootstrap.sh` (the old file is backed up).
+
+**Delegating to OpenAI models (Codex).** The official `codex@openai-codex` plugin is enabled.
+It needs the Codex CLI and a ChatGPT sign-in, once per machine:
+
+```bash
+npm install -g @openai/codex && codex login
+```
+
+`/codex:setup` then confirms readiness. The orchestrator hands spec-complete, test-backed tasks
+to the `codex:codex-rescue` subagent with `--model gpt-6.1-sol` (sol), `gpt-6-luna` (luna) or
+`gpt-6-astra` (astra), and adds `/codex:review` or `/codex:adversarial-review` as a second
+reviewer. Codex usage draws on the ChatGPT plan, not Claude limits. Its stop-time review gate
+stays off unless you turn it on in `/codex:setup`.
+
+**Fan-out is not capped.** Measured on this toolkit's own transcripts, a research fan-out costs
+what its agents' models cost; a concurrency cap runs the same agents in more waves and adds
+orchestrator turns. Keep research agents on Sonnet or Haiku, keep replies short, and write
+reports to files.
+
+---
+
 ## Working with this toolkit
 
 The day-to-day loop the docs recommend, and where each piece of this repo fits:
@@ -202,7 +242,8 @@ The day-to-day loop the docs recommend, and where each piece of this repo fits:
    and reference material in skills (52 always-on, the rest behind `/name`); guarantees in hooks;
    response shape in the `Toolkit` output style.
 6. **Set up a repo.** `/setup-repo` prepares any repo (CLAUDE.md facts + check, rules, permissions,
-   lint hook, team profile, a machine-local auto-compact threshold of 60%); `--check` shows drift.
+   lint hook, team profile, a machine-local 300K compaction window, and an `AGENTS.md` pointer for
+   Codex when it is installed); `--check` shows drift.
 
 ## Desktop notifications (when Claude needs you)
 
@@ -240,8 +281,7 @@ setting (`agentPushNotifEnabled` in `~/.claude/settings.json`, or Settings → C
 /reload-plugins                                       # make them live in THIS session, no restart
 ```
 Also registered (browse with `/plugin` and install from their marketplaces): **probity**
-(TDD/rule-enforcement hooks), **memsearch** (semantic session memory), **openai-codex**
-(cross-model reviews), and the remaining **trailofbits-skills** / **trailofbits-skills-curated**
+(TDD/rule-enforcement hooks), **memsearch** (semantic session memory), and the remaining **trailofbits-skills** / **trailofbits-skills-curated**
 plugins beyond the enabled `differential-review` / `fp-check` / `security-awareness`.
 
 Then just work — the newly available skills auto-trigger by description.

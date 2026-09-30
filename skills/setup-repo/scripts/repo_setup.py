@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """/setup-repo: detect a repo's stack, plan an optimal Claude Code setup, apply it. Stdlib only."""
-import argparse, json, os, re, subprocess, sys, tempfile
+import argparse, json, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -128,12 +128,23 @@ def _team_profile(root):
         print(f"setup-repo: team profile unavailable: {e}", file=sys.stderr)
         return None
 
+def _codex():
+    cli = shutil.which("codex"); logged_in = None
+    if cli:
+        try: logged_in = subprocess.run([cli, "login", "status"], capture_output=True, text=True, timeout=10).returncode == 0
+        except Exception:  # noqa: BLE001
+            logged_in = None
+    try: plugin = bool(json.loads((Path.home() / ".claude/settings.json").read_text(encoding="utf-8"))["enabledPlugins"]["codex@openai-codex"])
+    except Exception:  # noqa: BLE001
+        plugin = False
+    return {"cli": cli, "logged_in": logged_in, "plugin": plugin}
+
 def detect(root):
     root = Path(root).resolve()
     files = _tracked(root)
     return {"root": str(root), "languages": _languages(files), "package_manager": _package_manager(root),
             "existing": _existing(root), "commands": _commands(root, _package_manager(root)),
-            "git": _git_facts(root), "team_profile": _team_profile(root), "size": len(files)}
+            "git": _git_facts(root), "team_profile": _team_profile(root), "codex": _codex(), "size": len(files)}
 
 BLOCKS = ("verify", "etiquette", "working", "compaction")
 REFS = HERE.parent / "references"
@@ -219,14 +230,18 @@ def _hookable_lint_cmd(profile):
             return (cmd, glob, exts) if any(l in profile["languages"] for l in langs) else None
     return None
 
-AUTOCOMPACT_PCT = "60"  # auto-compact fires at this percentage of the auto-compact window (machine-local, never shared)
+AUTOCOMPACT_WINDOW = "300k"  # auto-compact window in tokens (machine-local, never shared)
+PCT_ENV, PCT_V0_11 = "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE", "60"  # what v0.11.0 wrote; migrated away
 
 def merge_local_settings(existing):
-    """Add-only merge into .claude/settings.local.json: env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE when absent. None when env is not an object."""
+    """Add-only merge into .claude/settings.local.json: autoCompactWindow when absent; drops the v0.11.0 env PCT override (60). None when env is not an object."""
     st = json.loads(json.dumps(existing)) if existing else {}
-    env = st.setdefault("env", {})
+    env = st.get("env", {})
     if not isinstance(env, dict): return None
-    env.setdefault("CLAUDE_AUTOCOMPACT_PCT_OVERRIDE", AUTOCOMPACT_PCT)
+    if env.get(PCT_ENV) == PCT_V0_11:
+        del env[PCT_ENV]
+        if not env: del st["env"]
+    st.setdefault("autoCompactWindow", AUTOCOMPACT_WINDOW)
     return st
 
 def _settings_shape_error(st):
@@ -256,6 +271,8 @@ def merge_settings(existing, profile):
         if not any(h.get("if") == handler["if"] for e in post for h in e.get("hooks", [])):
             post.append({"matcher": "Edit|Write", "hooks": [handler]})
     return st
+
+AGENTS_BLOCK = "<!-- setup-repo:agents -->\nRead CLAUDE.md first; it is the source of truth for this repo's commands and conventions.\n<!-- /setup-repo:agents -->\n"
 
 def plan(profile):
     root = Path(profile["root"]); items = []; ex = profile["existing"]
@@ -310,8 +327,18 @@ def plan(profile):
             items.append({"path": local_rel, "action": "skip", "reason": "unexpected shape: env is not an object", "content": None})
         else:
             local_action = "skip" if existing_local is not None and merged_local == existing_local else ("create" if existing_local is None else "update")
-            items.append({"path": local_rel, "action": local_action, "reason": f"auto-compact at {AUTOCOMPACT_PCT}% of the window (machine-local)",
+            items.append({"path": local_rel, "action": local_action, "reason": f"auto-compact at {AUTOCOMPACT_WINDOW.upper()} tokens (machine-local)",
                           "content": json.dumps(merged_local, indent=2, ensure_ascii=False) + "\n"})
+    codex = profile["codex"]
+    if codex["cli"]:
+        agents = root / "AGENTS.md"; cur_agents = agents.read_text(encoding="utf-8", errors="replace") if ex["AGENTS.md"]["exists"] and not agents.is_symlink() else None
+        if agents.is_symlink():
+            items.append({"path": "AGENTS.md", "action": "skip", "reason": "AGENTS.md is a symlink; point it at CLAUDE.md by hand", "content": None})
+        elif cur_agents is not None and "CLAUDE.md" in cur_agents:
+            items.append({"path": "AGENTS.md", "action": "skip", "reason": "already points Codex at CLAUDE.md", "content": None})
+        else:
+            items.append({"path": "AGENTS.md", "action": "create" if cur_agents is None else "update", "reason": "point Codex at CLAUDE.md",
+                          "content": (cur_agents.rstrip("\n") + "\n\n" if cur_agents else "") + AGENTS_BLOCK})
     tp = profile.get("team_profile")
     if tp:
         if ex[".claude/team-profile.json"]["exists"]:
@@ -329,12 +356,18 @@ def plan(profile):
         recs.append(f"CLAUDE.md is {ex['CLAUDE.md']['lines']} lines; the docs recommend under 200 — move reference material into .claude/rules/ or skills.")
     if any(l in ("typescript", "go", "rust") for l in profile["languages"]):
         recs.append("Install a code-intelligence plugin for typed languages (`/plugin` → code intelligence).")
+    if not codex["cli"]:
+        recs.append("Install the Codex CLI (`npm install -g @openai/codex`), then run `/codex:setup`, to delegate tasks to OpenAI models (sol, luna, astra).")
+    elif codex["logged_in"] is False:
+        recs.append("Run `codex login` to sign in with your ChatGPT plan.")
+    if not codex["plugin"]:
+        recs.append("Enable the Codex plugin: re-run the toolkit's bootstrap.sh (enables codex@openai-codex).")
     for lang in profile["languages"]:
         if lang == "python": recs.append("Toolkit skills that load themselves on .py files: python-patterns, python-testing, fastapi-patterns.")
         if lang in ("typescript", "javascript"): recs.append("Toolkit skills that load themselves on .ts/.tsx: react-patterns, react-best-practices, motion-*.")
     return {"root": str(root), "items": items, "recommendations": recs}
 
-ALLOWED = ("CLAUDE.md", ".gitignore")
+ALLOWED = ("CLAUDE.md", ".gitignore", "AGENTS.md")
 
 def _atomic_write(path, text):
     path.parent.mkdir(parents=True, exist_ok=True)

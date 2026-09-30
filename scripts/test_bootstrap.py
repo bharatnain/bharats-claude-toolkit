@@ -44,7 +44,7 @@ def test_absent_keys_are_added(tmp_path):
     merged, proc = run_bootstrap(tmp_path)
     assert merged["model"] == "opus"
     assert merged["autoCompactWindow"] == 300000
-    assert merged["env"] == {"CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"}
+    assert merged["env"] == {"CLAUDE_CODE_SUBAGENT_MODEL": "sonnet", "SECURITY_REVIEW_MODEL": "claude-sonnet-5-5"}
     assert merged["enabledPlugins"]["codex@openai-codex"] is True
     assert "bootstrap: keeping" not in proc.stderr
     assert "model opus, window 300000" in proc.stdout
@@ -64,12 +64,12 @@ def test_existing_different_model_and_window_kept_with_notice(tmp_path):
 def test_env_is_add_only(tmp_path):
     dest = {"env": {"CLAUDE_CODE_SUBAGENT_MODEL": "haiku", "OTHER": "x"}}
     merged, proc = run_bootstrap(tmp_path, dest)
-    assert merged["env"] == {"CLAUDE_CODE_SUBAGENT_MODEL": "haiku", "OTHER": "x"}
+    assert merged["env"] == {"CLAUDE_CODE_SUBAGENT_MODEL": "haiku", "OTHER": "x", "SECURITY_REVIEW_MODEL": "claude-sonnet-5-5"}
     assert "keeping env.CLAUDE_CODE_SUBAGENT_MODEL (differs" in proc.stderr and "haiku" not in proc.stderr
     assert "OTHER" not in proc.stderr
 
     merged, _ = run_bootstrap(tmp_path / "b", {"env": {"OTHER": "x"}})
-    assert merged["env"] == {"OTHER": "x", "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"}
+    assert merged["env"] == {"OTHER": "x", "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet", "SECURITY_REVIEW_MODEL": "claude-sonnet-5-5"}
 
 
 def test_pct_override_notice_and_kept(tmp_path):

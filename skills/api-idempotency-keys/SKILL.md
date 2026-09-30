@@ -1,6 +1,7 @@
 ---
 name: api-idempotency-keys
 description: "Idempotency key design -- UUID v4 generation, key storage TTL, 24h window convention, at-least-once vs exactly-once semantics, safe retry scope. Use when designing mutation endpoints (POST, PATCH, DELETE) for financial transactions or order creation, or adding retry-safe semantics to an API."
+disable-model-invocation: true
 ---
 
 # API Idempotency Keys

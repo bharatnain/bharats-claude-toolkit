@@ -9,6 +9,7 @@ metadata:
   domain: agent-orchestration
   updated: 2026-03-05
   frameworks: invocation-patterns
+disable-model-invocation: true
 ---
 
 # Inter-Agent Protocol

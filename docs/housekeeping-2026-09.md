@@ -64,6 +64,18 @@ subagent rows on the board are in file order, not by recency; session token tota
 512 KiB tail only; existing settings with the old top-level `if` hook entry are not migrated;
 `lint_on_edit.py` bounds stdin at 1 MiB where `.claude/rules/hooks-scripts.md` says 10 MiB.
 
+## Applied 2026-09-30 (efficiency audit, roster trim)
+
+From the 30-day audit (outputs in the gitignored `.superpowers/audit-2026-09-30/`):
+- Always-on roster cut to 8 plugins; 22 more plugins set to `false` (bootstrap enforces it).
+- 28 more toolkit skills are slash-only (24 model-invocable remain: `paths:`-scoped skills, skills another skill
+  calls, `hipaa`, `claude-code-docs`, `codebase-onboarding`, `plugin-vetting`, `team-orchestration`).
+- security-guidance review model set to Sonnet (`env.SECURITY_REVIEW_MODEL`).
+- `vercel` off globally; `/setup-repo` enables it per Vercel/Next.js repo in `.claude/settings.local.json`.
+- Prompt trims across `CLAUDE.md`, the output style, agents and skill descriptions. The trim for
+  `templates/user-CLAUDE.md` was not applied: it would have removed the maintainer's own behavioural rules.
+- Not applied: making `beads_init` opt-in (it creates `.beads/` in every repo, 1.6s per session start).
+
 ## Deferred (with reason)
 
 - **11 — SKILL.md splits.** Only `hallmark` (67 k, already diverged) was split into

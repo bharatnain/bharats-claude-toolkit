@@ -4,6 +4,7 @@ description: Formal evaluation framework for Claude Code sessions implementing e
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
 tools: Read, Write, Edit, Bash, Grep, Glob
+disable-model-invocation: true
 ---
 
 # Eval Harness Skill

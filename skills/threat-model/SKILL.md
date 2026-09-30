@@ -28,6 +28,7 @@ allowed-tools:
   - Task
 context: fork
 agent: general-purpose
+disable-model-invocation: true
 ---
 
 # threat-model

@@ -5,6 +5,25 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Changed: smaller always-on roster.** A 30-day audit found 26 of 31 plugins idle, and their agent
+  and skill descriptions cost ≈21K tokens in every session. The template now enables 8 plugins
+  (this toolkit, `frontend-design`, `superpowers`, `mattpocock-skills`, `codex`, `security-guidance`,
+  `session-report`, `skill-creator`) and sets the rest to `false`, which bootstrap enforces on every run.
+  Turn one back on per repo (`enabledPlugins` in `.claude/settings.json` or `.claude/settings.local.json`);
+  a user-level enable is reset by the next bootstrap run.
+- **Changed: 28 more toolkit skills are slash-only** (`disable-model-invocation: true`): 24 skills stay
+  model-invocable, down from 52: the `paths:`-scoped skills, skills another skill calls (`agent-wrap-up`,
+  `brand-voice`, the four compliance skills, `fal-ai-media`), `hipaa`, and four others.
+- **Changed: security-guidance reviews on Sonnet.** `env.SECURITY_REVIEW_MODEL: "claude-sonnet-5-5"`
+  replaces the plugin's Opus default for its Stop, commit and push reviews (merged add-only).
+- **Changed: vercel is per repo.** The template sets `vercel@claude-plugins-official` to `false`; `/setup-repo`
+  enables it in `.claude/settings.local.json` when the repo has `vercel.json`, `.vercel/` or `next.config.*`.
+- **Changed: prompt trims.** Duplicate and outdated instructions removed from the repo `CLAUDE.md`, the
+  output style, agent bodies and several skill descriptions; `code-reviewer` runs at effort `high`,
+  `integrator` on Sonnet, and the architect, planner, code-architect and spec-miner agents skip CLAUDE.md
+  (`omitClaudeMd`); the dispatch brief must carry any repo conventions they need.
+- **Fixed:** the setup-repo CLI test no longer depends on whether Codex is installed on the machine.
+
 ## [0.12.1] - 2026-09-30
 
 - **Fixed: `autoCompactWindow` is a token count.** v0.12.0 shipped the string `"300k"`, which Claude Code

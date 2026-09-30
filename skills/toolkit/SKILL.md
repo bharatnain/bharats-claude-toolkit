@@ -17,7 +17,7 @@ not a parser — keep the output scannable.
      `python scripts/validate_skills.py --catalog` (or the repo's bootstrap step) to
      produce it, then re-run `/toolkit`. Stop there.
 2. **`settings.json`** at the repo root — read `enabledPlugins` to list the always-on
-   external plugins (every entry whose id is NOT
+   external plugins (every entry set to `true` whose id is NOT
    `bharats-claude-toolkit@bharats-claude-toolkit-dev`).
 
 Read both at invocation time. Never embed a static skill list in this command — the catalog
@@ -55,23 +55,26 @@ context per domain is plenty; this is a map, not documentation.
 ## Always-on external plugins
 
 After the vendored skills, list the enabled EXTERNAL plugins from `settings.json`
-`enabledPlugins` (everything except `bharats-claude-toolkit`), so the user sees the full
-always-on surface — e.g. `frontend-design`, `ui-ux-pro-max`, `web-quality-skills`, the
-`pm-*` discovery/strategy/execution plugins, and the `claude-code-workflows` agent/ops/data
-plugins.
+`enabledPlugins` (entries set to `true`, except `bharats-claude-toolkit`), so the user sees the
+full always-on surface — e.g. `frontend-design`, `superpowers`, `mattpocock-skills`, `codex`,
+`security-guidance`. Then name the on-demand plugins (entries set to `false`, leaving out the
+duplicate keys `superpowers@superpowers-marketplace` and `mattpocock-skills@mattpocock` and the
+broken `agent-teams@claude-code-workflows`) and how to turn one on: `enabledPlugins` in the
+repo's `.claude/settings.json` or `.claude/settings.local.json` (a user-level enable is reset
+by the next `bootstrap.sh` run).
 
 ## Headline counts
 
-State the headline: **30 plugins / 139 vendored skills (52 always-on, 87 user-invoked via `/name` — see SKILLS.md) / 8 agents**. Where it's cheap,
+State the headline: **8 plugins / 139 vendored skills (24 model-invocable, 115 user-invoked via `/name` — see SKILLS.md) / 8 agents**. Where it's cheap,
 compute the live numbers instead of trusting the headline:
-- enabled plugins (this one + 29 external) = count of `enabledPlugins` entries set to `true` in `settings.json` (≈30),
+- enabled plugins (this one + 7 external) = count of `enabledPlugins` entries set to `true` in `settings.json` (≈8),
 - vendored skills = count of skill entries in `SKILLS.md` (≈139),
 - vendored agents = count of agent entries in `SKILLS.md` (8),
 and report whichever you actually computed.
 
 ## Reminders to close with
 
-- Always-on skills **auto-trigger by their description** — just work and Claude reaches for
+- Model-invocable skills **auto-trigger by their description** — just work and Claude reaches for
   the right one. User-invoked skills (`disable-model-invocation: true` in `SKILLS.md`) run
   only via `/name`.
 - To pull *more* on demand, the firehose is one command away — point to the README cheatsheet

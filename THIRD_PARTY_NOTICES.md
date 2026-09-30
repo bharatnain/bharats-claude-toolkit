@@ -255,19 +255,19 @@ Authored for this toolkit (not third-party), MIT-licensed under this repo:
 
 ## Plugins referenced but NOT vendored
 
-These are installed/enabled as upstream plugins (see `README.md`), so their code is not
+These are registered as upstream plugins, enabled or on-demand as marked (see `README.md`), so their code is not
 copied into this repo and stays auto-updated from source:
 
 - `frontend-design` — Anthropic, `claude-plugins-official`
-- `ui-ux-pro-max` — https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (MIT)
-- `web-quality-skills` — https://github.com/addyosmani/web-quality-skills (MIT)
-- `pm-skills` (`pm-product-discovery`, `pm-product-strategy`, `pm-execution`, …) — https://github.com/phuryn/pm-skills (MIT) — enabled
-- `claude-code-workflows` (`agent-teams`, `agent-orchestration`, `conductor`, role bundles) — https://github.com/wshobson/agents (MIT) — enabled
+- `ui-ux-pro-max` — https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (MIT) — registered, on-demand
+- `web-quality-skills` — https://github.com/addyosmani/web-quality-skills (MIT) — registered, on-demand
+- `pm-skills` (`pm-product-discovery`, `pm-product-strategy`, `pm-execution`, …) — https://github.com/phuryn/pm-skills (MIT) — registered, on-demand
+- `claude-code-workflows` (`agent-teams`, `agent-orchestration`, `conductor`, role bundles) — https://github.com/wshobson/agents (MIT) — registered, on-demand
 - `ecc` — https://github.com/affaan-m/ecc (MIT) — registered, on-demand
 - `superpowers` — https://github.com/obra/superpowers (MIT) — enabled, consumed SHA-pinned via `claude-plugins-official`
 - `mattpocock-skills` — https://github.com/mattpocock/skills (MIT) — enabled, consumed SHA-pinned via `claude-plugins-official`
-- `security-guidance`, `plugin-dev`, `claude-security`, `session-report`, `skill-creator` — Anthropic, `claude-plugins-official` — enabled
-- `differential-review`, `fp-check` — https://github.com/trailofbits/skills (CC-BY-SA-4.0) — enabled; `security-awareness` — https://github.com/trailofbits/skills-curated (CC-BY-SA-4.0) — enabled; remaining Trail of Bits plugins registered, on-demand
+- `security-guidance`, `session-report`, `skill-creator` — Anthropic, `claude-plugins-official` — enabled; `plugin-dev`, `claude-security` — registered, on-demand; `vercel` — on-demand, enabled per repo by `/setup-repo`
+- `differential-review`, `fp-check` — https://github.com/trailofbits/skills (CC-BY-SA-4.0) — registered, on-demand; `security-awareness` — https://github.com/trailofbits/skills-curated (CC-BY-SA-4.0) — registered, on-demand; remaining Trail of Bits plugins registered, on-demand
 - `probity` — https://github.com/nizos/probity (MIT) — registered, on-demand
 - `memsearch` — https://github.com/zilliztech/memsearch (MIT) — registered, on-demand
 - `openai-codex` — https://github.com/openai/codex-plugin-cc (Apache-2.0) — enabled (`codex@openai-codex`), SHA-pinned

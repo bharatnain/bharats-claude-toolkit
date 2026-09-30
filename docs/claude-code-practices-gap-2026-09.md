@@ -25,7 +25,7 @@ plugin safe?" questions). Each item names the surface, the guidance it comes fro
    but not enabled. Confirm the listing size with `/context` before and after.
 2. **`model: opus` now means Opus 5.5, whose default effort is `medium`.** The reviewer,
    tech-lead, integrator and architect agents say "Effort: high" in prose, which the harness
-   ignores. **Tweak:** set `effort: high` (reviewer: `xhigh`) in agent frontmatter; the
+   ignores. **Tweak:** set `effort: high` (reviewer: `xhigh`, lowered to `high` on 2026-09-30 per audit M-11) in agent frontmatter; the
    model guides say effort is the lever, prompt exhortation is not.
 3. **Project CLAUDE.md carries no project facts and loads twice.** `./CLAUDE.md` is the
    same Karpathy rules file bootstrap installs at `~/.claude/CLAUDE.md`, so in this repo it
@@ -99,7 +99,7 @@ belong in hooks, not prose; a fresh-context reviewer must be told to report gaps
   `team_sentinel.py set` is the single mechanism. Decide whether this agent still exists
   as a subagent at all: the skill already casts the main session as tech-lead.
 - Consider `memory: project` on `code-reviewer` and `integrator` so repeated findings
-  persist, and `omitClaudeMd: true` on none (they need the repo file above).
+  persist, and `omitClaudeMd: true` on none (they need the repo file above). Superseded 2026-09-30 (audit M-10): set on architect, planner, code-architect and spec-miner.
 - Descriptions: the ecc-derived "Use PROACTIVELY" phrasing is fine; make sure each
   states the use case first (spec-miner and code-architect already do).
 

@@ -4,6 +4,7 @@ description: Plan-file-driven TDD delivery workflow — takes a *.plan.md and dr
 argument-hint: <path/to/*.plan.md>
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
+disable-model-invocation: true
 ---
 
 # Test-Driven Development Workflow

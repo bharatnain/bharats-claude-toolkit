@@ -139,12 +139,16 @@ def _codex():
         plugin = False
     return {"cli": cli, "logged_in": logged_in, "plugin": plugin}
 
+def _vercel(root):
+    """Vercel/Next.js markers at the repo root (filesystem, since .vercel/ is usually gitignored)."""
+    return (root / "vercel.json").is_file() or (root / ".vercel").is_dir() or any(root.glob("next.config.*"))
+
 def detect(root):
     root = Path(root).resolve()
     files = _tracked(root)
     return {"root": str(root), "languages": _languages(files), "package_manager": _package_manager(root),
             "existing": _existing(root), "commands": _commands(root, _package_manager(root)),
-            "git": _git_facts(root), "team_profile": _team_profile(root), "codex": _codex(), "size": len(files)}
+            "git": _git_facts(root), "team_profile": _team_profile(root), "codex": _codex(), "vercel": _vercel(root), "size": len(files)}
 
 BLOCKS = ("verify", "etiquette", "working", "compaction")
 REFS = HERE.parent / "references"
@@ -232,16 +236,19 @@ def _hookable_lint_cmd(profile):
 
 AUTOCOMPACT_WINDOW = 300000  # auto-compact window: a token count, 100000-1000000 (machine-local, never shared)
 PCT_ENV, PCT_V0_11 = "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE", "60"  # what v0.11.0 wrote; migrated away
+VERCEL_PLUGIN = "vercel@claude-plugins-official"  # off in the user template; enabled per Vercel repo
 
-def merge_local_settings(existing):
-    """Add-only merge into .claude/settings.local.json: autoCompactWindow when absent; drops the v0.11.0 env PCT override (60). None when env is not an object."""
+def merge_local_settings(existing, vercel=False):
+    """Add-only merge into .claude/settings.local.json: autoCompactWindow when absent; the vercel plugin in Vercel repos
+    (an explicit false is kept); drops the v0.11.0 env PCT override (60). None when env or enabledPlugins is not an object."""
     st = json.loads(json.dumps(existing)) if existing else {}
     env = st.get("env", {})
-    if not isinstance(env, dict): return None
+    if not isinstance(env, dict) or (vercel and not isinstance(st.get("enabledPlugins", {}), dict)): return None
     if env.get(PCT_ENV) == PCT_V0_11:
         del env[PCT_ENV]
         if not env: del st["env"]
     if not isinstance(st.get("autoCompactWindow"), int): st["autoCompactWindow"] = AUTOCOMPACT_WINDOW  # absent, or v0.12.0's invalid "300k"
+    if vercel: st.setdefault("enabledPlugins", {}).setdefault(VERCEL_PLUGIN, True)
     return st
 
 def _settings_shape_error(st):
@@ -322,12 +329,12 @@ def plan(profile):
         except (ValueError, UnicodeDecodeError, OSError) as e:
             items.append({"path": local_rel, "action": "skip", "reason": f"unparseable: {e}", "content": None}); existing_local = "bad"
     if existing_local != "bad":
-        merged_local = merge_local_settings(existing_local)
+        merged_local = merge_local_settings(existing_local, profile.get("vercel", False))
         if merged_local is None:
-            items.append({"path": local_rel, "action": "skip", "reason": "unexpected shape: env is not an object", "content": None})
+            items.append({"path": local_rel, "action": "skip", "reason": "unexpected shape: env or enabledPlugins is not an object", "content": None})
         else:
             local_action = "skip" if existing_local is not None and merged_local == existing_local else ("create" if existing_local is None else "update")
-            items.append({"path": local_rel, "action": local_action, "reason": f"auto-compact at {AUTOCOMPACT_WINDOW // 1000}K tokens (machine-local)",
+            items.append({"path": local_rel, "action": local_action, "reason": f"auto-compact at {AUTOCOMPACT_WINDOW // 1000}K tokens" + (" + vercel plugin" if merged_local.get("enabledPlugins", {}).get(VERCEL_PLUGIN) is True and profile.get("vercel") else "") + " (machine-local)",
                           "content": json.dumps(merged_local, indent=2, ensure_ascii=False) + "\n"})
     codex = profile["codex"]
     if codex["cli"]:

@@ -1,8 +1,8 @@
 # Beads contract (with native-Task fallback)
 
 Step 4 of the orchestration loop persists tasks. Beads (`bd`) is **optional**: detect it,
-then branch. `bd` is not guaranteed on PATH (it is absent in this environment), so the skill
-must check before using it and degrade gracefully when it's missing.
+then branch. `bd` is not guaranteed on PATH, so the skill must check before using it and
+degrade gracefully when it's missing.
 
 ## Detect first
 

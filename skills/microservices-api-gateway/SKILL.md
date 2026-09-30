@@ -1,6 +1,7 @@
 ---
 name: microservices-api-gateway
 description: "Route, aggregate, and secure client requests through an API gateway or BFF pattern. Use when multiple clients (web, mobile, 3rd party) need to call multiple backend services, or you want a single entry point for auth, rate limiting, logging, and routing."
+disable-model-invocation: true
 ---
 
 # Microservices: API Gateway

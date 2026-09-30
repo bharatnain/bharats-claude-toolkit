@@ -3,6 +3,7 @@ name: cost-aware-llm-pipeline
 description: Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, retry logic, and prompt caching. Use when LLM spend needs to come down, or when routing tasks across model tiers and budgets.
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT; references/claude-api/ vendored from anthropics/skills (Apache-2.0, LICENSE.txt in-dir)"
+disable-model-invocation: true
 ---
 
 # Cost-Aware LLM Pipeline

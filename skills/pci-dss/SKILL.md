@@ -1,14 +1,6 @@
 ---
 name: pci-dss
-description: >
-  Expert PCI DSS compliance advisor covering PCI DSS v4.0.1 (current) and v4.0. Use this skill
-  whenever a user asks about PCI DSS, payment card security, cardholder data protection, CDE
-  scoping, SAQ types (A, A-EP, B, B-IP, C, C-VT, P2PE, D), ROC, AOC, QSA assessments, ASV
-  scans, merchant levels, service provider levels, network segmentation, penetration testing,
-  tokenisation, encryption of PAN data, or any of the 12 PCI DSS requirements. Also trigger for
-  questions like "are we PCI compliant?", "how do I scope my CDE?", "which SAQ applies to us?",
-  "what changed in PCI DSS v4.0?", "how do I prepare for a QSA audit?", or any request involving
-  payment data security, cardholder data environment, or PCI certification readiness.
+description: "PCI DSS v4.0.1 compliance help: CDE scoping, SAQ selection, the 12 requirements, ROC/AOC, QSA and ASV preparation, segmentation, tokenisation. Use for PCI DSS, cardholder data, or payment-security certification questions."
 ---
 
 # PCI DSS Compliance Skill

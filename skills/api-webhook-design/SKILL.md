@@ -1,6 +1,7 @@
 ---
 name: api-webhook-design
 description: "Webhook registration, payload design, delivery guarantees (at-least-once), retry policy, ordering guarantees, fan-out patterns. Use when designing a webhook system for a platform API or auditing an existing webhook implementation for missing retry logic, payload versioning, or delivery guarantees."
+disable-model-invocation: true
 ---
 
 # API Webhook Design

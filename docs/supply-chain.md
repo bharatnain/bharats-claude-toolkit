@@ -86,7 +86,7 @@ Adopting the pattern here would mean, in increasing order of effort:
 
 Trail of Bits maintains [skills-curated](https://github.com/trailofbits/skills-curated), a
 public marketplace of Claude Code plugins that their staff have security-reviewed — this
-toolkit already registers it (`trailofbits-skills-curated` in `settings.json`). Their
+toolkit already registers it (`skills-curated` in `settings.json`). Their
 reviewer tooling includes a plugin scanner,
 [`scripts/scan_plugin.py`](https://github.com/trailofbits/skills-curated/blob/main/scripts/scan_plugin.py),
 usable as a second, independent opinion alongside `plugin-vetting`.

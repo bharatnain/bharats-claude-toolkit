@@ -1,17 +1,6 @@
 ---
 name: plugin-vetting
-description: >
-  Security-vet a THIRD-PARTY Claude Code plugin, skill pack, or marketplace repo BEFORE registering
-  or enabling it — the inbound supply-chain gate for this toolkit. Use when the user says "is this
-  plugin safe", "vet/review/audit this plugin or marketplace", "should I install this skill from
-  GitHub", "check this repo before I add it", or before adding any entry to extraKnownMarketplaces
-  or enabledPlugins. Clones the candidate repo, reviews the WHOLE shipped payload (hooks, skills,
-  agents, MCP config, and non-auto-loaded dirs like .claude/ and scripts/) against a vendored
-  LLM-judge review policy, and emits a structured pass/fail verdict (broad-scope hooks, undisclosed
-  telemetry, cross-service credential exfiltration, description/behavior mismatch). NOT for
-  auditing your own application code before launch (use `production-audit`), classifying a
-  codebase's file assets (use `repo-scan`), or answering vendor security questionnaires (use
-  `security-questionnaire-responder`).
+description: "Security-vet a third-party Claude Code plugin, skill pack, or marketplace repo before registering or enabling it: clone it, review the whole shipped payload (hooks, skills, agents, MCP config, .claude/, scripts/) against the vendored review policy, and return a pass/fail verdict. Use before adding any extraKnownMarketplaces or enabledPlugins entry, or when asked whether a plugin is safe. NOT for auditing your own application before launch (use `production-audit`), classifying a codebase's file assets (use `repo-scan`), or answering vendor security questionnaires (use `security-questionnaire-responder`)."
 ---
 
 # Plugin Vetting — Inbound Supply-Chain Gate

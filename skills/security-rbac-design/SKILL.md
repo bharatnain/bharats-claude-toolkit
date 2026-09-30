@@ -1,6 +1,7 @@
 ---
 name: security-rbac-design
 description: "Choose and design the authorization MODEL conceptually and tool-agnostically: decide which paradigm fits (RBAC vs ABAC vs ReBAC), design role hierarchies and resource:operation permissions, prevent role explosion, apply least privilege and separation of duty, and define the test STRATEGY for an authz model (which grant/deny and least-privilege cases to assert). Use when designing or refactoring an authorization scheme, picking the right model, auditing roles, or planning how to verify an authz model when there is no specific tool signal. Not for authoring concrete policy/test files: for OPA Rego policies and `opa test`/`*_test.rego` use `rego-skill`; for OpenFGA models, tuples, and `.fga.yaml` tests use `openfga`."
+disable-model-invocation: true
 ---
 
 # RBAC Design

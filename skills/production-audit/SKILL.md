@@ -5,6 +5,7 @@ metadata:
   origin: community
 context: fork
 agent: general-purpose
+disable-model-invocation: true
 ---
 
 # Production Audit

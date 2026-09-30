@@ -7,10 +7,11 @@ The design goal: **I never have to remember what I have.** Skills load lazily by
 description, so I just work and Claude reaches for the right one. The only thing I decide up
 front is what sits in my *always-on* index vs. what stays *one command away*.
 
-**Always-on = 30 enabled plugins**, which bring **139 vendored skills (52 always-on, 87 user-invoked via `/name`) + 8 agents** from this
+**Always-on = 8 enabled plugins**, which bring **139 vendored skills (24 model-invocable, 115 user-invoked via `/name`) + 8 agents** from this
 repo plus the external plugins' own skills — all loaded lazily by description. The unit you
 *enable* is the plugin; the 139 skills + 8 agents are what *this* repo's plugin contributes,
-and the other 29 plugins layer their skills on top.
+and the other 7 plugins layer their skills on top. Everything else is registered and one
+`/plugin` toggle away (see **On-demand** below).
 
 See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
 [`docs/housekeeping-2026-09.md`](docs/housekeeping-2026-09.md) for the open maintenance backlog.
@@ -28,23 +29,27 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the phase-by-phase history and
 **Always-on plugins**
 - `bharats-claude-toolkit` — this repo (vendored skills + agents below)
 - `frontend-design` — Anthropic (`claude-plugins-official`): production-grade UI taste
-- `ui-ux-pro-max` — design intelligence: 67 styles / 161 palettes / 57 font pairings
-- `web-quality-skills` — Addy Osmani: accessibility (WCAG 2.2), performance, Core Web Vitals, SEO
-- `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills: discovery, strategy, PRDs/OKRs/roadmaps
 - `superpowers` — obra, consumed from `claude-plugins-official` (SHA-pinned by Anthropic): brainstorm→plan→execute methodology. Note: since v6.4.1 `executing-plans` runs plans natively without pausing for review mid-plan; `diagnosing-superpowers` is its debugging entrypoint
 - `codex` — OpenAI (`openai-codex`, SHA-pinned): delegate coding tasks to Codex models (Sol, Luna, Astra) and get cross-model reviews; see **Model routing and cost**
 - `mattpocock-skills` — Matt Pocock, consumed from `claude-plugins-official` (SHA-pinned by Anthropic): ~30 compact engineering/process skills — grilling (frontier-driven design interviews), domain-modeling (CONTEXT.md + ADRs), wayfinder/triage/to-tickets (tracker-abstracted planning; bind to beads via `/setup-matt-pocock-skills`), diagnosing-bugs (feedback-loop-first), teach, codebase-design. Its `writing-for-agents` is this toolkit's **house standard for skill authoring**.
-- `security-guidance` / `plugin-dev` — Anthropic (`claude-plugins-official`): security guardrails + plugin authoring
-- `claude-security` / `session-report` / `skill-creator` — Anthropic (`claude-plugins-official`): in-session vulnerability scanning with verified patches, explorable session-usage reports, and skill creation/eval tooling (pairs with the `writing-for-agents` authoring standard)
-- `differential-review` / `fp-check` — Trail of Bits (`trailofbits-skills`); `security-awareness` — Trail of Bits (`trailofbits-skills-curated`)
-- `agent-orchestration` — wshobson `claude-code-workflows`: multi-agent role/team setups (tech-lead, frontend, backend, ml-engineer). *`agent-teams` from the same marketplace is explicitly **disabled** — it still calls the `TeamCreate`/`TeamDelete` tools removed in Claude Code v2.1.178.*
-- **ship & operate** (wshobson `claude-code-workflows`): `backend-development`, `backend-api-security`, `cloud-infrastructure`, `kubernetes-operations`, `cicd-automation`, `deployment-strategies`, `deployment-validation`, `observability-monitoring`, `incident-response` — deploy/run/monitor the product
-- **data & ML** (wshobson `claude-code-workflows`): `data-engineering`, `machine-learning-ops` — pipelines/warehouses, ML training & MLOps
+- `security-guidance` — Anthropic (`claude-plugins-official`): security guardrails; its commit/push review runs on Sonnet (`env.SECURITY_REVIEW_MODEL`)
+- `session-report` / `skill-creator` — Anthropic (`claude-plugins-official`): explorable session-usage reports, and skill creation/eval tooling (pairs with the `writing-for-agents` authoring standard)
 
-**On-demand (registered, install when needed)**
+**On-demand (set to `false` in the template; enable one per repo in `.claude/settings.json` or `.claude/settings.local.json` `enabledPlugins`, or with `/plugin` at project or local scope. A user-level enable is reset to `false` by the next `bootstrap.sh` run.)**
+
+Turned off on 2026-09-30 after a 30-day usage audit found 26 of 31 plugins idle; their agent and skill
+descriptions cost ≈21K tokens in every session.
+- `ui-ux-pro-max` (67 styles / 161 palettes / 57 font pairings), `web-quality-skills` (Addy Osmani: WCAG 2.2, Core Web Vitals, SEO)
+- `pm-product-discovery` / `pm-product-strategy` / `pm-execution` — phuryn PM skills
+- `plugin-dev`, `claude-security` — Anthropic: plugin authoring; vulnerability scanning with verified patches
+- `differential-review` / `fp-check` / `security-awareness` — Trail of Bits
+- wshobson `claude-code-workflows`: `agent-orchestration`, ship & operate (`backend-development`, `backend-api-security`, `cloud-infrastructure`, `kubernetes-operations`, `cicd-automation`, `deployment-strategies`, `deployment-validation`, `observability-monitoring`, `incident-response`), data & ML (`data-engineering`, `machine-learning-ops`). *`agent-teams` stays off for a different reason: it still calls the `TeamCreate`/`TeamDelete` tools removed in Claude Code v2.1.178.*
+- `vercel` — off globally (its session-start hook injects ≈8.5K chars and sends telemetry); `/setup-repo` enables it in `.claude/settings.local.json` for repos with `vercel.json`, `.vercel/` or `next.config.*`
+
+**Registered, never enabled**
 - `ecc@ecc` — the full 271-skill ECC collection
 - `probity` — nizos: TDD/rule-enforcement hooks; `memsearch` — zilliztech: semantic session memory — both registered, not enabled
-- the remaining `trailofbits-skills` / `trailofbits-skills-curated` plugins beyond the three enabled above
+- the remaining `trailofbits-skills` / `trailofbits-skills-curated` plugins beyond the three listed above
 - more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `frontend-mobile-development`, …)
 - `beads` — agentic issue tracker (`bd` CLI + plugin); see **Agentic project management** below
 
@@ -100,14 +105,22 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 
 # enable the always-on tier
 /plugin install bharats-claude-toolkit@bharats-claude-toolkit-dev
+/plugin install frontend-design@claude-plugins-official
+/plugin install superpowers@claude-plugins-official
+/plugin install mattpocock-skills@claude-plugins-official
+/plugin install codex@openai-codex
+/plugin install security-guidance@claude-plugins-official
+/plugin install session-report@claude-plugins-official
+/plugin install skill-creator@claude-plugins-official
+
+# on-demand: install only when a project needs one (the template keeps these off)
 /plugin install ui-ux-pro-max@ui-ux-pro-max-skill
 /plugin install web-quality-skills@addy-web-quality-skills
-/plugin install frontend-design@claude-plugins-official
 /plugin install pm-product-discovery@pm-skills
 /plugin install pm-product-strategy@pm-skills
 /plugin install pm-execution@pm-skills
-/plugin install security-guidance@claude-plugins-official
 /plugin install plugin-dev@claude-plugins-official
+/plugin install claude-security@claude-plugins-official
 /plugin install differential-review@trailofbits-skills
 /plugin install fp-check@trailofbits-skills
 /plugin install security-awareness@trailofbits-skills-curated
@@ -123,11 +136,7 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 /plugin install backend-api-security@claude-code-workflows
 /plugin install data-engineering@claude-code-workflows
 /plugin install machine-learning-ops@claude-code-workflows
-/plugin install superpowers@claude-plugins-official
-/plugin install mattpocock-skills@claude-plugins-official
-/plugin install claude-security@claude-plugins-official
-/plugin install session-report@claude-plugins-official
-/plugin install skill-creator@claude-plugins-official
+/plugin install vercel@claude-plugins-official
 # NOTE: do NOT install agent-teams@claude-code-workflows — it calls tools
 # removed in Claude Code v2.1.178 and is explicitly disabled in settings.json.
 ```
@@ -197,6 +206,15 @@ settings add-only and prints a notice when a machine already has a different val
   any `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`; it would compact at that percentage of 300K.
 - `env.CLAUDE_CODE_SUBAGENT_MODEL: "sonnet"` — a subagent dispatched without a model runs on
   Sonnet.
+- `env.SECURITY_REVIEW_MODEL: "claude-sonnet-5-5"` — the security-guidance plugin's review on
+  Stop, commit and push runs on Sonnet instead of its Opus default.
+
+The always-on roster is kept small because every enabled plugin's agent and skill descriptions
+load into every session. Only 24 toolkit skills are model-invocable; the rest run from `/name`.
+The 24 are the 12 `paths:`-scoped skills (listed only when matching files are in play), skills
+another skill calls (`agent-wrap-up`, `brand-voice`, `soc2`, `iso-27001`, `gdpr`, `pci-dss`,
+`fal-ai-media`), `hipaa`, and `claude-code-docs`, `codebase-onboarding`, `plugin-vetting`,
+`team-orchestration`.
 
 The routing table lives in the user-level CLAUDE.md (`templates/user-CLAUDE.md`, "Model
 routing"): Haiku for reading and search, Sonnet for implementation and research, Opus for
@@ -239,7 +257,7 @@ The day-to-day loop the docs recommend, and where each piece of this repo fits:
    `code-reviewer` agent); `/team <goal>` for multi-agent builds with gates; a Workflow when the
    job outgrows a handful of agents.
 5. **Where instructions live.** Always-on facts in `CLAUDE.md` and `.claude/rules/`; procedures
-   and reference material in skills (52 always-on, the rest behind `/name`); guarantees in hooks;
+   and reference material in skills (24 model-invocable, the rest behind `/name`); guarantees in hooks;
    response shape in the `Toolkit` output style.
 6. **Set up a repo.** `/setup-repo` prepares any repo (CLAUDE.md facts + check, rules, permissions,
    lint hook, team profile, a machine-local 300K compaction window, and an `AGENTS.md` pointer for
@@ -282,7 +300,7 @@ setting (`agentPushNotifEnabled` in `~/.claude/settings.json`, or Settings → C
 ```
 Also registered (browse with `/plugin` and install from their marketplaces): **probity**
 (TDD/rule-enforcement hooks), **memsearch** (semantic session memory), and the remaining **trailofbits-skills** / **trailofbits-skills-curated**
-plugins beyond the enabled `differential-review` / `fp-check` / `security-awareness`.
+plugins beyond `differential-review` / `fp-check` / `security-awareness`.
 
 Then just work — the newly available skills auto-trigger by description.
 (`/reload-plugins` may warn about prompt-cache invalidation if a plugin adds MCP servers.)
@@ -306,7 +324,7 @@ bd init
 # 3) enable its Claude Code plugin (slash commands + MCP) per the repo's docs/PLUGIN.md
 ```
 Then agents use `bd ready` / `bd show <id>` / `bd update <id> --claim` / `bd close <id>` to
-track long-horizon work. For lighter needs, `pm-execution` (above) covers PRDs/roadmaps/sprints.
+track long-horizon work. For lighter needs, the on-demand `pm-execution` plugin covers PRDs/roadmaps/sprints.
 
 ---
 

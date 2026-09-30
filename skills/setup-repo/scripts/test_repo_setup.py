@@ -191,12 +191,15 @@ def test_apply_then_check_clean(tmp_path):
     assert rs.check(rs.detect(root)) == []           # idempotent
     for p in written: assert p == "CLAUDE.md" or p.startswith(".claude/") or p == ".gitignore"
 
-def test_cli_check_exit_code(tmp_path):
+def test_cli_check_exit_code(tmp_path, no_real_codex):
+    import os
     root = make_repo(tmp_path, PY_UV)
-    r = subprocess.run([sys.executable, str(Path(rs.__file__)), "check", "--repo", str(root)], capture_output=True, text=True)
+    # The subprocess must not see a real codex or ~/.claude either (the autouse fixture only patches this process).
+    env = dict(os.environ, PATH=os.pathsep.join(("/usr/bin", "/bin")), HOME=str(no_real_codex))
+    r = subprocess.run([sys.executable, str(Path(rs.__file__)), "check", "--repo", str(root)], capture_output=True, text=True, env=env)
     assert r.returncode == 1 and "CLAUDE.md" in r.stdout
     rs.apply(rs.plan(rs.detect(root)), root)
-    r = subprocess.run([sys.executable, str(Path(rs.__file__)), "check", "--repo", str(root)], capture_output=True, text=True)
+    r = subprocess.run([sys.executable, str(Path(rs.__file__)), "check", "--repo", str(root)], capture_output=True, text=True, env=env)
     assert r.returncode == 0
 
 HOOK = Path(__file__).parent / "lint_on_edit.py"
@@ -340,6 +343,20 @@ def test_local_settings_migrates_v0_11_pct_override():
     assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60", "FOO": "1"}}) == {"env": {"FOO": "1"}, "autoCompactWindow": 300000}
     assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}}) == {"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}, "autoCompactWindow": 300000}
 
+@pytest.mark.parametrize("marker", ["vercel.json", "next.config.mjs", ".vercel/project.json"])
+def test_plan_enables_vercel_plugin_in_vercel_repos(tmp_path, marker):
+    root = make_repo(tmp_path, {**PY_UV, marker: "{}\n"})
+    local = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
+    assert json.loads(local["content"]) == {"autoCompactWindow": 300000, "enabledPlugins": {"vercel@claude-plugins-official": True}}
+    assert "vercel plugin" in local["reason"]
+
+def test_vercel_plugin_add_only_and_absent_elsewhere(tmp_path):
+    root = make_repo(tmp_path, PY_UV)
+    assert "enabledPlugins" not in json.loads({i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]["content"])
+    assert rs.merge_local_settings({"autoCompactWindow": 300000, "enabledPlugins": {"vercel@claude-plugins-official": False}}, vercel=True) == \
+        {"autoCompactWindow": 300000, "enabledPlugins": {"vercel@claude-plugins-official": False}}
+    assert rs.merge_local_settings({"enabledPlugins": ["x"]}, vercel=True) is None
+
 def test_plan_skips_bad_local_settings(tmp_path):
     root = make_repo(tmp_path, PY_UV)
     (root / ".claude").mkdir(); (root / ".claude/settings.local.json").write_text("{not json")
@@ -347,7 +364,7 @@ def test_plan_skips_bad_local_settings(tmp_path):
     assert item["action"] == "skip" and item["reason"].startswith("unparseable")
     (root / ".claude/settings.local.json").write_text(json.dumps({"env": ["x"]}))
     item = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
-    assert item["action"] == "skip" and "env is not an object" in item["reason"]
+    assert item["action"] == "skip" and "env or enabledPlugins is not an object" in item["reason"]
 
 AGENTS_BLOCK = "<!-- setup-repo:agents -->\nRead CLAUDE.md first; it is the source of truth for this repo's commands and conventions.\n<!-- /setup-repo:agents -->\n"
 

@@ -24,6 +24,7 @@ allowed-tools:
   - Bash(head:*)
   - Bash(file:*)
   - Bash(jq:*)
+disable-model-invocation: true
 ---
 
 # vuln-patch

@@ -34,6 +34,7 @@ allowed-tools:
   - Bash(kill:*)
 context: fork
 agent: general-purpose
+disable-model-invocation: true
 ---
 
 # dnr-hunt

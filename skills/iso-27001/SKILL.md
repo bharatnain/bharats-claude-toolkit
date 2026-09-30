@@ -1,15 +1,6 @@
 ---
 name: iso-27001
-description: >
-  Expert ISO 27001 compliance assistant for security and compliance teams. Use this skill
-  whenever a user asks about ISO 27001 or ISO/IEC 27001, including any of the following:
-  gap analysis, auditing, compliance assessments, control checklists, policy writing, 
-  document generation, Statement of Applicability (SoA), risk assessment, risk registers,
-  risk treatment plans, Annex A controls, ISMS implementation, clause requirements,
-  certification readiness, transitioning from 2013 to 2022, control implementation guidance,
-  incident response policies, access control policies, supplier security, or any information
-  security management system (ISMS) topic. Trigger even if the user doesn't say "skill" —
-  any ISO 27001 or ISMS question should use this skill.
+description: "ISO/IEC 27001 compliance help: gap analysis, ISMS implementation, Statement of Applicability, risk assessment and treatment, Annex A controls, policies, certification readiness and the 2013 to 2022 transition. Use for any ISO 27001 or ISMS question."
 ---
 
 # ISO 27001 Compliance Skill

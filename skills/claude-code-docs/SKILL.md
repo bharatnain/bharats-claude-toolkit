@@ -1,6 +1,6 @@
 ---
 name: claude-code-docs
-description: Fetch the current official Claude Code docs before building or explaining any Claude Code internals. Use when building, updating, or debugging Claude Code features in this toolkit — hooks, skills, plugins, plugin marketplaces, settings, subagents, slash commands, statusline, output-styles, memory — OR when the user asks what Claude Code can do, how a feature works, or how to configure it. Trigger this BEFORE answering from built-in knowledge, which may be stale relative to the latest release.
+description: "Fetch the current official Claude Code docs before building or explaining Claude Code internals: hooks, skills, plugins, marketplaces, settings, subagents, slash commands, statusline, output styles, memory. Use when building or debugging those features, or when asked what Claude Code can do or how to configure it; use it before answering from memory."
 ---
 
 # Claude Code Docs

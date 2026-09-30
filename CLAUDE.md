@@ -39,7 +39,3 @@ Claude Code plugin + marketplace (vendored skills, role agents, hooks, scripts).
 ## Bootstrap
 
 - `bash scripts/bootstrap.sh` merges `settings.json` into `~/.claude/settings.json` add-only, except repo-side `false` plugin values, which are enforced.
-
-## Compaction
-
-When compacting, preserve: the list of files modified this session, the last validator/test results, open task ids, and any decision stated exactly.

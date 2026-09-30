@@ -1,6 +1,7 @@
 ---
 name: api-rate-limiting
 description: "Rate limit design as consumer contract -- quota tiers, burst vs sustained limits, per-user vs per-app limits, fair-use policy, quota negotiation. Use when designing the rate limiting strategy for a new public or partner API or auditing an existing API for missing or inconsistently applied rate limits."
+disable-model-invocation: true
 ---
 
 # API Rate Limiting

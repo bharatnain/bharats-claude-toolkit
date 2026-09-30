@@ -4,6 +4,7 @@ description: Designs feature architectures by analyzing existing codebase patter
 model: sonnet
 effort: medium
 tools: [Read, Grep, Glob, Bash]
+omitClaudeMd: true
 ---
 
 # Code Architect Agent

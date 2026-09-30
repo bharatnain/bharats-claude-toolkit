@@ -1,6 +1,6 @@
 ---
 name: team-orchestration
-description: Orchestrate a multi-agent team to build something end-to-end — when the user wants to build with a team, orchestrate a team, spin up a team, run a multi-agent build, or coordinate subagents with quality gates. Detects the codebase maturity profile, staffs the right roster of role agents, activates a session sentinel so the gate hooks enforce checks automatically, decomposes the goal into acceptance-criteria-bearing tasks (beads or native Task tools), spawns worktree-isolated teammates per the profile, and tears the session down at the end. Use this for the /team command.
+description: "Orchestrate a multi-agent build: detect the codebase maturity profile, staff role agents, activate the session-sentinel quality gates, decompose the goal into acceptance-criteria tasks, spawn teammates and tear down. Use for the /team command, or when asked to build with a team or coordinate subagents."
 ---
 
 # Team Orchestration
@@ -12,9 +12,8 @@ session gates enforce quality automatically. This skill is the brain behind `/te
 ## Solo-safe invariant
 
 The gate hooks (`team_gate`) and `quality_gate.py` are **pure no-ops** until a session
-sentinel marker exists. Installing this phase changes **nothing** for solo users — gates
-only activate after step 3 below sets the sentinel, and they deactivate again at teardown
-(step 6). Always pair a `set` with a `clear`.
+sentinel marker exists. They activate when step 3 sets the sentinel and deactivate at
+teardown (step 6), so solo users are unaffected. Always pair a `set` with a `clear`.
 
 ## The 6-step orchestration loop
 
@@ -48,7 +47,7 @@ python3 scripts/team_sentinel.py set --profile <P> --by tech-lead --session <id>
 
 - `<P>` is the profile name from step 1 (`greenfield` / `active` / `legacy`).
 - `--by tech-lead` is hardcoded: this skill is operated by the tech-lead/orchestrator role
-  (consistent with `agents/tech-lead.md` owning the sentinel as its documented first action).
+  (the tech-lead role owns the sentinel).
 - `<id>` is **your current Claude session id** (from the runtime/session payload). Capture it
   once here and reuse the identical value at teardown so the `clear` is owner-scoped.
 
@@ -57,7 +56,7 @@ automatically — you do not invoke them per-task.
 
 ### 4. Decompose the goal into tasks
 
-Break the goal into the **smallest independently verifiable units**. **Every task MUST carry**:
+Break the goal into the **smallest independently verifiable units**. **Every task carries**:
 - explicit, checkable **acceptance criteria**, and
 - a **maturity target** (the profile/scope the task is held to).
 
@@ -120,10 +119,11 @@ not paraphrase it per spawn.
 
 ## Model routing
 
-Every spawn names its model, per the routing table in the user CLAUDE.md, and the dispatch
-states it. Implementers run on `sonnet`; reviewers are chosen by risk (`sonnet` for small
-mechanical diffs, `opus` for security, concurrency, migrations, public interfaces and
-whole-branch reviews). Orchestration stays in the main session.
+Every spawn names its model per the routing table in the user CLAUDE.md, and the dispatch
+states it. Implementers run on
+`sonnet`; reviewers are chosen by risk (`sonnet` for small mechanical diffs, `opus` for security,
+concurrency, migrations, public interfaces and whole-branch reviews). Orchestration stays in the
+main session.
 
 ## Cross-model teammates (Codex)
 
@@ -207,7 +207,7 @@ After each wave, before the next:
 
 ## Plans from superpowers
 
-superpowers 6.4.1's `executing-plans` runs a written plan natively, without mid-plan review
+superpowers' `executing-plans` runs a written plan natively, without mid-plan review
 pauses. When a plan comes from `writing-plans` / `executing-plans`, this skill's
 [review loop](#review-loop) is the review layer: run it after each wave of the plan, not
 only at the end.

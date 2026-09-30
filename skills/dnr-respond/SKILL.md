@@ -33,6 +33,7 @@ allowed-tools:
   - Bash(python3:*)
   - Bash(curl:*)
   - Bash(kill:*)
+disable-model-invocation: true
 ---
 
 # dnr-respond

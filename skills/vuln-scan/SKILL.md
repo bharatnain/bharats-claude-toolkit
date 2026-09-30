@@ -25,6 +25,7 @@ allowed-tools:
   - Bash(file:*)
 context: fork
 agent: general-purpose
+disable-model-invocation: true
 ---
 
 # /vuln-scan

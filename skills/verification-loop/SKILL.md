@@ -4,6 +4,7 @@ description: "A comprehensive verification system for Claude Code sessions. Use 
 license: MIT
 metadata:
   source: "Adapted from ECC (github.com/affaan-m/ecc), MIT"
+disable-model-invocation: true
 ---
 
 # Verification Loop Skill

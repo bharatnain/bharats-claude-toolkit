@@ -1,16 +1,6 @@
 ---
 name: gdpr
-description: >
-  Expert GDPR compliance assistant covering all four core workflows: (1) auditing code and systems
-  for GDPR violations, (2) drafting GDPR-compliant documents such as privacy policies, Data
-  Processing Agreements (DPAs), and consent notices, (3) answering GDPR compliance questions with
-  authoritative article citations, and (4) reviewing data flows and PII handling practices.
-  Use this skill whenever the user mentions GDPR, data protection, privacy compliance, lawful basis,
-  data subject rights, DPA, privacy notices, consent management, data breaches, DPIAs, controller/
-  processor relationships, cross-border data transfers, or any EU/UK data privacy topic. Also trigger
-  for questions like "is this GDPR compliant?", "how do I handle personal data?", "what does a
-  privacy policy need?", or any request involving PII, personal data, or data retention in a
-  regulatory context.
+description: "GDPR compliance help: audit code and data flows for violations, draft privacy policies, DPAs and consent notices, and answer GDPR questions with article citations. Use for GDPR, EU/UK data protection, lawful basis, data subject rights, DPIAs, or PII and retention questions in a regulatory context."
 ---
 
 # GDPR Compliance Skill

@@ -5,6 +5,10 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Fixed: `autoCompactWindow` is a token count.** v0.12.0 shipped the string `"300k"`, which Claude Code
+  rejects and drops from settings. The template, `bootstrap.sh` and `/setup-repo` now write `300000`, and
+  both replace a non-integer value they find.
+
 ## [0.12.0] - 2026-09-30
 
 - **Changed: cheaper defaults.** `settings.json` ships `model: "opus"` (tracks the recommended Opus),

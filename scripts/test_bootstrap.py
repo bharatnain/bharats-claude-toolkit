@@ -35,7 +35,7 @@ def run_bootstrap(tmp_path, dest=None):
 
 def test_template_declares_defaults():
     assert TEMPLATE["model"] == "opus"
-    assert TEMPLATE["autoCompactWindow"] == "300k"
+    assert TEMPLATE["autoCompactWindow"] == 300000
     assert TEMPLATE["env"]["CLAUDE_CODE_SUBAGENT_MODEL"] == "sonnet"
     assert TEMPLATE["enabledPlugins"]["codex@openai-codex"] is True
 
@@ -43,22 +43,22 @@ def test_template_declares_defaults():
 def test_absent_keys_are_added(tmp_path):
     merged, proc = run_bootstrap(tmp_path)
     assert merged["model"] == "opus"
-    assert merged["autoCompactWindow"] == "300k"
+    assert merged["autoCompactWindow"] == 300000
     assert merged["env"] == {"CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"}
     assert merged["enabledPlugins"]["codex@openai-codex"] is True
     assert "bootstrap: keeping" not in proc.stderr
-    assert "model opus, window 300k" in proc.stdout
+    assert "model opus, window 300000" in proc.stdout
 
 
 def test_existing_different_model_and_window_kept_with_notice(tmp_path):
     merged, proc = run_bootstrap(
-        tmp_path, {"model": "claude-opus-5", "autoCompactWindow": "500k"}
+        tmp_path, {"model": "claude-opus-5", "autoCompactWindow": 500000}
     )
     assert merged["model"] == "claude-opus-5"
-    assert merged["autoCompactWindow"] == "500k"
+    assert merged["autoCompactWindow"] == 500000
     assert "bootstrap: keeping model=claude-opus-5 (toolkit default: opus" in proc.stderr
-    assert "bootstrap: keeping autoCompactWindow=500k (toolkit default: 300k" in proc.stderr
-    assert "model claude-opus-5, window 500k" in proc.stdout
+    assert "bootstrap: keeping autoCompactWindow=500000 (toolkit default: 300000" in proc.stderr
+    assert "model claude-opus-5, window 500000" in proc.stdout
 
 
 def test_env_is_add_only(tmp_path):
@@ -92,3 +92,8 @@ def test_rerun_on_merged_output_is_silent(tmp_path):
     merged, _ = run_bootstrap(tmp_path / "first")
     _, proc = run_bootstrap(tmp_path / "second", merged)
     assert "bootstrap: keeping" not in proc.stderr
+
+
+def test_invalid_string_window_is_replaced(tmp_path):
+    merged, proc = run_bootstrap(tmp_path, {"autoCompactWindow": "300k"})
+    assert merged["autoCompactWindow"] == 300000

@@ -7,8 +7,8 @@ general-purpose; Codex never invoked) and a usage report from a second machine (
 
 ## Decisions
 
-1. **Compaction at 300K.** `settings.json` ships `autoCompactWindow: "300k"` (string form per
-   the model-config docs). `bootstrap.sh` merges it add-only and warns when a machine has
+1. **Compaction at 300K.** `settings.json` ships `autoCompactWindow: 300000` (a token count,
+   100000–1000000, per the settings reference; v0.12.0 shipped the invalid string `"300k"`). `bootstrap.sh` merges it add-only and warns when a machine has
    `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`, which would compact at that percentage of 300K.
    `/setup-repo` writes the same window into the git-ignored `.claude/settings.local.json`
    (replacing the 60% env value it wrote in v0.11.0).

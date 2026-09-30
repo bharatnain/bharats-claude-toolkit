@@ -230,7 +230,7 @@ def _hookable_lint_cmd(profile):
             return (cmd, glob, exts) if any(l in profile["languages"] for l in langs) else None
     return None
 
-AUTOCOMPACT_WINDOW = "300k"  # auto-compact window in tokens (machine-local, never shared)
+AUTOCOMPACT_WINDOW = 300000  # auto-compact window: a token count, 100000-1000000 (machine-local, never shared)
 PCT_ENV, PCT_V0_11 = "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE", "60"  # what v0.11.0 wrote; migrated away
 
 def merge_local_settings(existing):
@@ -241,7 +241,7 @@ def merge_local_settings(existing):
     if env.get(PCT_ENV) == PCT_V0_11:
         del env[PCT_ENV]
         if not env: del st["env"]
-    st.setdefault("autoCompactWindow", AUTOCOMPACT_WINDOW)
+    if not isinstance(st.get("autoCompactWindow"), int): st["autoCompactWindow"] = AUTOCOMPACT_WINDOW  # absent, or v0.12.0's invalid "300k"
     return st
 
 def _settings_shape_error(st):
@@ -327,7 +327,7 @@ def plan(profile):
             items.append({"path": local_rel, "action": "skip", "reason": "unexpected shape: env is not an object", "content": None})
         else:
             local_action = "skip" if existing_local is not None and merged_local == existing_local else ("create" if existing_local is None else "update")
-            items.append({"path": local_rel, "action": local_action, "reason": f"auto-compact at {AUTOCOMPACT_WINDOW.upper()} tokens (machine-local)",
+            items.append({"path": local_rel, "action": local_action, "reason": f"auto-compact at {AUTOCOMPACT_WINDOW // 1000}K tokens (machine-local)",
                           "content": json.dumps(merged_local, indent=2, ensure_ascii=False) + "\n"})
     codex = profile["codex"]
     if codex["cli"]:

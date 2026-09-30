@@ -193,7 +193,7 @@ settings add-only and prints a notice when a machine already has a different val
 
 - `model: "opus"` — the alias tracks the recommended Opus (Opus 5.5 today). Use `fable` only after
   `opus` has failed at a task, or when you ask for it.
-- `autoCompactWindow: "300k"` — compaction at 300K tokens instead of near the 1M limit. Remove
+- `autoCompactWindow: 300000` — compaction at 300K tokens instead of near the 1M limit. Remove
   any `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`; it would compact at that percentage of 300K.
 - `env.CLAUDE_CODE_SUBAGENT_MODEL: "sonnet"` — a subagent dispatched without a model runs on
   Sonnet.

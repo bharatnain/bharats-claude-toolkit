@@ -127,7 +127,9 @@ for key, hint in (("model", "run /model {v} to switch"),
                   ("autoCompactWindow", "edit autoCompactWindow in settings.json to change it")):
     if key not in src:
         continue
-    if not merged.get(key):
+    # A non-integer window is invalid (the key takes a token count) and Claude Code drops it;
+    # v0.12.0 shipped the string "300k", so replace any non-integer value.
+    if not merged.get(key) or (key == "autoCompactWindow" and not isinstance(merged[key], int)):
         merged[key] = src[key]
     elif merged[key] != src[key]:
         print(f"bootstrap: keeping {key}={merged[key]} (toolkit default: {src[key]}; "
@@ -147,7 +149,7 @@ if src_env:
 pct = merged.get("env", {}).get("CLAUDE_AUTOCOMPACT_PCT_OVERRIDE")
 if pct is not None:
     print(f"bootstrap: env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE={pct} compacts at that percentage "
-          f"of the window (60 with a 300k window compacts near 180K); remove it unless intended",
+          f"of the window (60 with a 300K window compacts near 180K); remove it unless intended",
           file=sys.stderr)
 
 # The source $comment documents the template, not the user config: never

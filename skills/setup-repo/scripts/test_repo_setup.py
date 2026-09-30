@@ -325,20 +325,20 @@ def test_plan_local_settings_autocompact_add_only(tmp_path):
     root = make_repo(tmp_path, PY_UV)
     items = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}
     local = items[".claude/settings.local.json"]
-    assert local["action"] == "create" and json.loads(local["content"]) == {"autoCompactWindow": "300k"}
+    assert local["action"] == "create" and json.loads(local["content"]) == {"autoCompactWindow": 300000}
     assert local["reason"] == "auto-compact at 300K tokens (machine-local)"
     assert ".claude/settings.local.json" in items[".gitignore"]["content"] and ".claude/team-profile.json" in items[".gitignore"]["content"]
     (root / ".claude").mkdir(); (root / ".claude/settings.local.json").write_text(json.dumps({"env": {"FOO": "1"}, "model": "opus"}))
     local = {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]
     merged = json.loads(local["content"])
-    assert local["action"] == "update" and merged == {"env": {"FOO": "1"}, "model": "opus", "autoCompactWindow": "300k"}
-    (root / ".claude/settings.local.json").write_text(json.dumps({"autoCompactWindow": "500k"}))
+    assert local["action"] == "update" and merged == {"env": {"FOO": "1"}, "model": "opus", "autoCompactWindow": 300000}
+    (root / ".claude/settings.local.json").write_text(json.dumps({"autoCompactWindow": 500000}))
     assert {i["path"]: i for i in rs.plan(rs.detect(root))["items"]}[".claude/settings.local.json"]["action"] == "skip"
 
 def test_local_settings_migrates_v0_11_pct_override():
-    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60"}}) == {"autoCompactWindow": "300k"}
-    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60", "FOO": "1"}}) == {"env": {"FOO": "1"}, "autoCompactWindow": "300k"}
-    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}}) == {"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}, "autoCompactWindow": "300k"}
+    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60"}}) == {"autoCompactWindow": 300000}
+    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60", "FOO": "1"}}) == {"env": {"FOO": "1"}, "autoCompactWindow": 300000}
+    assert rs.merge_local_settings({"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}}) == {"env": {"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"}, "autoCompactWindow": 300000}
 
 def test_plan_skips_bad_local_settings(tmp_path):
     root = make_repo(tmp_path, PY_UV)
@@ -410,3 +410,7 @@ def test_codex_recommendations(tmp_path, monkeypatch, no_real_codex):
     s = no_real_codex / ".claude/settings.json"; s.parent.mkdir(); s.write_text(json.dumps({"enabledPlugins": {"codex@openai-codex": True}}))
     fake_codex(monkeypatch, login_rc=0)
     assert "codex" not in recs().lower()
+
+def test_local_settings_replace_invalid_string_window():
+    assert rs.merge_local_settings({"autoCompactWindow": "300k"}) == {"autoCompactWindow": 300000}
+    assert rs.merge_local_settings({"autoCompactWindow": 200000}) == {"autoCompactWindow": 200000}

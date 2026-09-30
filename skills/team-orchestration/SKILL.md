@@ -118,6 +118,25 @@ Teammates start with no history. Every spawn prompt carries, in this order:
 Full template: [references/teammate-brief.md](references/teammate-brief.md). Copy it; do
 not paraphrase it per spawn.
 
+## Model routing
+
+Every spawn names its model, per the routing table in the user CLAUDE.md, and the dispatch
+states it. Implementers run on `sonnet`; reviewers are chosen by risk (`sonnet` for small
+mechanical diffs, `opus` for security, concurrency, migrations, public interfaces and
+whole-branch reviews). Orchestration stays in the main session.
+
+## Cross-model teammates (Codex)
+
+- Use `codex:codex-rescue` as an implementer for spec-complete, test-backed tasks. Run it in
+  the background; pass `--cwd <worktree>` for parallel waves and `--model` from the aliases
+  in the routing table.
+- Use the Codex plugin's `codex:review` or `codex:adversarial-review` command (typed with a
+  leading slash) as an extra reviewer in the [review loop](#review-loop): run it alongside the Claude reviewer and merge both into one
+  fix list.
+- Codex edits skip Claude's PostToolUse hooks, so run the wave's checks on its diff before
+  review.
+- Never let Codex commit, merge or push.
+
 ## Waves and scopes
 
 - 3–5 teammates per wave. More than that and review cost outgrows the parallelism win.

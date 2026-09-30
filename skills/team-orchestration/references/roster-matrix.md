@@ -7,9 +7,9 @@ the runtime source of truth** (isolation is driven entirely by the profile's
 
 | Profile | Required roles | Optional roles | Worktree isolation |
 |---|---|---|---|
-| `greenfield` | `tech-lead` | `code-reviewer`, `test-engineer` | no (`worktree: false`) |
-| `active` | `tech-lead`, `code-reviewer` | `integrator`, `test-engineer` | no (`worktree: false`) |
-| `legacy` | `tech-lead`, `code-reviewer`, `integrator`, `test-engineer` | — | yes (`worktree: true`) |
+| `greenfield` | `tech-lead` | `code-reviewer`, `test-engineer`, `codex:codex-rescue` | no (`worktree: false`) |
+| `active` | `tech-lead`, `code-reviewer` | `integrator`, `test-engineer`, `codex:codex-rescue` | no (`worktree: false`) |
+| `legacy` | `tech-lead`, `code-reviewer`, `integrator`, `test-engineer` | `codex:codex-rescue` | yes (`worktree: true`) |
 
 ## How to use this
 
@@ -24,6 +24,8 @@ the runtime source of truth** (isolation is driven entirely by the profile's
 
 ## Notes
 
+- `codex:codex-rescue` is a namespaced role from the Codex plugin (`codex@openai-codex`), not a file
+  in `agents/`; it needs the Codex plugin and CLI (`/codex:setup`).
 - `tech-lead` is always required and is the orchestrator running this skill — it works on
   the integration branch, never gets its own worktree, and reads other worktrees read-only.
 - If a required role cannot be staffed, surface the gap rather than silently dropping it.

@@ -10,7 +10,7 @@
   },
   "roles": {
     "required": ["tech-lead", "code-reviewer", "integrator", "test-engineer"],
-    "optional": []
+    "optional": ["codex:codex-rescue"]
   },
   "isolation": {
     "worktree": true

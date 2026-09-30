@@ -47,3 +47,4 @@ report, and continue.
 - Name the check by its exact command; "run the tests" is not a check.
 - Put the report path in the scratchpad, never in the repo.
 - Attended run: drop the AUTONOMY block, keep everything else.
+- Name the model for every spawn (routing table in the user CLAUDE.md).

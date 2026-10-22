@@ -5,6 +5,8 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-10-22
+
 - **Fixed: third-party pins are enforced.** A `github` marketplace source has no `sha` field, so Claude Code
   ignored the recorded pins and tracked `main`. Each third-party marketplace is now an inline
   `source: "settings"` catalog whose plugin entries carry `ref` + `sha`; names and `plugin@marketplace` keys
@@ -39,15 +41,10 @@ All notable changes to this project are documented here. Format follows
 - **Changed:** `/setup-repo` recommends `/verify`; `team-orchestration` says agent teams were removed
   (v2.1.178); the agents rule notes plugin agents ignore `permissionMode`, `hooks` and `mcpServers`; the
   docs-trigger eval grants `Skill`; CI runs `claude plugin validate`; the marketplace has a description.
-- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, run any `claude plugin marketplace remove` steps it
-  prints, run bootstrap again, then fully quit and reopen Claude Code and reinstall plugins it removed
-  (for example `claude plugin install codex@openai-codex`).
-
 - **Fixed: Trail of Bits marketplace names.** `settings.json` registered `trailofbits/skills` and
   `trailofbits/skills-curated` as `trailofbits-skills` / `trailofbits-skills-curated`, but Claude Code names a
   marketplace by the `name` in its `marketplace.json` (`trailofbits` / `skills-curated`), so the three plugins
   could not be installed. Keys renamed; README and supply-chain doc updated.
-
 - **Changed: smaller always-on roster.** A 30-day audit found 26 of 31 plugins idle, and their agent
   and skill descriptions cost ≈21K tokens in every session. The template now enables 8 plugins
   (this toolkit, `frontend-design`, `superpowers`, `mattpocock-skills`, `codex`, `security-guidance`,
@@ -66,6 +63,35 @@ All notable changes to this project are documented here. Format follows
   `integrator` on Sonnet, and the architect, planner, code-architect and spec-miner agents skip CLAUDE.md
   (`omitClaudeMd`); the dispatch brief must carry any repo conventions they need.
 - **Fixed:** the setup-repo CLI test no longer depends on whether Codex is installed on the machine.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`; run any `claude plugin marketplace remove --scope user` steps
+  it prints, run bootstrap again, then fully quit and reopen Claude Code and reinstall plugins it removed (for
+  example `claude plugin install codex@openai-codex`).
+
+### Commits
+
+- docs: record open review minors
+- fix: address branch review (gate not-run, WorkOS consent, bootstrap advice)
+- docs: CHANGELOG, housekeeping record, price tiers; regenerate catalog
+- ci: validate plugin and marketplace manifests; add marketplace description
+- chore(settings): bump six re-vetted plugin pins
+- chore(vendor): record re-vendored upstream HEADs
+- chore(skills): move non-spec frontmatter keys under metadata
+- fix(settings): enforce third-party pins via inline settings marketplaces
+- fix: eval grants Skill, plugin-agent fields, TeamCreate wording
+- fix: namespaced workflow agent types, Haiku/Sonnet 5.5 model data
+- chore(vendor): re-sync alirezarezvani/claude-skills to 27cfcd0
+- chore(vendor): re-sync marketingskills to e85f3cb
+- fix(validate): flag unknown skill keys, 'tools', and the 1,536-char listing cap
+- fix(workflows): drop module imports and Node APIs the Workflow runtime does not provide
+- fix(setup-repo): recommend /verify instead of the stale syncClaudeAiSkills advice
+- fix: secret_scan blocks on hook failure; WorkOS installer runs only with consent
+- chore(vendor): re-sync claude-for-customer-success to 7c10e6d
+- chore(vendor): re-sync Claude-Skills-Governance-Risk-and-Compliance to aab13e1
+- chore(vendor): re-sync workos/skills to 41fdb98
+- chore(vendor): re-sync launch-your-agent to d5d0ffb
+- chore(vendor): re-sync ecc to 90606c8
+- fix(settings): register Trail of Bits marketplaces by their declared names
+- feat: trim always-on roster, Sonnet security review, per-repo vercel, prompt trims
 
 ## [0.12.1] - 2026-09-30
 

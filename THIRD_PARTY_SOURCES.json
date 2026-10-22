@@ -215,7 +215,7 @@
         "skills/cost-aware-llm-pipeline/references/claude-api/prompt-caching.md",
         "skills/cost-aware-llm-pipeline/references/claude-api/LICENSE.txt"
       ],
-      "_comment": "The 'files' above are a partial vendor of the upstream claude-api skill's shared/ reference files, embedded in the (ECC-sourced) cost-aware-llm-pipeline skill and vendored at a LATER SHA than the three full skills: b29e7cf65e5cb78a5ac33d582270551bc74a14eb (2026-07). upstream_head_at_manifest remains accurate for theme-factory/brand-guidelines/mcp-builder."
+      "_comment": "The 'files' above are a partial vendor of the upstream claude-api skill's shared/ reference files, embedded in the (ECC-sourced) cost-aware-llm-pipeline skill and refreshed 2026-10-22 from the claude-api skill bundled with Claude Code 2.1.308 (the shipped bundle is the real source; upstream's shared/ tracks it). upstream_head_at_manifest remains accurate for theme-factory/brand-guidelines/mcp-builder."
     },
     {
       "repo": "https://github.com/t0ddc3by/claude-for-customer-success",

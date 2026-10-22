@@ -234,6 +234,17 @@ design and risky reviews, Codex for delegated coding. Bootstrap installs that fi
 is absent, so existing machines pick up the table with
 `CLAUDE_FORCE_CLAUDE_MD=1 bash scripts/bootstrap.sh` (the old file is backed up).
 
+**Price tiers (API list prices, Oct 2026, per million input/output tokens).** Haiku 5.5 is
+$0.10/$0.50 for prompts up to 100K tokens and $0.50/$2.50 above; Sonnet 5.5 is $2/$10; Opus 5.5
+is $4/$20; Fable 5.1 is $10/$50. A Haiku 5.5 agent that keeps its prompt under 100K costs about
+a twentieth of a Sonnet one, so give Haiku narrow reading jobs with short replies rather than
+long transcripts. Sonnet 4.5 retires on 2026-11-30. `cost-aware-llm-pipeline` has the full table.
+
+**Effort is set where the agent is defined.** Role agents in `agents/` carry `effort` in their
+frontmatter, and workflow stages pass `effort` to `agent()` (the quality-gate stage runs on
+Haiku at `low`). Leave the Agent tool's own `effort` parameter unset unless you ask for a
+level; the dispatched agent then uses its definition's effort.
+
 **Delegating to OpenAI models (Codex).** The official `codex@openai-codex` plugin is enabled.
 It needs the Codex CLI and a ChatGPT sign-in, once per machine:
 

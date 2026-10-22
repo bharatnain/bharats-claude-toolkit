@@ -76,6 +76,25 @@ From the 30-day audit (outputs in the gitignored `.superpowers/audit-2026-09-30/
   `templates/user-CLAUDE.md` was not applied: it would have removed the maintainer's own behavioural rules.
 - Not applied: making `beads_init` opt-in (it creates `.beads/` in every repo, 1.6s per session start).
 
+## Applied 2026-10-22 (Claude Code 2.1.308 refresh)
+
+- Third-party marketplaces converted to inline `source: "settings"` catalogs so the per-plugin `sha` pins are
+  enforced (a `github` marketplace source has no `sha`). Six pins bumped after re-vetting; ecc held (1,146
+  upstream commits, too large to vet in one pass).
+- Workflows rewritten for the real runtime (no imports or Node APIs, namespaced agent types) and test-run.
+- `validate_skills.py` gained the 1,536-char listing cap, `tools:` error and unknown-key warnings; stray keys
+  moved under `metadata:`. CI runs `claude plugin validate` (not `--strict`: the plugin name contains
+  "claude" and the root `CLAUDE.md` is repo context, both deliberate).
+- Twelve vendored sources re-checked; seven had changes and were re-vendored.
+- Model data moved to Opus 5.5 / Sonnet 5.5 / Haiku 5.5; claude-api references refreshed from 2.1.308.
+- Not applied: shifting more personal routing to Haiku 5.5 in `templates/user-CLAUDE.md` (maintainer's call);
+  vendoring marketingskills' new `conversion-tracking` and `link-building` skills; adopting upstream's
+  rewritten descriptions for 10 marketingskills skills (ours kept verbatim).
+- Follow-ups: `migrate-sweep` transforms without `isolation: 'worktree'` and gates the main checkout;
+  `doctor.py` compares marketplace keys only, so it cannot see a stale GitHub registration; whether Claude
+  Code refreshes an already-registered settings marketplace when pins change is unverified; the alirezarezvani
+  Colorado AI-hiring citation ("CO SB 26-189") changed upstream and is unchecked.
+
 ## Deferred (with reason)
 
 - **11 — SKILL.md splits.** Only `hallmark` (67 k, already diverged) was split into
@@ -111,4 +130,4 @@ From the 30-day audit (outputs in the gitignored `.superpowers/audit-2026-09-30/
   `false` values, which its add-only merge previously could not). Fully quit and reopen Claude Code.
 - Set the `ANTHROPIC_API_KEY` repo secret if you want `plugin-eval.yml` to run:
   `bash scripts/set_eval_secret.sh` (hidden prompt, or reads `$ANTHROPIC_API_KEY`).
-- Watch the model deprecations page for Sonnet 4.5 and the Sonnet 5.5 / Haiku 5.5 launches.
+- Watch the model deprecations page: Sonnet 4.5 retires 2026-11-30.

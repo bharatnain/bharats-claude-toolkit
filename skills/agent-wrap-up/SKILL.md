@@ -2,8 +2,9 @@
 name: agent-wrap-up
 description: "Close out (or revisit) a Claude Managed Agent (CMA) build from /launch-your-agent — refresh the overview page, recap every CMA primitive the user now owns, show the run log and live status, suggest 1–2 tailored next upgrades, and sweep hygiene (sessions archived, key only in .env, no literal dates in deployment kickoffs). Use when the user says \"/agent-wrap-up\", \"wrap up my agent\", \"close out my managed agent\", \"where do things stand with my agent\", or at the end of a /launch-your-agent build. Keywords: Claude Managed Agents, CMA, managed agent, wrap up, close out."
 license: Apache-2.0
-version: 0.2.0
-dependencies: A `./my-agent/` folder from /launch-your-agent. ANTHROPIC_API_KEY in `my-agent/.env` optional — without it the wrap-up is describe-only.
+metadata:
+  version: 0.2.0
+  dependencies: A `./my-agent/` folder from /launch-your-agent. ANTHROPIC_API_KEY in `my-agent/.env` optional — without it the wrap-up is describe-only.
 ---
 
 <!-- Copyright 2026 Anthropic PBC -->

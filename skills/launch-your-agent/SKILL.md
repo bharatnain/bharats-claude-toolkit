@@ -2,9 +2,10 @@
 name: launch-your-agent
 description: "Build and deploy a Claude Managed Agent (CMA) — an agent hosted in the user's own Anthropic account via the CMA API — end to end. Scope a v0 with an interview, create the agent/environment/session, kick it off with an outcome rubric, grade the run, iterate, and (if it should run on a clock) put it on a scheduled deployment, with everything bigger laid out as v1/v2. Use when the user says \"launch my agent\", \"/launch-your-agent\", \"build me a managed agent\", \"deploy an agent on CMA\", or wants an always-on hosted agent running without them. Keywords: Claude Managed Agents, CMA, CMA API, managed agent, hosted agent, agent harness, scheduled deployment, outcome rubric. NOT for marketing — for planning a product launch, feature announcement, or go-to-market, use `launch` instead."
 license: Apache-2.0
-version: 0.3.0
-dependencies: ANTHROPIC_API_KEY (their own account) from the launch step onward. `ant` CLI optional — curl forms included for everything.
 disable-model-invocation: true
+metadata:
+  version: 0.3.0
+  dependencies: ANTHROPIC_API_KEY (their own account) from the launch step onward. `ant` CLI optional — curl forms included for everything.
 ---
 
 <!-- Copyright 2026 Anthropic PBC -->

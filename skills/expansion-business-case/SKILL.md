@@ -11,9 +11,10 @@ description: >
   not for book-of-business weighted renewal forecasting or GRR/NRR (use
   `renewal-forecast`).
 argument-hint: "[--csm-led | --csql] [account name or ID]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 # /expansion-business-case

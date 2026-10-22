@@ -6,9 +6,10 @@ description: >
   for weekly account reviews, portfolio triage, or when a health alert fires.
   Applies your configured health model components and thresholds.
 argument-hint: "[account name | --portfolio] [--triage | --deep]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 # /health-score-review

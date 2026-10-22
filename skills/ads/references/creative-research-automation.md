@@ -20,7 +20,7 @@ The core reframe: don't ask the agent to *replace* the strategist. Offload the *
 - You want personas grounded in real reviews, not assumptions — and the "who our ads *seem* to target vs. who actually buys" gap.
 - You're standing up a recurring competitive/creative report that should run itself and land in Slack.
 
-This is the *paid-social creative research* cut. For structured competitor dossiers from a URL list, hand off to `competitor-profiling`. For deep voice-of-customer analysis and JTBD, hand off to `customer-research`. Persona output feeds `positioning`.
+This is the *paid-social creative research* cut. For structured competitor dossiers from a URL list, hand off to `competitor-profiling`. For deep voice-of-customer analysis and JTBD, hand off to `customer-research`. Persona output feeds `product-marketing`.
 
 ## Prerequisites (connectors, exact links)
 
@@ -99,5 +99,5 @@ Run it against your competitors, your *clients'* competitors, or brands you admi
 ## Where the outputs go
 
 - **Ad-library + format/partnership findings →** the concept slate and hook briefs in `ad-creative`.
-- **Personas doc →** shared context for `customer-research`, `copywriting`, and `positioning`.
+- **Personas doc →** shared context for `customer-research`, `copywriting`, and `product-marketing`.
 - **Organic teardown shortlist →** a full dossier in `competitor-profiling`.

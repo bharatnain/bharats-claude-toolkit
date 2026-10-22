@@ -1,11 +1,12 @@
 ---
 name: pricing-strategist
 description: "Strategic pricing DECISION layer: selects the pricing model (subscription/seat, usage-based, value-based, freemium, hybrid) via scored trade-offs, runs Van Westendorp Price Sensitivity analysis on willingness-to-pay survey data, designs the Good/Better/Best tier architecture from scratch, and recommends a price RANGE (never a single number). Use when deciding WHAT to charge and HOW to structure it: 'which pricing model fits', 'seat vs usage vs value', 'analyze this WTP survey', 'how many tiers and what goes in each', 'what should I charge', or auditing a packaging anti-pattern. Not for building/refining the pricing page, freemium-vs-trial mechanics, or executing a price increase — for hands-on page and packaging tactics, use `pricing`."
-version: 2.8.0
-author: claude-code-skills
 license: MIT
-tags: [commercial, pricing, packaging, wtp, van-westendorp, value-based-pricing, saas-pricing]
-compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+metadata:
+  version: 2.8.0
+  author: claude-code-skills
+  tags: [commercial, pricing, packaging, wtp, van-westendorp, value-based-pricing, saas-pricing]
+  compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
 disable-model-invocation: true
 ---
 

@@ -37,7 +37,11 @@ TMP="$(mktemp "$(dirname "$TARGET")/.settings.XXXXXX")"
 # Clean up the temp file on any unexpected exit.
 trap 'rm -f "$TMP"' EXIT
 
-if ! COUNTS="$(SOURCE="$SOURCE" TARGET="$TARGET" TMP="$TMP" python3 <<'PY'
+# Read-only: where Claude Code records the marketplaces it has registered (used to spot a
+# name registered from a different source than the pinned inline entry).
+KNOWN_MARKETPLACES="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/plugins/known_marketplaces.json"
+
+if ! COUNTS="$(SOURCE="$SOURCE" TARGET="$TARGET" TMP="$TMP" KNOWN_MARKETPLACES="$KNOWN_MARKETPLACES" python3 <<'PY'
 import json
 import os
 import sys
@@ -65,13 +69,68 @@ if not isinstance(src, dict):
 # Result preserves the dest key order first, then any new keys.
 merged = dict(dest)
 
-# extraKnownMarketplaces: dict update. Start from the dest map, apply source
-# entries key-by-key (source wins on collision); dest-only keys preserved.
+# extraKnownMarketplaces: the repo is authoritative for inline `source: "settings"`
+# marketplaces (they carry the per-plugin sha pins, so a stale or hand-edited copy
+# must not survive): those keys are overwritten whole and any change is reported.
+# Every other entry (github/git/...) is add-only: a key already on the machine is
+# kept. Dest-only keys are preserved, except retired keys this repo itself once
+# wrote as unpinned github entries.
+def is_inline(entry):
+    return (isinstance(entry, dict) and isinstance(entry.get("source"), dict)
+            and entry["source"].get("source") == "settings")
+
+RETIRED_MARKETPLACE_KEYS = ("memsearch", "trailofbits-skills", "trailofbits-skills-curated")
+
 src_mkt = src.get("extraKnownMarketplaces", {})
 if src_mkt:
     dest_mkt = dict(merged.get("extraKnownMarketplaces", {}))
-    dest_mkt.update(src_mkt)
+    for key in RETIRED_MARKETPLACE_KEYS:
+        old = dest_mkt.get(key)
+        if key not in src_mkt and old is not None and not is_inline(old):
+            del dest_mkt[key]
+            print(f"bootstrap: removed retired marketplace key {key} (superseded by a pinned inline entry)",
+                  file=sys.stderr)
+    changed = []
+    for name, entry in src_mkt.items():
+        if is_inline(entry):
+            if dest_mkt.get(name) != entry:
+                changed.append(f"{name} ({'updated' if name in dest_mkt else 'new'})")
+            dest_mkt[name] = entry
+        elif name not in dest_mkt:
+            dest_mkt[name] = entry
+    if changed:
+        print("bootstrap: pinned inline marketplaces written: " + ", ".join(changed), file=sys.stderr)
     merged["extraKnownMarketplaces"] = dest_mkt
+
+    # Claude Code registers a settings-declared marketplace only if it does not
+    # already know the name, so a name registered earlier from a GitHub source (or
+    # from an older pin set) keeps tracking that source. Detect it read-only from
+    # known_marketplaces.json and PRINT the migration; never run it.
+    known_path = os.environ.get("KNOWN_MARKETPLACES", "")
+    stale = []
+    try:
+        with open(known_path, "r", encoding="utf-8") as f:
+            known = json.load(f)
+        for name, entry in src_mkt.items():
+            if not is_inline(entry) or not isinstance(known, dict) or name not in known:
+                continue
+            ksrc = (known[name] or {}).get("source") or {}
+            if ksrc.get("source") != "settings":
+                stale.append((name, ksrc.get("source") or "unknown"))
+            elif "plugins" in ksrc and ksrc["plugins"] != entry["source"].get("plugins"):
+                stale.append((name, "settings, older pins"))
+    except (OSError, ValueError):
+        pass
+    if stale:
+        print("bootstrap: these marketplaces are already registered from another source, so Claude Code\n"
+              "           will not re-register them from the pinned inline entries until you switch them:\n"
+              + "\n".join(f"             {n} (registered from: {s})" for n, s in stale)
+              + "\n           Run these yourself (bootstrap does not):\n"
+              + "\n".join(f"             claude plugin marketplace remove {n}" for n, _ in stale)
+              + "\n             bash scripts/bootstrap.sh    # remove also drops the settings entry; this restores it\n"
+              "           then restart Claude Code. Removing a marketplace uninstalls its plugins, so reinstall the\n"
+              "           ones you use afterwards (e.g. claude plugin install codex@openai-codex).",
+              file=sys.stderr)
 
 # enabledPlugins: object map {plugin: true}. Claude Code reads this as a
 # JSON object, NOT an array -- an array silently enables zero plugins. Merge

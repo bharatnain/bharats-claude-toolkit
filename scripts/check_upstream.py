@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Check vendored-skill upstreams for drift vs THIRD_PARTY_SOURCES.json, and SHA-pinned
-marketplaces in settings.json for drift vs their pins. Stdlib only.
+"""Check vendored-skill upstreams for drift vs THIRD_PARTY_SOURCES.json, and the plugin sha pins
+of the inline marketplaces in settings.json for drift vs upstream HEAD. Stdlib only.
 
 For each source in the manifest, runs `git ls-remote <repo> HEAD` and compares
 the current upstream HEAD SHA against the recorded `upstream_head_at_manifest`.
@@ -96,29 +96,44 @@ def build_results(manifest_path):
 
 
 def build_marketplace_results(settings_path):
-    """Return per-marketplace pin drift for SHA-pinned extraKnownMarketplaces entries.
+    """Return per-pin drift for the plugins of inline `source: "settings"` marketplaces.
 
-    Unpinned entries (no source.sha) are skipped: there is no pin to drift from.
+    The pin is each plugin entry's `source.sha` (a marketplace source has no sha field).
+    Plugins of one marketplace that pin the same repo and sha form one row. Marketplaces that
+    are not inline, and plugin entries without a sha, have no pin to drift from and are skipped.
     """
     try:
         data = json.loads(settings_path.read_text(encoding="utf-8"))
     except Exception:  # noqa: BLE001 - a bad settings file must not crash the report
         return []
-    results = []
+    rows = {}  # (marketplace, repo, sha) -> [plugin names]
     for name, entry in (data.get("extraKnownMarketplaces") or {}).items():
-        src = (entry or {}).get("source") or {}
-        pinned = src.get("sha")
-        repo = src.get("repo") or src.get("url")
-        if not pinned or not repo:
+        msrc = (entry or {}).get("source") or {}
+        if msrc.get("source") != "settings":
             continue
-        url = f"https://github.com/{repo}" if src.get("source") == "github" else repo
-        current = resolve_head(url)
+        for plugin in msrc.get("plugins") or []:
+            psrc = (plugin or {}).get("source")
+            if not isinstance(psrc, dict):
+                continue
+            pinned = psrc.get("sha")
+            repo = psrc.get("repo") or psrc.get("url")
+            if not pinned or not repo:
+                continue
+            rows.setdefault((name, repo, pinned), []).append(plugin.get("name", "?"))
+    heads = {}  # repo -> upstream HEAD, so a repo shared by several plugins is queried once
+    results = []
+    for (name, repo, pinned), plugins in rows.items():
+        if repo not in heads:
+            url = repo if "://" in repo or repo.startswith("git@") else f"https://github.com/{repo}"
+            heads[repo] = resolve_head(url)
+        current = heads[repo]
         if current is None:
             status = STATUS_UNKNOWN
             current = "unknown"
         else:
             status = STATUS_UP_TO_DATE if current == pinned else STATUS_UPDATE_AVAILABLE
-        results.append({"repo": f"{name} ({repo})", "recorded": pinned, "current": current, "status": status})
+        label = ", ".join(plugins) if len(plugins) <= 3 else f"{len(plugins)} plugins"
+        results.append({"repo": f"{name}: {label} ({repo})", "recorded": pinned, "current": current, "status": status})
     return results
 
 
@@ -148,9 +163,9 @@ def render_human(results, marketplaces=None):
     if marketplaces:
         m = sum(1 for r in marketplaces if r["status"] == STATUS_UPDATE_AVAILABLE)
         lines.append("")
-        lines.append(f"Marketplace pins: {m} of {len(marketplaces)} have moved past their pinned sha")
+        lines.append(f"Plugin pins: {m} of {len(marketplaces)} have moved past their pinned sha")
         lines.append("")
-        lines.append("| marketplace | pinned | current | status |")
+        lines.append("| marketplace: plugins (repo) | pinned | current | status |")
         lines.append("|---|---|---|---|")
         for r in marketplaces:
             lines.append(f"| {r['repo']} | {r['recorded'][:12]} | {r['current'][:12]} | {r['status']} |")

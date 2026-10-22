@@ -1,5 +1,5 @@
 {
-  "$comment": "Bharat's Claude Code setup. MERGE this into your user-global ~/.claude/settings.json so it applies in every directory. extraKnownMarketplaces makes marketplaces installable; enabledPlugins turns them on everywhere. Always-on is kept to 8 plugins (this toolkit, frontend-design, superpowers, mattpocock-skills, codex, security-guidance, session-report, skill-creator) because every enabled plugin's descriptions load into every session; the rest are set to false (bootstrap enforces it on every run, so re-enable one per repo in .claude/settings.json or .claude/settings.local.json enabledPlugins). vercel is false globally; /setup-repo enables it in .claude/settings.local.json for Vercel/Next.js repos. ecc, probity (TDD/rule enforcement), memsearch (semantic session memory), and the non-default trailofbits plugins are registered but never enabled (see README cheatsheet). agent-teams@claude-code-workflows is explicitly disabled: it still calls the TeamCreate/TeamDelete tools removed in Claude Code v2.1.178 (Jun 2026). superpowers and mattpocock-skills are consumed from claude-plugins-official (SHA-pinned by Anthropic) since 2026-09-22; their old marketplace keys are set to false, and bootstrap.sh forces a repo-side false onto existing machines so the duplicates are disabled. External marketplaces are SHA-pinned (source.sha, recorded 2026-09-22; bootstrap's own marketplace is left unpinned so consumers track this repo). scripts/check_upstream.py reports pin drift; bump a sha only after re-vetting (docs/supply-chain.md). permissions: defaultMode auto (classifier reviews, no per-tool prompts) is applied only where the user has no defaultMode; allow pre-approves routine dev commands and the fetch/search/agent tools so they never prompt in Manual mode and skip the classifier in auto mode; deny blocks credential reads and destructive git/rm forms in every mode. bootstrap merges all three (allow/deny as unions, defaultMode only if absent). openai-codex is enabled for Codex delegation and cross-model review; its stop-review gate stays off unless you run /codex:setup --enable-review-gate. model (opus), autoCompactWindow (300000 tokens), env.CLAUDE_CODE_SUBAGENT_MODEL (sonnet) and env.SECURITY_REVIEW_MODEL (claude-sonnet-5-5, the security-guidance review model) are merged add-only: a value already on the machine is kept and bootstrap prints a notice.",
+  "$comment": "Bharat's Claude Code setup. MERGE this into your user-global ~/.claude/settings.json so it applies in every directory. extraKnownMarketplaces makes marketplaces installable; enabledPlugins turns them on everywhere. Always-on is kept to 8 plugins (this toolkit, frontend-design, superpowers, mattpocock-skills, codex, security-guidance, session-report, skill-creator) because every enabled plugin's descriptions load into every session; the rest are set to false (bootstrap enforces it on every run, so re-enable one per repo in .claude/settings.json or .claude/settings.local.json enabledPlugins). vercel is false globally; /setup-repo enables it in .claude/settings.local.json for Vercel/Next.js repos. ecc, probity (TDD/rule enforcement), memsearch (semantic session memory), and the non-default trailofbits plugins are registered but never enabled (see README cheatsheet). The stale pre-rename trailofbits-skills* plugin keys are set false so bootstrap switches them off on machines that still have them. agent-teams@claude-code-workflows is explicitly disabled: it still calls the TeamCreate/TeamDelete tools removed in Claude Code v2.1.178 (Jun 2026). superpowers and mattpocock-skills are consumed from claude-plugins-official (SHA-pinned by Anthropic) since 2026-09-22; their old marketplace keys are set to false, and bootstrap.sh forces a repo-side false onto existing machines so the duplicates are disabled. Third-party marketplaces are inline settings-source catalogs whose plugin entries carry ref+sha (recorded 2026-09-22), because a github marketplace source has no sha field and always tracks its ref. Marketplace names, so every plugin@marketplace key, are unchanged (memsearch is registered as memsearch-plugins, the name its repo declares). Only plugins listed in an inline catalog are installable from it. bharats-claude-toolkit-dev stays a plain github source so consumers track this repo. bootstrap overwrites inline entries whole (the repo is authoritative for pins), keeps other marketplace entries add-only, and prints the commands to switch a name already registered from GitHub. scripts/check_upstream.py reports pin drift; bump a plugin's sha only after re-vetting (docs/supply-chain.md). permissions: defaultMode auto (classifier reviews, no per-tool prompts) is applied only where the user has no defaultMode; allow pre-approves routine dev commands and the fetch/search/agent tools so they never prompt in Manual mode (on entering auto mode Claude Code drops broad allow rules that grant arbitrary code execution, such as the interpreter, uv run, npm run and Agent rules, and sends those calls to the classifier; narrow rules like git status stay in effect); deny blocks credential reads and destructive git/rm forms in every mode. bootstrap merges all three (allow/deny as unions, defaultMode only if absent). openai-codex is enabled for Codex delegation and cross-model review; its stop-review gate stays off unless you run /codex:setup --enable-review-gate. model (opus), autoCompactWindow (300000 tokens), env.CLAUDE_CODE_SUBAGENT_MODEL (sonnet) and env.SECURITY_REVIEW_MODEL (claude-sonnet-5-5, the security-guidance review model) are merged add-only: a value already on the machine is kept and bootstrap prints a notice.",
   "model": "opus",
   "autoCompactWindow": 300000,
   "env": {
@@ -11,34 +11,109 @@
       "source": { "source": "github", "repo": "bharatnain/bharats-claude-toolkit" }
     },
     "ui-ux-pro-max-skill": {
-      "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill", "ref": "main", "sha": "dcc40ff5133ef78276117db0cc34e7b83cc8aeba" }
+      "source": {
+        "source": "settings",
+        "name": "ui-ux-pro-max-skill",
+        "plugins": [
+          { "name": "ui-ux-pro-max", "source": { "source": "github", "repo": "nextlevelbuilder/ui-ux-pro-max-skill", "ref": "main", "sha": "dcc40ff5133ef78276117db0cc34e7b83cc8aeba" } }
+        ]
+      }
     },
     "addy-web-quality-skills": {
-      "source": { "source": "github", "repo": "addyosmani/web-quality-skills", "ref": "main", "sha": "afa8da942115f2961fdbfa80807ea0b232ff6c00" }
+      "source": {
+        "source": "settings",
+        "name": "addy-web-quality-skills",
+        "plugins": [
+          { "name": "web-quality-skills", "source": { "source": "github", "repo": "addyosmani/web-quality-skills", "ref": "main", "sha": "afa8da942115f2961fdbfa80807ea0b232ff6c00" } }
+        ]
+      }
     },
     "ecc": {
-      "source": { "source": "github", "repo": "affaan-m/ecc", "ref": "main", "sha": "bf70150eb2df8070024e5bdf08e4aa08959e2735" }
+      "source": {
+        "source": "settings",
+        "name": "ecc",
+        "plugins": [
+          { "name": "ecc", "source": { "source": "github", "repo": "affaan-m/ecc", "ref": "main", "sha": "bf70150eb2df8070024e5bdf08e4aa08959e2735" } }
+        ]
+      }
     },
     "pm-skills": {
-      "source": { "source": "github", "repo": "phuryn/pm-skills", "ref": "main", "sha": "8607e3b077817f89bf4a9b623246219734ac3be0" }
+      "source": {
+        "source": "settings",
+        "name": "pm-skills",
+        "plugins": [
+          { "name": "pm-product-discovery", "source": { "source": "git-subdir", "url": "phuryn/pm-skills", "path": "pm-product-discovery", "ref": "main", "sha": "8607e3b077817f89bf4a9b623246219734ac3be0" } },
+          { "name": "pm-product-strategy", "source": { "source": "git-subdir", "url": "phuryn/pm-skills", "path": "pm-product-strategy", "ref": "main", "sha": "8607e3b077817f89bf4a9b623246219734ac3be0" } },
+          { "name": "pm-execution", "source": { "source": "git-subdir", "url": "phuryn/pm-skills", "path": "pm-execution", "ref": "main", "sha": "8607e3b077817f89bf4a9b623246219734ac3be0" } }
+        ]
+      }
     },
     "claude-code-workflows": {
-      "source": { "source": "github", "repo": "wshobson/agents", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" }
+      "source": {
+        "source": "settings",
+        "name": "claude-code-workflows",
+        "plugins": [
+          { "name": "agent-teams", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/agent-teams", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "agent-orchestration", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/agent-orchestration", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "cloud-infrastructure", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/cloud-infrastructure", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "kubernetes-operations", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/kubernetes-operations", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "cicd-automation", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/cicd-automation", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "deployment-strategies", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/deployment-strategies", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "deployment-validation", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/deployment-validation", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "observability-monitoring", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/observability-monitoring", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "incident-response", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/incident-response", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "backend-development", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/backend-development", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "backend-api-security", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/backend-api-security", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "data-engineering", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/data-engineering", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } },
+          { "name": "machine-learning-ops", "source": { "source": "git-subdir", "url": "wshobson/agents", "path": "plugins/machine-learning-ops", "ref": "main", "sha": "4236bb91f8395b0435f1d8b8baf9e8e4c69a8620" } }
+        ]
+      }
     },
     "trailofbits": {
-      "source": { "source": "github", "repo": "trailofbits/skills", "ref": "main", "sha": "32e34f8173796e3566a51aee877dc96bc5191f64" }
+      "source": {
+        "source": "settings",
+        "name": "trailofbits",
+        "plugins": [
+          { "name": "differential-review", "source": { "source": "git-subdir", "url": "trailofbits/skills", "path": "plugins/differential-review", "ref": "main", "sha": "32e34f8173796e3566a51aee877dc96bc5191f64" } },
+          { "name": "fp-check", "source": { "source": "git-subdir", "url": "trailofbits/skills", "path": "plugins/fp-check", "ref": "main", "sha": "32e34f8173796e3566a51aee877dc96bc5191f64" } }
+        ]
+      }
     },
     "skills-curated": {
-      "source": { "source": "github", "repo": "trailofbits/skills-curated", "ref": "main", "sha": "6d05be4889017b06fb15069f371afd220daffb62" }
+      "source": {
+        "source": "settings",
+        "name": "skills-curated",
+        "plugins": [
+          { "name": "security-awareness", "source": { "source": "git-subdir", "url": "trailofbits/skills-curated", "path": "plugins/security-awareness", "ref": "main", "sha": "6d05be4889017b06fb15069f371afd220daffb62" } }
+        ]
+      }
     },
     "probity": {
-      "source": { "source": "github", "repo": "nizos/probity", "ref": "main", "sha": "fabb04968f259416645f91f3c62bc12147e714b5" }
+      "source": {
+        "source": "settings",
+        "name": "probity",
+        "plugins": [
+          { "name": "probity", "source": { "source": "github", "repo": "nizos/probity", "ref": "main", "sha": "fabb04968f259416645f91f3c62bc12147e714b5" } }
+        ]
+      }
     },
-    "memsearch": {
-      "source": { "source": "github", "repo": "zilliztech/memsearch", "ref": "main", "sha": "f6da1ef67975d890d946b375a2a16c9302ddce76" }
+    "memsearch-plugins": {
+      "source": {
+        "source": "settings",
+        "name": "memsearch-plugins",
+        "plugins": [
+          { "name": "memsearch", "source": { "source": "git-subdir", "url": "zilliztech/memsearch", "path": "plugins/claude-code", "ref": "main", "sha": "f6da1ef67975d890d946b375a2a16c9302ddce76" } }
+        ]
+      }
     },
     "openai-codex": {
-      "source": { "source": "github", "repo": "openai/codex-plugin-cc", "ref": "main", "sha": "db52e28f4d9ded852ab3942cea316258ae4ef346" }
+      "source": {
+        "source": "settings",
+        "name": "openai-codex",
+        "plugins": [
+          { "name": "codex", "source": { "source": "git-subdir", "url": "openai/codex-plugin-cc", "path": "plugins/codex", "ref": "main", "sha": "db52e28f4d9ded852ab3942cea316258ae4ef346" } }
+        ]
+      }
     }
   },
   "enabledPlugins": {
@@ -56,6 +131,9 @@
     "differential-review@trailofbits": false,
     "fp-check@trailofbits": false,
     "security-awareness@skills-curated": false,
+    "differential-review@trailofbits-skills": false,
+    "fp-check@trailofbits-skills": false,
+    "security-awareness@trailofbits-skills-curated": false,
     "vercel@claude-plugins-official": false,
     "agent-teams@claude-code-workflows": false,
     "agent-orchestration@claude-code-workflows": false,

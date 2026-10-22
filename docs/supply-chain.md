@@ -1,10 +1,13 @@
 # Supply-chain hardening for external plugins and marketplaces
 
 This toolkit registers a dozen external marketplaces in `settings.json`
-(`extraKnownMarketplaces`) and enables several third-party plugins from them. Every one of
-those entries is consumed at **branch HEAD**: whatever the upstream repo's default branch
-points at when Claude Code fetches it is what runs on your machine. A compromised or
-careless upstream commit flows straight into every session — no review, no diff, no pin.
+(`extraKnownMarketplaces`) and enables several third-party plugins from them. A marketplace
+registered as a plain `github` source is consumed at **branch HEAD**: whatever the upstream repo's
+branch points at when Claude Code fetches it is what runs on your machine. A `sha` placed on such a
+marketplace source is not a field Claude Code recognises; it drops it and keeps tracking the `ref`.
+A compromised or careless upstream commit would flow straight into every session — no review, no
+diff, no pin. The pins below are therefore set on the **plugin entries of inline marketplaces**, the
+only place a commit SHA is enforced.
 
 Two controls close that gap:
 
@@ -48,7 +51,7 @@ The same repo pairs the pins with a nightly workflow loop so pinning does not me
   cache is keyed on the policy hash, so an unchanged SHA is never re-scanned and a policy
   change invalidates all prior verdicts.
 - **Auto-drop of failing bumps** (`revert-failed-bumps.yml`) — when a scan on a bump
-  branch fails, the failing entries' `source.sha` is reverted to the last-good pin in a
+  branch fails, the failing entries' `sha` is reverted to the last-good pin in a
   follow-up commit and the scan re-dispatched, so one bad upstream never blocks the rest.
   The job is tightly scoped (only the bump branch, only the `sha` field, bounded retries;
   any other diff aborts for human triage).
@@ -61,23 +64,44 @@ registers.
 
 ## Applying this to bharats-claude-toolkit
 
-Current state (2026-09-22): every external `extraKnownMarketplaces` entry in `settings.json`
-is **SHA-pinned** — `{ "source": "github", "repo": "owner/name", "ref": "main", "sha": "<40-char commit>" }`
-(the `sha` wins over `ref`). This repo's own marketplace stays unpinned so consumers track it.
-`scripts/check_upstream.py` reports marketplace pin drift alongside vendored-skill drift, and the
-weekly `upstream-drift` job posts both to the rolling issue. Moving a pin is a deliberate
-re-vet-and-bump: run `plugin-vetting` on the new revision, then edit the `sha`. Step 3 below
-(automated bump → scan → auto-drop) is still not implemented.
+Current state: every third-party marketplace in `settings.json` is an inline marketplace
+(`"source": "settings"`, `name` equal to its key) whose plugin entries carry the pin:
 
-Adopting the pattern here would mean, in increasing order of effort:
+```json
+"trailofbits": { "source": { "source": "settings", "name": "trailofbits", "plugins": [
+  { "name": "fp-check", "source": { "source": "git-subdir", "url": "trailofbits/skills",
+      "path": "plugins/fp-check", "ref": "main", "sha": "<40-char commit>" } } ] } }
+```
+
+- **Enforced per plugin.** Claude Code checks out the `sha` of each plugin entry (the `ref` only
+  says where to look). A plugin at the repo root uses `"source": "github"` with `repo`; a plugin in a
+  subdirectory uses `git-subdir` with `url: "owner/repo"` and `path`.
+- **Names are unchanged,** so every `plugin@marketplace` key in `enabledPlugins` keeps working
+  (`memsearch` is registered as `memsearch-plugins`, the name its repo declares). A catalog lists
+  only the plugins this toolkit names; another plugin from the same repo needs its own vetted,
+  pinned entry. `bharats-claude-toolkit-dev` stays a plain `github` source so consumers track this repo.
+- **Bootstrap enforces the repo's pins.** `scripts/bootstrap.sh` overwrites these inline entries whole
+  in `~/.claude/settings.json` and keeps every other marketplace entry add-only. Claude Code registers
+  a settings-declared marketplace only when it does not already know the name, so for a name registered
+  earlier from GitHub bootstrap prints the migration instead of running it: `claude plugin marketplace
+  remove <name>` for each (this uninstalls that marketplace's plugins and also drops its settings
+  entry), then `bash scripts/bootstrap.sh` again, then restart Claude Code and reinstall the plugins
+  you use.
+- **Bumping a pin.** `scripts/check_upstream.py` reports pin drift alongside vendored-skill drift, and
+  the weekly `upstream-drift` job posts both to the rolling issue. To move a pin: run `plugin-vetting`
+  on the new revision, then edit the `sha` of that plugin's entry in `settings.json` (plugins of one
+  repo in one marketplace share a sha). If a machine that already registered the marketplace from
+  settings does not pick up the new pin, repeat the remove / bootstrap / restart sequence. Step 3
+  below (automated bump, scan, auto-drop) is still not implemented.
+
+The pattern here, in increasing order of effort:
 
 1. **Vet-then-register** (available now) — run `plugin-vetting` on every candidate repo
    before adding it to `settings.json`; record repo + vetted SHA + verdict date.
-2. **Pin the registrations** — pin each marketplace entry to its vetted revision.
-   This changes what `scripts/bootstrap.sh` installs for every consumer of this toolkit,
-   so it is a bootstrap-level decision (owner: toolkit lead), not something to slip into a
-   feature branch. It also requires a deliberate re-vet-and-bump routine (manual or CI, as
-   above) so pins don't rot.
+2. **Pin the plugins** (done) — pin each consumed plugin to its vetted revision on an inline
+   marketplace entry, as described above. This changes what `scripts/bootstrap.sh` installs
+   for every consumer of this toolkit, and it needs a deliberate re-vet-and-bump routine
+   (manual or CI, as above) so pins don't rot.
 3. **Bump automation** — a scheduled job in this repo mirroring the
    bump → scan → auto-drop loop described above, with `plugin-vetting`'s vendored policy as
    the scan.

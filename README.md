@@ -49,8 +49,7 @@ descriptions cost ≈21K tokens in every session.
 **Registered, never enabled**
 - `ecc@ecc` — the full 271-skill ECC collection
 - `probity` — nizos: TDD/rule-enforcement hooks; `memsearch` — zilliztech: semantic session memory — both registered, not enabled
-- the remaining `trailofbits` / `skills-curated` plugins beyond the three listed above
-- more from `pm-skills` (`pm-go-to-market`, `pm-market-research`, `pm-data-analytics`, …) and `claude-code-workflows` (`conductor`, `frontend-mobile-development`, …)
+- other plugins of `trailofbits`, `skills-curated`, `pm-skills` (`pm-go-to-market`, `pm-market-research`, …) and `claude-code-workflows` (`conductor`, …) are not installable from the pinned inline catalogs; vet one and add a pinned entry to `settings.json` to use it
 - `beads` — agentic issue tracker (`bd` CLI + plugin); see **Agentic project management** below
 
 ---
@@ -68,6 +67,17 @@ It safely deep-merges this repo's [`settings.json`](settings.json) (`extraKnownM
 user-global `~/.claude/settings.json`, writing a timestamped backup first, and is idempotent —
 re-running it never duplicates or removes entries. Open Claude Code in any directory and the always-on
 tier is live; `ecc` is registered and one command away.
+
+Third-party plugins are pinned by commit: each third-party marketplace is declared in `settings.json`
+as an inline `source: "settings"` catalog whose plugin entries carry `ref` + `sha` (a marketplace
+`github` source has no `sha` field and would track `main`). Marketplace names, so every
+`plugin@marketplace` key, are unchanged, but only the plugins listed in a catalog are installable
+from it. Bootstrap overwrites those inline entries whole (the repo is authoritative for pins) and
+keeps every other marketplace entry add-only. Claude Code registers a settings-declared marketplace
+only if it does not already know the name, so on a machine that registered a name from GitHub earlier,
+bootstrap prints the exact `claude plugin marketplace remove <name>` commands to run (it never runs
+them), then re-run bootstrap and restart Claude Code. To move a pin, vet the new revision with
+the `plugin-vetting` skill and edit that plugin's `sha` ([`docs/supply-chain.md`](docs/supply-chain.md)).
 
 It also installs [`templates/user-CLAUDE.md`](templates/user-CLAUDE.md) (Andrej Karpathy's
 LLM-coding guidelines plus compaction and follow-up rules) to `~/.claude/CLAUDE.md` so the
@@ -88,7 +98,9 @@ Merge the contents of [`settings.json`](settings.json) into your user-global
 `~/.claude/settings.json` by hand (it carries both `extraKnownMarketplaces` and
 `enabledPlugins`). This is what `bootstrap.sh` does for you.
 
-**Option B — slash commands (manual; generated from `settings.json`).**
+**Option B — slash commands (manual; generated from `settings.json`).** These register each
+third-party marketplace from GitHub at its default branch, so they bypass the commit pins; prefer
+bootstrap or Option A.
 ```text
 # register marketplaces (claude-plugins-official is built in)
 /plugin marketplace add bharatnain/bharats-claude-toolkit
@@ -299,8 +311,9 @@ setting (`agentPushNotifEnabled` in `~/.claude/settings.json`, or Settings → C
 /reload-plugins                                       # make them live in THIS session, no restart
 ```
 Also registered (browse with `/plugin` and install from their marketplaces): **probity**
-(TDD/rule-enforcement hooks), **memsearch** (semantic session memory), and the remaining **trailofbits** / **skills-curated**
-plugins beyond `differential-review` / `fp-check` / `security-awareness`.
+(TDD/rule-enforcement hooks) and **memsearch** (semantic session memory, marketplace `memsearch-plugins`).
+The `trailofbits` / `skills-curated` catalogs list only `differential-review` / `fp-check` /
+`security-awareness`; to use another plugin from them, vet it and add a pinned entry to `settings.json`.
 
 Then just work — the newly available skills auto-trigger by description.
 (`/reload-plugins` may warn about prompt-cache invalidation if a plugin adds MCP servers.)
@@ -466,7 +479,7 @@ for you to run by hand (the tag is created after the release commit so it points
   settings, plugins, marketplace, and optional tools, printing the inline fix for each issue.
 - **Upstream drift** — `python3 scripts/check_upstream.py` `git ls-remote`s every source in
   `THIRD_PARTY_SOURCES.json` and flags vendored skills that have drifted from their recorded
-  upstream HEAD. The **`upstream-drift.yml`** Action runs this weekly and upserts a single
+  upstream HEAD, plus third-party plugin pins in `settings.json` that upstream has moved past. The **`upstream-drift.yml`** Action runs this weekly and upserts a single
   rolling **"Upstream drift report"** issue.
 - **Release** — `python3 scripts/release.py --bump <level>` is the one-command release: it
   bumps the version and promotes the `[Unreleased]` CHANGELOG block into the new section — then

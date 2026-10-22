@@ -2,7 +2,7 @@
 name: competitor-profiling
 description: "One-off competitor RESEARCH from URLs — scrapes their sites (Firecrawl) plus SEO/backlink/keyword data (DataForSEO), saves raw data to disk, and synthesizes structured per-competitor profile markdown files with positioning, pricing, features, reviews, and a cross-competitor summary. Input is a list of competitor URLs; output is profile documents (competitor-profiles/). Use when given competitor URLs to research, profile, dossier, or do a competitor deep-dive into reusable structured files. Not for writing 'X vs Y' / 'X alternatives' comparison or alternative PAGES for SEO and sales (use `competitors`); not for running an ongoing competitive-intelligence PROGRAM — battlecards, win/loss, market-move tracking feeding CMO/CRO/CPO (use `competitive-intel`)."
 metadata:
-  version: 2.0.1
+  version: 2.1.4
 disable-model-invocation: true
 ---
 
@@ -26,16 +26,38 @@ If the user provides URLs and context is available, proceed without asking.
 
 ---
 
+## Tool Stack Selection
+
+This skill supports two data source stacks. Check which MCPs are active before starting and select accordingly.
+
+| Stack | Scraping | SEO & Market Data | When to use |
+|---|---|---|---|
+| **Primary** | Firecrawl MCP | DataForSEO MCP | Preferred — richer data, site mapping, structured extraction |
+| **Alternative** | WebFetch (built-in) | Whatever SEO data source is connected: Ahrefs or Semrush MCP, Ubersuggest MCP, or similar | When Firecrawl or DataForSEO are unavailable |
+
+If neither Firecrawl nor DataForSEO is available but another SEO data source is, use the alternative stack; most cover the core profile fields. If no SEO data source is available, mark those metrics unavailable (never estimate them) and proceed with qualitative observations only.
+
+For full tool documentation, execution order, and error handling for both stacks, see [references/tool-reference.md](references/tool-reference.md).
+
+---
+
 ## Core Principles
 
 ### 1. Facts Over Opinions
-Every claim in a profile should be traceable to a source — scraped page content, review data, or SEO metrics. Label inferences clearly.
+Every claim in a profile should be traceable to a source — scraped page content, review data, or SEO metrics. Keep three layers visibly separate:
+- **Observed**: what a source says, with the source and date
+- **Inferred**: your reading of what was observed. Label it, and say how confident you are when it would change a decision
+- **Implication**: what it might mean for your product, framed as a question or option, not a conclusion
+
+**Not observed ≠ absent.** If a feature isn't on their site, write "not observed on [pages checked], as of [date]", not "doesn't have." Before a gap is used publicly (a comparison page, an ad), confirm it in their docs or a trial. The same goes for pricing: "no public pricing" is not "free" and not "expensive."
+
+**Never state motive.** Record what changed ("moved SSO to Enterprise"). Don't claim why ("because they're going upmarket") unless they've said so publicly.
 
 ### 2. Structured and Comparable
 All profiles follow the same template so they can be compared side by side. Consistency matters more than completeness on any single profile.
 
 ### 3. Current Data
-Profiles are snapshots. Always include the date generated. Flag anything that looks stale (e.g., "pricing page last updated 2023").
+Profiles are snapshots. Always include the date generated. Flag anything that looks stale (e.g., "pricing page last updated 2023"). A single scrape can't support "hasn't changed" claims; only dated snapshots (prior raw folders, archived pages, changelogs) can.
 
 ### 4. Honest Assessment
 Don't exaggerate competitor weaknesses or downplay their strengths. Accurate profiles are useful profiles.
@@ -78,9 +100,11 @@ The synthesized profile (`<competitor-slug>.md`) should reference the raw data f
 
 ## Research Process
 
-### Phase 1: Site Scraping (Firecrawl)
+### Phase 1: Site Scraping (Firecrawl or WebFetch)
 
 For each competitor URL, scrape key pages to extract positioning, features, pricing, and messaging.
+
+**If Firecrawl is unavailable**, use WebFetch in place of all Firecrawl calls. Skip the site-mapping step and instead probe common page paths manually (see [references/tool-reference.md](references/tool-reference.md) — Alternative Stack section). Fetch the homepage first; its navigation links usually reveal the actual paths for pricing, features, and about pages.
 
 #### Step 1: Map the site
 
@@ -134,9 +158,9 @@ Save each scraped review page to `competitor-profiles/raw/<competitor-slug>/<YYY
 
 ---
 
-### Phase 2: SEO & Market Data (DataForSEO)
+### Phase 2: SEO & Market Data (DataForSEO or Ubersuggest)
 
-Use DataForSEO MCP tools to gather quantitative competitive intelligence. Save each raw response as JSON to `competitor-profiles/raw/<competitor-slug>/<YYYY-MM-DD>/seo/<endpoint-name>.json` before parsing it into the profile. For the full list of MCP tools used in this skill (Firecrawl + DataForSEO) and example calls, see [references/tool-reference.md](references/tool-reference.md).
+Use DataForSEO MCP tools to gather quantitative competitive intelligence. **If DataForSEO is unavailable**, use whichever SEO data source is connected (Ahrefs or Semrush MCP, Ubersuggest MCP, or similar). Most cover domain traffic, keyword rankings, backlinks, referring domains, top pages, and organic competitors. [references/tool-reference.md](references/tool-reference.md) maps the Ubersuggest tools as a worked example. Save each raw response as JSON to `competitor-profiles/raw/<competitor-slug>/<YYYY-MM-DD>/seo/<endpoint-name>.json` before parsing it into the profile. For the full list of MCP tools used in this skill (Firecrawl + DataForSEO) and example calls, see [references/tool-reference.md](references/tool-reference.md).
 
 #### Domain Authority & Backlinks
 
@@ -322,7 +346,7 @@ Each profile follows this structure:
 
 **Where they're strong vs. us**: [areas where this competitor has an advantage]
 
-**Where we're strong vs. them**: [areas where you have an advantage]
+**Where we're strong vs. them**: [areas where you have an advantage — cite customer, win/loss, or review evidence; without it, label these as hypotheses]
 
 **Opportunities**: [gaps in their offering or positioning we can exploit]
 
@@ -411,6 +435,8 @@ Only ask if not answered by context or input:
 - **customer-research**: For mining reviews and community sentiment in depth
 - **content-strategy**: For using competitor content gaps to plan your own content
 - **seo-audit**: For auditing your own site relative to competitors
+- **link-building**: For turning competitors' referring domains into a link gap prospect list
 - **sales-enablement**: For turning profiles into battle cards and sales collateral
 - **ads**: For analyzing competitor ad strategies
 - **pricing**: For deeper pricing analysis informed by competitor profiles
+- **marketing-plan**: For sizing the market (TAM/SAM/SOM) with its market-sizing reference, including competitor-led estimates

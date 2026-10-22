@@ -80,9 +80,10 @@ const TRANSFORM_SCHEMA = {
 // ($CLAUDE_TEAM_PROFILE, then .claude/team-profile.json, then built-in "active").
 // Keep this block identical across the *.workflow.js files that use it.
 //
-// FAIL-OPEN: a gate-internal error (exit 2, unparsable output, or a failed gate
-// agent) yields { ok: true, verdict: 'error' } so a broken gate never wedges the
-// flow. Flip FAIL_OPEN_ON_ERROR to false for fail-CLOSED CI. Callers that must not
+// FAIL-OPEN: a gate-internal error (exit 2 or unparsable output) yields
+// { ok: true, verdict: 'error' } so a broken gate never wedges the flow. A gate
+// agent that never returned (skipped or died) yields { ok: false, verdict:
+// 'not-run' }: no gate ran, so nothing may count as green. Flip FAIL_OPEN_ON_ERROR to false for fail-CLOSED CI. Callers that must not
 // act on a broken gate test verdict === 'pass', not ok.
 const FAIL_OPEN_ON_ERROR = true
 const GATE_CHECKS = ['lint', 'typecheck', 'test', 'build']
@@ -128,7 +129,8 @@ async function runGate({ profile, checks, scope, label, phase: ph } = {}) {
     { label: label || 'gate', phase: ph, schema: GATE_SCHEMA, model: 'haiku', effort: 'low' },
   )
   const gateError = (raw) => ({ ok: FAIL_OPEN_ON_ERROR, verdict: 'error', blocking_failures: [], checks: [], maturity: 'active', raw: raw || '' })
-  if (!r || typeof r.exitCode !== 'number' || r.exitCode === 2 || !r.parsed) return gateError(r && r.raw)
+  if (!r) return { ok: false, verdict: 'not-run', blocking_failures: [], checks: [], maturity: 'active', raw: '' }
+  if (typeof r.exitCode !== 'number' || r.exitCode === 2 || !r.parsed) return gateError(r && r.raw)
   const gateChecks = Array.isArray(r.checks) ? r.checks : []
   return {
     ok: r.exitCode === 0,
@@ -187,7 +189,8 @@ WHY THIS SITE: ${s.why}`,
 
 // ---- Phase 3: aggregate -----------------------------------------------------
 // The gate is fail-open: a gate-internal error (verdict 'error', ok true) counts
-// as green here, exactly as before; set FAIL_OPEN_ON_ERROR=false to block.
+// as green here; a gate that never ran (verdict 'not-run') does not. Set
+// FAIL_OPEN_ON_ERROR=false to block on errors too.
 phase('Aggregate')
 const rows = results.filter(Boolean)
 const passed = rows.filter((r) => r.gate.ok && r.gate.blocking_failures.length === 0)

@@ -93,13 +93,18 @@ if src_mkt:
     changed = []
     for name, entry in src_mkt.items():
         if is_inline(entry):
-            if dest_mkt.get(name) != entry:
+            old = dest_mkt.get(name)
+            # Keep sibling keys the user set (e.g. autoUpdate); the repo owns `source`.
+            new = {**(old if isinstance(old, dict) else {}), **entry}
+            if old != new:
                 changed.append(f"{name} ({'updated' if name in dest_mkt else 'new'})")
-            dest_mkt[name] = entry
+            dest_mkt[name] = new
         elif name not in dest_mkt:
             dest_mkt[name] = entry
     if changed:
-        print("bootstrap: pinned inline marketplaces written: " + ", ".join(changed), file=sys.stderr)
+        print("bootstrap: pinned inline marketplaces written: " + ", ".join(changed)
+              + "\n           to pick up changed pins in a running setup: claude plugin marketplace update <name>",
+              file=sys.stderr)
     merged["extraKnownMarketplaces"] = dest_mkt
 
     # Claude Code registers a settings-declared marketplace only if it does not
@@ -114,20 +119,19 @@ if src_mkt:
         for name, entry in src_mkt.items():
             if not is_inline(entry) or not isinstance(known, dict) or name not in known:
                 continue
-            ksrc = (known[name] or {}).get("source") or {}
+            kentry = known[name] if isinstance(known[name], dict) else {}
+            ksrc = kentry.get("source") if isinstance(kentry.get("source"), dict) else {}
             if ksrc.get("source") != "settings":
                 stale.append((name, ksrc.get("source") or "unknown"))
-            elif "plugins" in ksrc and ksrc["plugins"] != entry["source"].get("plugins"):
-                stale.append((name, "settings, older pins"))
-    except (OSError, ValueError):
+    except Exception:  # advisory only: an unreadable registry must not block the merge
         pass
     if stale:
         print("bootstrap: these marketplaces are already registered from another source, so Claude Code\n"
               "           will not re-register them from the pinned inline entries until you switch them:\n"
               + "\n".join(f"             {n} (registered from: {s})" for n, s in stale)
               + "\n           Run these yourself (bootstrap does not):\n"
-              + "\n".join(f"             claude plugin marketplace remove {n}" for n, _ in stale)
-              + "\n             bash scripts/bootstrap.sh    # remove also drops the settings entry; this restores it\n"
+              + "\n".join(f"             claude plugin marketplace remove --scope user {n}" for n, _ in stale)
+              + "\n             bash scripts/bootstrap.sh    # remove drops the user settings entry; this restores it\n"
               "           then restart Claude Code. Removing a marketplace uninstalls its plugins, so reinstall the\n"
               "           ones you use afterwards (e.g. claude plugin install codex@openai-codex).",
               file=sys.stderr)

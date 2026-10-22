@@ -36,7 +36,7 @@ Register the exact effective redirect URL, and verify the destination actually i
 
 ## Environment Variables
 
-**Missing credentials:** If the project has no WorkOS credentials yet, get them with the no-account install in [workos-authkit-setup.md](workos-authkit-setup.md#get-credentials) (`npx workos@latest install`). With an existing WorkOS account, use that environment's credentials instead. Skip this inside the WorkOS installer, which writes them before you start.
+**Missing credentials:** If the project has no WorkOS credentials yet, offer the no-account install in [workos-authkit-setup.md](workos-authkit-setup.md#get-credentials) (`npx workos@latest install`) and run it only after the user agrees. With an existing WorkOS account, use that environment's credentials instead. Skip this inside the WorkOS installer, which writes them before you start.
 
 **Bundled projects only:**
 

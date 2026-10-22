@@ -11,7 +11,8 @@ All notable changes to this project are documented here. Format follows
   are unchanged (memsearch registers as `memsearch-plugins`, its declared name). Only plugins listed in a
   catalog are installable from it. Bootstrap overwrites these entries whole, keeps other marketplace entries
   add-only, removes the retired `memsearch` / `trailofbits-skills*` keys, and prints (never runs) the
-  `claude plugin marketplace remove` steps for names already registered from GitHub.
+  `claude plugin marketplace remove --scope user` steps for names already registered from GitHub; after a
+  pin bump, `claude plugin marketplace update <name>` refreshes a settings registration.
 - **Changed: six plugin pins bumped after re-vetting** (ui-ux-pro-max, pm-skills, claude-code-workflows,
   trailofbits, probity, memsearch). ecc stays on its September pin; memsearch and probity still fetch
   unpinned code at runtime and stay disabled.

@@ -111,7 +111,7 @@ FINDING [${f.dim}/${f.severity}] ${f.title}
   evidence: ${f.summary}`,
         { label: `verify:${f.dim}`, phase: 'Verify', schema: VERDICT_SCHEMA, agentType: 'bharats-claude-toolkit:code-reviewer' },
       ).then((v) => ({ finding: f, verdict: v })),
-    ))
+    )).then((rs) => rs.map((x, i) => x || { finding: toVerify[i], verdict: null }))
   : []
 
 // Surviving = not REFUTED, decided on the structured `verdict` field only. A

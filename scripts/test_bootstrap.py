@@ -165,10 +165,10 @@ def test_stale_registration_prints_migration_without_running_it(tmp_path):
     }
     _, proc = run_bootstrap(tmp_path, known=known)
     assert "already registered from another source" in proc.stderr
-    assert "claude plugin marketplace remove openai-codex" in proc.stderr
+    assert "claude plugin marketplace remove --scope user openai-codex" in proc.stderr
     assert "openai-codex (registered from: github)" in proc.stderr
-    assert "claude plugin marketplace remove pm-skills" in proc.stderr  # settings entry with older pins
-    assert "claude plugin marketplace remove ecc" not in proc.stderr  # already registered from the same pins
+    assert "remove --scope user pm-skills" not in proc.stderr  # already a settings registration; pins refresh via update
+    assert "remove --scope user ecc" not in proc.stderr  # already registered from the same pins
     assert "remove bharats-claude-toolkit-dev" not in proc.stderr  # not an inline entry
     assert "bash scripts/bootstrap.sh" in proc.stderr and "restart Claude Code" in proc.stderr
     known_file = tmp_path / "home" / ".claude" / "plugins" / "known_marketplaces.json"
@@ -178,3 +178,17 @@ def test_stale_registration_prints_migration_without_running_it(tmp_path):
 def test_no_registration_notice_without_known_file(tmp_path):
     _, proc = run_bootstrap(tmp_path)
     assert "already registered" not in proc.stderr
+
+
+def test_malformed_known_registry_does_not_block_merge(tmp_path):
+    merged, proc = run_bootstrap(tmp_path, known={"ecc": "github", "pm-skills": {"source": ["x"]}})
+    assert "memsearch-plugins" in merged["extraKnownMarketplaces"]
+    assert "Traceback" not in proc.stderr
+
+
+def test_inline_overwrite_keeps_user_sibling_keys(tmp_path):
+    old = {"source": {"source": "github", "repo": "affaan-m/ecc"}, "autoUpdate": True}
+    merged, _ = run_bootstrap(tmp_path, {"extraKnownMarketplaces": {"ecc": old}})
+    ecc = merged["extraKnownMarketplaces"]["ecc"]
+    assert ecc["autoUpdate"] is True
+    assert ecc["source"] == INLINE["ecc"]["source"]

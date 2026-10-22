@@ -341,7 +341,8 @@ def main(argv):
                 findings.append(Finding(dir_name, path, "warn", "F5",
                                         f"description length {len(desc)} out of [40,1024]"))
             descriptions[dir_name] = quoted_phrases(desc)
-            listing = len(desc) + len(keys.get("when_to_use", "").strip())
+            wtu = keys.get("when_to_use", "")
+            listing = len(desc) + len(wtu.strip() if isinstance(wtu, str) else " ".join(map(str, wtu)))
             if listing > LISTING_CAP:
                 findings.append(Finding(dir_name, path, "error", "F5",
                                         f"description + when_to_use is {listing} chars; listing truncates at {LISTING_CAP}"))

@@ -17,10 +17,10 @@ This reference covers saved settings and verification, not replacement auth code
 
 Skip this section inside the WorkOS installer: it writes the credentials before its agent starts.
 
-If the project has no WorkOS credentials yet, start with the no-account install. It provisions an unclaimed WorkOS environment, writes its credentials to the project's env file, and wires up AuthKit. The user can claim the environment later with `npx workos@latest profile claim`:
+If the project has no WorkOS credentials yet, offer the no-account install and run it only after the user agrees: it runs unpinned code from npm. It provisions an unclaimed WorkOS environment, writes its credentials to the project's env file, and wires up AuthKit. The user can claim the environment later with `npx workos@latest profile claim`:
 
 ```bash
-WORKOS_MODE=agent npx workos@latest install
+WORKOS_MODE=agent npx workos@latest install --no-branch --no-commit
 ```
 
 The router's **Start here** section in `SKILL.md` covers what it writes, Git behavior, claiming, and failures. Afterwards, continue with the configuration and verification steps below. The installer's report does not replace them.

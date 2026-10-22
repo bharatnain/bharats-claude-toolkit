@@ -110,7 +110,8 @@ const g = await runGate({ profile, checks })
 | `0` | `{ ok: true,  verdict: 'pass' (or parsed), blocking_failures: [] }` |
 | `1` | `{ ok: false, verdict: 'fail', blocking_failures: [...] }` |
 | `2` (gate internal error) | **fail-open** → `{ ok: true, verdict: 'error', blocking_failures: [] }` |
-| unparsable output, or the gate agent itself failed | treated like exit 2 (**fail-open**) |
+| unparsable output | treated like exit 2 (**fail-open**) |
+| the gate agent never returned (skipped or died) | **fail-closed** → `{ ok: false, verdict: 'not-run', blocking_failures: [] }` |
 
 ### Fail-open vs fail-closed (exit 2)
 

@@ -75,7 +75,7 @@ as an inline `source: "settings"` catalog whose plugin entries carry `ref` + `sh
 from it. Bootstrap overwrites those inline entries whole (the repo is authoritative for pins) and
 keeps every other marketplace entry add-only. Claude Code registers a settings-declared marketplace
 only if it does not already know the name, so on a machine that registered a name from GitHub earlier,
-bootstrap prints the exact `claude plugin marketplace remove <name>` commands to run (it never runs
+bootstrap prints the exact `claude plugin marketplace remove --scope user <name>` commands to run (it never runs
 them), then re-run bootstrap and restart Claude Code. To move a pin, vet the new revision with
 the `plugin-vetting` skill and edit that plugin's `sha` ([`docs/supply-chain.md`](docs/supply-chain.md)).
 

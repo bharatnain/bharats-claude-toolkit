@@ -1,51 +1,53 @@
-// workflows/implement-task-with-gates.workflow.js
-//
-// TEMPLATE (FLAGSHIP) — copy this file and parameterize it for your repo. Run
-// via the Workflow tool. See workflows/README.md.
-//
-// Flow: plan -> implement -> runGate -> a BOUNDED Critic fix-loop that iterates
-// ONLY on blocking_failures and stops at a profile-driven max-iterations cap ->
-// structured review (code-reviewer returns {verdict, findings} via schema) ->
-// integrate. The loop ALWAYS terminates: the cap is read from the maturity
-// profile (greenfield:1, active:2, legacy:3) and clamped to a hard ceiling even
-// if the profile name is malformed.
-
-import { runGate, loadProfileName } from './lib/runner.js'
-
 export const meta = {
   name: 'implement-task-with-gates',
-  description:
-    'Plan -> implement -> quality-gate -> bounded Critic fix-loop on blocking failures -> structured review -> integrate. The fix-loop iterates only on the gate\'s blocking_failures and is capped by the team maturity profile (more passes on legacy, fewer on greenfield) with a hard ceiling, so it is guaranteed to terminate. The reviewer returns a schema-bound {verdict, findings} and the script integrates only on verdict === "PASS".',
+  description: 'Plan -> implement -> quality-gate -> bounded Critic fix-loop on blocking failures -> structured review -> integrate. The fix-loop iterates only on the gate\'s blocking_failures and is capped by the team maturity profile (more passes on legacy, fewer on greenfield) with a hard ceiling, so it is guaranteed to terminate. The reviewer returns a schema-bound {verdict, findings} and the script integrates only on verdict === "PASS".',
   phases: [
     { title: 'Plan', detail: 'turn the task into an implementation plan with verifiable success criteria' },
     { title: 'Implement', detail: 'apply the plan as a surgical change' },
-    { title: 'Gate', detail: 'runGate over the change; derive blocking_failures' },
+    { title: 'Gate', detail: 'run the quality gate over the change; derive blocking_failures' },
     { title: 'Fix-loop', detail: 'bounded Critic loop: fix ONLY blocking_failures, re-gate, stop at the cap' },
     { title: 'Review', detail: 'code-reviewer checks the change against the success criteria; schema-bound PASS/FAIL verdict' },
     { title: 'Integrate', detail: 'land the change once the gate is green AND the review verdict is PASS' },
   ],
 }
 
+// workflows/implement-task-with-gates.workflow.js
+//
+// TEMPLATE (FLAGSHIP) — copy this file and parameterize it for your repo. Run
+// via the Workflow tool. See workflows/README.md.
+//
+// Flow: plan -> implement -> quality gate -> a BOUNDED Critic fix-loop that
+// iterates ONLY on blocking_failures and stops at a profile-driven max-iterations
+// cap -> structured review (code-reviewer returns {verdict, findings} via schema)
+// -> integrate. The loop ALWAYS terminates: the cap is read from the maturity
+// profile (greenfield:1, active:2, legacy:3) and clamped to a hard ceiling even
+// if the profile name is malformed.
+//
+// The Workflow runtime has NO module loading and NO Node/filesystem APIs, so the
+// quality gate is a cheap agent() stage (model haiku, effort low) with a JSON
+// schema. See workflows/README.md.
+
 // ---- args (defensive: string | object | undefined) -------------------------
 // { task: "..." }      free-text task description. A bare string arg is the task.
-// { profile: "..." }   optional profile NAME ('legacy') or path; overrides the
-//                      resolved active profile for BOTH the gate and the loop cap.
+// { profile: "..." }   optional profile NAME ('legacy') or path, passed to the gate
+//                      as --profile. Omitted: the gate resolves its own profile.
 // { checks: [...] }    optional subset of {lint,typecheck,test,build} for the gate.
 let A = args
 if (typeof A === 'string') { A = A.trim() ? { task: A } : {} }
 if (!A || typeof A !== 'object') A = {}
 
 const TASK = (typeof A.task === 'string' && A.task.trim()) ? A.task.trim() : '(no task supplied — describe the change in args.task)'
-const PROFILE = (typeof A.profile === 'string' && A.profile.trim()) ? A.profile.trim() : loadProfileName()
+const PROFILE = (typeof A.profile === 'string' && A.profile.trim()) ? A.profile.trim() : null
 const CHECKS = Array.isArray(A.checks) && A.checks.length ? A.checks : null
 
 // Loop cap by maturity, with a HARD safety ceiling so a malformed/unknown
-// profile still terminates the workflow.
+// profile still terminates the workflow. The maturity comes from the gate result
+// (the profile quality_gate.py actually used), so the cap is computed after the
+// first gate run.
 const CAP_BY_PROFILE = { greenfield: 1, active: 2, legacy: 3 }
 const HARD_CEILING = 5
-const MAX_FIX_ITERS = Math.min(CAP_BY_PROFILE[PROFILE] ?? 2, HARD_CEILING)
 
-log(`implement-task-with-gates: task=${JSON.stringify(TASK)} profile=${PROFILE} maxFixIters=${MAX_FIX_ITERS} checks=${CHECKS ? CHECKS.join(',') : 'all'}`)
+log(`implement-task-with-gates: task=${JSON.stringify(TASK)} profile=${PROFILE || '(gate default)'} checks=${CHECKS ? CHECKS.join(',') : 'all'}`)
 
 const PLAN_SCHEMA = {
   type: 'object',
@@ -93,6 +95,73 @@ const REVIEW_SCHEMA = {
   },
 }
 
+// ---- quality gate (inlined: Workflow scripts cannot import) -----------------
+// An agent() stage shells scripts/quality_gate.py and returns raw facts (exit code
+// + parsed report); the verdict is derived HERE so the semantics stay in code.
+// quality_gate.py resolves the profile itself when --profile is omitted
+// ($CLAUDE_TEAM_PROFILE, then .claude/team-profile.json, then built-in "active").
+// Keep this block identical across the *.workflow.js files that use it.
+//
+// FAIL-OPEN: a gate-internal error (exit 2, unparsable output, or a failed gate
+// agent) yields { ok: true, verdict: 'error' } so a broken gate never wedges the
+// flow. Flip FAIL_OPEN_ON_ERROR to false for fail-CLOSED CI. Callers that must not
+// act on a broken gate test verdict === 'pass', not ok.
+const FAIL_OPEN_ON_ERROR = true
+const GATE_CHECKS = ['lint', 'typecheck', 'test', 'build']
+const GATE_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['exitCode', 'parsed', 'checks'],
+  properties: {
+    exitCode: { type: ['integer', 'null'], description: 'process exit code of quality_gate.py' },
+    parsed: { type: 'boolean', description: 'true iff stdout was a valid JSON report' },
+    verdict: { type: ['string', 'null'], description: "the report's verdict field" },
+    maturity: { type: ['string', 'null'], description: "maturity of the profile the gate used ('active' for the built-in)" },
+    raw: { type: 'string', description: 'first 500 chars of stdout/stderr, only when not parsed' },
+    checks: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['name', 'status', 'blocking'],
+        properties: {
+          name: { type: 'string' },
+          status: { type: 'string' },
+          blocking: { type: 'boolean' },
+          detail: { type: 'string' },
+        },
+      },
+    },
+  },
+}
+
+async function runGate({ profile, checks, scope, label, phase: ph } = {}) {
+  const csv = Array.isArray(checks) ? checks.filter((c) => GATE_CHECKS.includes(c)).join(',') : ''
+  const cmd = 'python3 scripts/quality_gate.py --format json' + (csv ? ` --checks ${csv}` : '') + (scope === 'all' ? ' --scope all' : '')
+  const profileStep = profile
+    ? `Profile: "${profile}". If it contains "/" or ends in ".json" treat it as a path (relative to the repo root), otherwise the path is team-profiles/${profile}.json. If that file exists append \`--profile <path>\` to the command; if not, omit --profile.`
+    : 'No profile was requested: do NOT pass --profile (the gate resolves its own).'
+  const r = await agent(
+    `Run the repo's quality gate and report the result. Do NOT fix, edit, stage or retry anything.
+1. cd "$(git rev-parse --show-toplevel)"
+2. Run: ${cmd}
+   ${profileStep}
+   Capture stdout and the exit code (e.g. \`...; echo "exit=$?"\`).
+3. Report: exitCode (the process exit code); parsed (true iff stdout is a valid JSON report); verdict (the report's "verdict"); checks (the report's "checks" array, each item's name/status/blocking/detail, detail truncated to 300 chars); maturity (if the report's "profile" is a path to an existing file, the "maturity" string in that JSON file, else "active"). If stdout was not valid JSON set parsed=false, checks=[] and raw to its first 500 chars.`,
+    { label: label || 'gate', phase: ph, schema: GATE_SCHEMA, model: 'haiku', effort: 'low' },
+  )
+  const gateError = (raw) => ({ ok: FAIL_OPEN_ON_ERROR, verdict: 'error', blocking_failures: [], checks: [], maturity: 'active', raw: raw || '' })
+  if (!r || typeof r.exitCode !== 'number' || r.exitCode === 2 || !r.parsed) return gateError(r && r.raw)
+  const gateChecks = Array.isArray(r.checks) ? r.checks : []
+  return {
+    ok: r.exitCode === 0,
+    verdict: typeof r.verdict === 'string' ? r.verdict : (r.exitCode === 0 ? 'pass' : 'fail'),
+    // derived here: checks where blocking === true && status in {fail, error}
+    blocking_failures: gateChecks.filter((c) => c && c.blocking === true && (c.status === 'fail' || c.status === 'error')),
+    checks: gateChecks,
+    maturity: (typeof r.maturity === 'string' && r.maturity) ? r.maturity : 'active',
+    raw: '',
+  }
+}
 // ---- Phase 1: plan ----------------------------------------------------------
 phase('Plan')
 const plan = await agent(
@@ -123,8 +192,11 @@ log(`Implement: ${(impl && impl.summary) || '(no summary)'} — ${((impl && impl
 
 // ---- Phase 3+4: gate + bounded Critic fix-loop ------------------------------
 phase('Gate')
-let gate = runGate({ profile: PROFILE, checks: CHECKS })
-log(`Gate (initial): verdict=${gate.verdict} ok=${gate.ok} blocking_failures=${gate.blocking_failures.length}`)
+let gate = await runGate({ profile: PROFILE, checks: CHECKS, label: 'gate', phase: 'Gate' })
+log(`Gate (initial): verdict=${gate.verdict} ok=${gate.ok} blocking_failures=${gate.blocking_failures.length} maturity=${gate.maturity}`)
+
+const MAX_FIX_ITERS = Math.min(CAP_BY_PROFILE[gate.maturity] ?? 2, HARD_CEILING)
+log(`Fix-loop cap: maxFixIters=${MAX_FIX_ITERS}`)
 
 phase('Fix-loop')
 let iter = 0
@@ -146,10 +218,12 @@ ${failsList}`,
     { label: `fix:pass${iter}`, phase: 'Fix-loop', schema: DONE_SCHEMA, agentType: 'general-purpose' },
   )
 
-  gate = runGate({ profile: PROFILE, checks: CHECKS })
+  gate = await runGate({ profile: PROFILE, checks: CHECKS, label: `gate:pass${iter}`, phase: 'Fix-loop' })
   log(`Gate (after pass ${iter}): verdict=${gate.verdict} ok=${gate.ok} blocking_failures=${gate.blocking_failures.length}`)
 }
 
+// NOTE: the gate is fail-open, so a gate-internal error (verdict 'error', ok true)
+// counts as green here, exactly as before; set FAIL_OPEN_ON_ERROR=false to block.
 const gateGreen = gate.ok && gate.blocking_failures.length === 0
 if (!gateGreen) {
   log(`Fix-loop exhausted (${iter}/${MAX_FIX_ITERS} passes) with ${gate.blocking_failures.length} blocking failure(s) remaining — NOT integrating.`)
@@ -194,7 +268,7 @@ TASK: ${TASK}`,
 
 return {
   task: TASK,
-  profile: PROFILE,
+  profile: PROFILE || gate.maturity,
   plan: { steps, successCriteria: criteria },
   implementation: impl,
   fixLoop: { passes: iter, cap: MAX_FIX_ITERS, exhausted: !gateGreen && iter >= MAX_FIX_ITERS },

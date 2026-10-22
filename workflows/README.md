@@ -2,18 +2,22 @@
 
 Runnable **templates** for the Workflow tool. Each `*.workflow.js` orchestrates a
 multi-agent flow using the Workflow grammar primitives (`agent()`, `parallel()`,
-`pipeline()`, `log()`, `phase()`), and the gate-bearing ones call a shared,
-dependency-free helper (`lib/runner.js`) to consult the quality gate.
+`pipeline()`, `log()`, `phase()`), and the gate-bearing ones consult the quality gate
+through a cheap `agent()` stage.
 
 > **These files are TEMPLATES.** Copy a `.workflow.js` into your own workflow,
 > rename `meta.name`, and parameterize the prompts / agent types / args for your
 > repo. They are written to run as-is for a demo, but the intent is that you
 > adapt them — they are starting points, not a fixed library.
 
-There is **no `package.json`** here and there are **no dependencies**. `lib/runner.js`
-uses only `node:` builtins (`node:child_process`, `node:fs`, `node:path`) and never
-touches the network; `lib/beads.js` is pure (no `node:` imports at all). The templates
-import `./lib/runner.js`, and the beads-backed one also `./lib/beads.js`.
+There is **no `package.json`** here and there are **no dependencies**. The Workflow
+runtime is plain JavaScript with **no module loading and no filesystem / Node.js APIs**:
+no `import`, `require`, `process` or `node:*`, and `Date.now()`, `Math.random()` and an
+argless `new Date()` throw. `export const meta = {...}` must be the **first statement**
+and a pure literal (no variables, calls, concatenation or template strings). Anything that
+must touch the shell (the quality gate, `bd`) is therefore an `agent()` stage with a JSON
+`schema` (`model: 'haiku'`, `effort: 'low'`), and shared helpers are inlined into each
+template. `scripts/validate_assets.py` (check `W3`) enforces these constraints.
 
 ## How to invoke
 
@@ -33,7 +37,7 @@ at the start so a run is debuggable.
 
 | Template | Purpose | Gate stage | Key args |
 | --- | --- | --- | --- |
-| `review-changes.workflow.js` | Adversarial review of the working diff; findings are schema-bound (`file`, `line`, `summary`) and each refutation returns a structured `verdict` (`CONFIRMED`/`REFUTED`) | optional (available, not invoked) | `target`, `dimensions[]`, `maxFindings` |
+| `review-changes.workflow.js` | Adversarial review of the working diff; findings are schema-bound (`file`, `line`, `summary`) and each refutation returns a structured `verdict` (`CONFIRMED`/`REFUTED`) | none | `target`, `dimensions[]`, `maxFindings` |
 | `implement-task-with-gates.workflow.js` **(flagship)** | Plan → implement → gate → bounded Critic fix-loop → schema-bound review (`{verdict: PASS/FAIL, findings[]}`) → integrate only on `PASS` | **required** | `task`, `profile`, `checks[]` |
 | `migrate-sweep.workflow.js` | Mechanical migration swept across sites, gated per site | **required (per site)** | `target`, `sites[]`, `profile`, `checks[]`, `maxSites` |
 | `design-panel.workflow.js` | architect + code-architect + planner in parallel → synthesize | none | `target`, `constraints` |
@@ -56,98 +60,73 @@ are observable. Two knobs bound a workflow's size: the `workflowSizeGuideline` s
 (`small` <5 agents, `medium` <10 — the default, `large` <50, `unrestricted`) and
 `CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS` (default 16). Agent teams stay off.
 
-## The `runGate` contract
+## The quality-gate stage
 
-`lib/runner.js` exports `runGate`, `repoRoot`, and `loadProfileName`.
+The gate-bearing templates inline one `runGate({ profile, checks, scope, label, phase })`
+helper (keep the copies identical). It spawns a `haiku` / `effort: 'low'` agent that runs
+
+```
+python3 scripts/quality_gate.py --format json [--checks <csv>] [--scope all] [--profile <path>]
+```
+
+from the repo root and returns raw facts through a JSON schema (`exitCode`, `parsed`,
+`verdict`, `checks[]`, `maturity`). The verdict object is then **derived in script code**
+so the semantics stay deterministic:
 
 ```js
-import { runGate } from './lib/runner.js'
-
-const g = runGate({ changedFiles, profile, checks })
-// g => { ok, verdict, blocking_failures, checks, raw }
+const g = await runGate({ profile, checks })
+// g => { ok, verdict, blocking_failures, checks, maturity, raw }
 ```
-
-`runGate` shells:
-
-```
-python3 <repoRoot>/scripts/quality_gate.py --format json [flags...]
-```
-
-and derives the flags from its inputs:
 
 ### Inputs (all optional)
 
-- **`changedFiles`** — the gate computes the changed set from git itself, so a
-  file list is *not* passed through. The only thing this argument selects is the
-  **scope flag**: pass `'all'` (or `{ scope: 'all' }`) to add `--scope all` and
-  gate the whole project; otherwise scope is left at the runner default
-  (`changed`).
-- **`profile`** — either a profile **NAME** (e.g. `'legacy'`), resolved to
-  `<repoRoot>/team-profiles/<name>.json`, **or** an explicit **path** to a
-  profile file. If a name does **not** resolve to an existing file, `--profile`
-  is **omitted** and the gate falls back to its built-in `active` defaults.
-- **`checks`** — an array or CSV string of `lint` / `typecheck` / `test` /
-  `build`. Passed as `--checks <csv>`. Omitted ⇒ the gate runs all four.
+- **`scope`** — pass `'all'` to add `--scope all`; otherwise the gate default (`changed`)
+  applies. The gate computes the changed set from the repo itself, so no file list is passed.
+- **`profile`** — a profile **NAME** (e.g. `'legacy'`, resolved to
+  `<repo root>/team-profiles/<name>.json`) or an explicit **path**. If it does not resolve
+  to an existing file, `--profile` is omitted. When **no profile is given**, `--profile` is
+  omitted and `quality_gate.py` resolves its own (`$CLAUDE_TEAM_PROFILE`, then
+  `.claude/team-profile.json`, then the built-in `active` defaults).
+- **`checks`** — array of `lint` / `typecheck` / `test` / `build`, passed as `--checks <csv>`.
+  Omitted means the gate runs all four.
 
-### Return — `{ ok, verdict, blocking_failures, checks, raw }`
+### Return — `{ ok, verdict, blocking_failures, checks, maturity, raw }`
 
-- **`ok`** — `true` iff the runner exit code is `0`.
-- **`verdict`** — the parsed `report.verdict`, or `'error'` on a runner-exit-2 /
-  parse failure.
-- **`blocking_failures`** — **derived by the runner**, not read from the gate:
-  the checks where `blocking === true && status ∈ {fail, error}`. `quality_gate.py`
-  emits no such top-level field, so the runner computes it with the **same rule
-  the team_gate hook uses** — this keeps the JS and Python contracts identical.
-- **`checks`** — the parsed `report.checks` array (or `[]`).
-- **`raw`** — the unparsed stdout.
+- **`ok`** — `true` iff the gate exit code is `0`.
+- **`verdict`** — the report's `verdict`, or `'error'` on a gate-internal failure.
+- **`blocking_failures`** — **derived in script**: checks where
+  `blocking === true && status ∈ {fail, error}` (the same rule the team_gate hook uses).
+- **`checks`** — the report's `checks` array (or `[]`).
+- **`maturity`** — `maturity` of the profile file the gate used (`'active'` for the built-in);
+  `implement-task-with-gates` reads its fix-loop cap from this.
 
-### Exit-code → semantics (same mapping as the hook)
+### Exit-code → semantics
 
-| Runner exit | Result |
+| Gate exit | Result |
 | --- | --- |
 | `0` | `{ ok: true,  verdict: 'pass' (or parsed), blocking_failures: [] }` |
 | `1` | `{ ok: false, verdict: 'fail', blocking_failures: [...] }` |
 | `2` (gate internal error) | **fail-open** → `{ ok: true, verdict: 'error', blocking_failures: [] }` |
-| unparsable stdout | treated as a parse failure → **fail-open** (same as exit 2) |
+| unparsable output, or the gate agent itself failed | treated like exit 2 (**fail-open**) |
 
 ### Fail-open vs fail-closed (exit 2)
 
-A runner **exit 2** means the gate itself hit an internal error (not "your code
-failed" — "the gate broke"). `runGate` treats this as **FAIL-OPEN**:
-`ok: true, verdict: 'error'`. This matches the team_gate hook's *"never wedge the
-developer"* philosophy — a broken gate should not silently block all work.
-
-If you are copying these templates into **stricter CI** and want a gate error to
-**block** (fail-closed), flip the single constant at the top of `lib/runner.js`:
+A gate **exit 2** means the gate itself hit an internal error (not "your code failed" —
+"the gate broke"). The helper treats this as **FAIL-OPEN**: `ok: true, verdict: 'error'`,
+matching the team_gate hook's *"never wedge the developer"* philosophy. For stricter CI
+flip the constant in the inlined helper to fail-**closed**:
 
 ```js
 const FAIL_OPEN_ON_ERROR = false
 ```
 
-That makes exit 2 / unparsable output return `ok: false`, so a gate-internal
-error blocks the flow.
+`beads-task` additionally requires `verdict === 'pass'` before closing an issue, so a gate
+error never closes work even while fail-open.
 
-## Profile & resolver helpers
-
-`repoRoot()` and `loadProfileName()` are thin **JS re-implementations** of
-`team_sentinel.py`'s resolvers. They exist so the JS workflow layer does not have
-to shell Python on every call. **`scripts/team_sentinel.py` remains the canonical
-resolver** (it is what the team_gate hook and gate consult); the JS mirrors its
-precedence exactly. If you change the Python precedence, mirror it here too.
-
-- **`repoRoot(startDir?)`** — walks up from `startDir` (default `process.cwd()`)
-  to the first directory containing a `.git` **entry (file *or* dir**, so
-  worktrees and submodules resolve), falling back to `process.cwd()`.
-- **`loadProfileName(root?)`** — returns the active profile **name** by
-  preference order, matching `team_sentinel.resolve_profile` exactly:
-  1. **team-context marker** — `<root>/.claude/team-context.json` → `.profile`,
-     but only when its `.active` is `true`;
-  2. **`$CLAUDE_TEAM_PROFILE`** — used **raw** (no basename, no `.json` strip);
-  3. **team-profile marker** — `<root>/.claude/team-profile.json` → `.maturity`;
-  4. **`'active'`** — the safe default.
-
-Each source is read defensively; a malformed or inactive marker falls through
-to the next.
+> **Behaviour change vs the old `lib/runner.js`:** the profile is no longer resolved in JS.
+> The old `loadProfileName()` also honoured `.claude/team-context.json`; the gate stage
+> relies on `quality_gate.py`'s own resolution instead, so pass `args.profile` to pick one
+> explicitly.
 
 ## Structured verdicts
 
@@ -185,9 +164,10 @@ remaining failures.
 
 `beads-task.workflow.js` makes a workflow's tasks **durable across sessions** by persisting
 them to [beads](../README.md#agentic-project-management-beads) (`bd`). Because a Workflow
-script is sandboxed (no shell), it can't run `bd` itself — `lib/beads.js` returns
-**prompt + schema pairs** that the spawned `agent()` runs against the `bd` CLI (or the native
-Task tools when `bd` is absent). The command vocabulary lives once in
+script is sandboxed (no shell), it can't run `bd` itself — each operation (detect, create,
+ready, claim, close) is a `haiku` / `effort: 'low'` `agent()` stage whose prompt carries the
+`bd` command contract and whose JSON `schema` returns the result (the native Task tools are
+the fallback when `bd` is absent). The command vocabulary lives once in
 [`skills/team-orchestration/references/beads-contract.md`](../skills/team-orchestration/references/beads-contract.md).
 
 **The memory is an epic id.** The first run decomposes the goal into acceptance-criteria-bearing
@@ -198,5 +178,5 @@ ones. This is orthogonal to the Workflow tool's own **within-run** `runId` resum
 resumes one interrupted execution; `epicId` resumes the *task set* days later in a fresh session.
 
 An issue is **closed only when its acceptance criteria are met AND the gate verdict is `pass`**
-(not merely `ok` — `runGate` is fail-open and returns `verdict:'error', ok:true` on a gate error).
+(not merely `ok` — the gate stage is fail-open and returns `verdict:'error', ok:true` on a gate error).
 The caller must persist `result.epicId` to resume; otherwise a re-run creates a duplicate epic.

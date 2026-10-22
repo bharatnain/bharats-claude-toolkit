@@ -31,15 +31,29 @@ NAME_KEY_RE = re.compile(r"\bname\s*:")
 DESC_KEY_RE = re.compile(r"\bdescription\s*:")
 PHASES_KEY_RE = re.compile(r"\bphases\s*:")
 
-# A *.workflow.js script is NOT a standalone module: the Workflow runtime hoists
-# its `import`s, treats `export const meta` as a module export, and wraps the rest
-# of the body — which uses top-level `return`/`await` — in an async function. So a
-# plain `node --check <file>` can never pass on one. To syntax-check faithfully we
-# reproduce that wrap (imports stay at module top; `export const meta` becomes a
-# plain `const`; everything else goes inside an async function) and check the
-# result as an ES module via stdin. lib/*.js are real modules, checked as-is.
+# A *.workflow.js script is NOT a standalone module: the Workflow runtime treats
+# `export const meta` as a module export and wraps the rest of the body — which
+# uses top-level `return`/`await` — in an async function. So a plain
+# `node --check <file>` can never pass on one. To syntax-check faithfully we
+# reproduce that wrap (`export const meta` becomes a plain `const`; everything
+# else goes inside an async function) and check the result as an ES module via
+# stdin.
 IMPORT_RE = re.compile(r"^\s*import\b.*$", re.M)
 EXPORT_META_RE = re.compile(r"\bexport\s+(const\s+meta\b)")
+
+# W3: the Workflow runtime has NO module loading and NO Node/filesystem APIs,
+# `export const meta` must be the FIRST statement, and Date.now()/Math.random()
+# throw. A script that breaks any of this cannot run.
+FIRST_META_RE = re.compile(r"export\s+const\s+meta\b")
+LEADING_TRIVIA_RE = re.compile(r"\s+|//[^\n]*|/\*.*?\*/", re.S)
+FORBIDDEN_RUNTIME = (
+    (re.compile(r"^\s*import\b", re.M), "import statement"),
+    (re.compile(r"\bimport\s*\("), "import()"),
+    (re.compile(r"\brequire\s*\("), "require()"),
+    (re.compile(r"\bprocess\."), "process.*"),
+    (re.compile(r"\bDate\.now\s*\("), "Date.now()"),
+    (re.compile(r"\bMath\.random\s*\("), "Math.random()"),
+)
 
 
 class Finding:
@@ -154,6 +168,24 @@ def check_meta(text, rel, path, findings):
                                     f"{rel}: meta missing '{key}'"))
 
 
+def check_runtime_constraints(text, rel, path, findings):
+    """W3: `export const meta` is the first statement (comments/blank lines
+    ignored) and the script uses no import/require/process/Date.now/Math.random."""
+    pos = 0
+    while True:
+        m = LEADING_TRIVIA_RE.match(text, pos)
+        if not m:
+            break
+        pos = m.end()
+    if not FIRST_META_RE.match(text, pos):
+        findings.append(Finding("workflows", path, "error", "W3",
+                                f"{rel}: 'export const meta' must be the first statement"))
+    for regex, what in FORBIDDEN_RUNTIME:
+        if regex.search(text):
+            findings.append(Finding("workflows", path, "error", "W3",
+                                    f"{rel}: {what} is not available in the Workflow runtime"))
+
+
 def node_check_source(source):
     """`node --check --input-type=module` on `source` via stdin.
 
@@ -184,14 +216,13 @@ def wrap_workflow_source(src):
 
 
 def check_workflows(root, findings):
-    """workflows/*.js AND workflows/lib/*.js: W1 `node --check` passes;
-    *.workflow.js also: W2 meta has name+description+phases."""
+    """workflows/*.js: W1 `node --check` passes; *.workflow.js also: W2 meta has
+    name+description+phases, W3 runtime constraints (see check_runtime_constraints)."""
     count = 0
     workflows_dir = root / "workflows"
     if not workflows_dir.is_dir():
         return count
-    js_files = sorted(workflows_dir.glob("*.js")) + sorted((workflows_dir / "lib").glob("*.js"))
-    for js in js_files:
+    for js in sorted(workflows_dir.glob("*.js")):
         count += 1
         rel = str(js.relative_to(root))
         src = js.read_text(encoding="utf-8")
@@ -207,6 +238,7 @@ def check_workflows(root, findings):
                                     f"{rel}: node --check failed: {detail}"))
         if is_workflow:
             check_meta(src, rel, str(js), findings)
+            check_runtime_constraints(src, rel, str(js), findings)
     return count
 
 

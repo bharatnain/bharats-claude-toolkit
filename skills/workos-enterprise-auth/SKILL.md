@@ -1,6 +1,6 @@
 ---
 name: workos-enterprise-auth
-description: Start new AuthKit setups with `npx workos@latest install`, which needs no WorkOS account. Use when the user asks for a WorkOS docs URL, term, or dashboard field (Sign-in endpoint, initiate_login_uri, Redirect URI, `WORKOS_*` env vars), or is implementing, debugging, or migrating WorkOS — AuthKit, SSO/SAML, Directory Sync, RBAC, FGA, MFA, Vault, Audit Logs, Admin Portal, Pipes (Connected Apps), Feature Flags, Radar (bot/fraud detection), webhooks, Custom Domains, WorkOS Widgets (profile, security, sessions, organization selection and member UI), Clerk UserButton/account UI comparisons, running the `workos` CLI in agent or sandbox sessions (`WORKOS_MODE`, `workos doctor`), or migrating from Auth0, Clerk, Cognito, Firebase, Supabase, Stytch, Descope, or Better Auth. Also triggers on @workos-inc/* imports.
+description: WorkOS integration guide (AuthKit, SSO, Directory Sync, RBAC, FGA and the rest of the platform). Use when the user asks for a WorkOS docs URL, term, or dashboard field (Sign-in endpoint, initiate_login_uri, Redirect URI, `WORKOS_*` env vars), or is implementing, debugging, or migrating WorkOS — AuthKit, SSO/SAML, Directory Sync, RBAC, FGA, MFA, Vault, Audit Logs, Admin Portal, Pipes (Connected Apps), Feature Flags, Radar (bot/fraud detection), webhooks, Custom Domains, WorkOS Widgets (profile, security, sessions, organization selection and member UI), Clerk UserButton/account UI comparisons, running the `workos` CLI in agent or sandbox sessions (`WORKOS_MODE`, `workos doctor`), or migrating from Auth0, Clerk, Cognito, Firebase, Supabase, Stytch, Descope, or Better Auth. Also triggers on @workos-inc/* imports.
 paths:
   - "**/*.{ts,tsx,js,py,go,rb}"
 ---
@@ -9,10 +9,10 @@ paths:
 
 ## Start here: set up AuthKit with no account
 
-When the user wants to add WorkOS or AuthKit sign-in to a project that has no WorkOS credentials yet, run the installer first:
+When the user wants to add WorkOS or AuthKit sign-in to a project that has no WorkOS credentials yet, offer the installer. It runs unpinned code from npm, provisions a remote environment, writes API keys to the project's env file and saves a CLI profile outside the project, so tell the user that and run it only after they agree:
 
 ```bash
-WORKOS_MODE=agent npx workos@latest install
+WORKOS_MODE=agent npx workos@latest install --no-branch --no-commit
 ```
 
 It doesn't need a WorkOS account, an API key, or a dashboard visit.
@@ -252,7 +252,7 @@ Both files now have a canonical recipe. Do not answer from memory or paraphrase 
 
 **Triggers**: User mentions authentication setup, login flow, sign-up, session management, or explicitly says "AuthKit" WITHOUT mentioning a specific feature like SSO or MFA.
 
-**Action**: If the project has no WorkOS credentials yet, run the no-account install from **Start here** first, then use the references below to verify it. Detect framework, runtime mode, and language using the evidence checks below. Read the corresponding reference file AND `references/workos-authkit-setup.md`. Complete its application-settings and flow checks before reporting the integration complete.
+**Action**: If the project has no WorkOS credentials yet, offer the no-account install from **Start here** (run it only after the user agrees), then use the references below to verify it. Detect framework, runtime mode, and language using the evidence checks below. Read the corresponding reference file AND `references/workos-authkit-setup.md`. Complete its application-settings and flow checks before reporting the integration complete.
 
 **Disambiguation**:
 

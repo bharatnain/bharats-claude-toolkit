@@ -54,8 +54,9 @@ Every hook script in `hooks/` follows the same contract:
   any internal error (fail open): a broken convenience hook must degrade to "no hook",
   never to "wedged session". `secret_scan.py` is the exception: it is a guardrail, and
   Claude Code treats every exit code other than 2 as "proceed", so its internal errors
-  exit 2 with the reason on stderr (fail closed). Disable it with `CLAUDE_SECRET_SCAN=0`
-  if it misfires.
+  exit 2 with the reason on stderr (fail closed). Its `hooks.json` entry also sets
+  `"onFailure": "block"` (Claude Code ≥ 2.1.295), so a timeout, crash or missing
+  interpreter blocks the edit too. Disable it with `CLAUDE_SECRET_SCAN=0` if it misfires.
 - **`exit 2`** — block, with the reason printed to **stderr** (Claude Code feeds stderr
   back to the model). Only `secret_scan.py` (PreToolUse) and `team_gate.py`
   (gate events) ever exit 2. `team_gate.py` translates the `scripts/quality_gate.py`

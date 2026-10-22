@@ -45,8 +45,11 @@ at the start so a run is debuggable.
 
 The templates use `agentType` strings that map to the existing `agents/`
 definitions — `code-reviewer`, `architect`, `code-architect`, `planner`,
-`integrator` — so the panel/review flows reuse the Phase-F1 role agents rather
-than inventing new ones. (Implementation/transform steps use `general-purpose`.)
+`integrator`, `tech-lead` — so the panel/review flows reuse the Phase-F1 role agents rather
+than inventing new ones. Plugin agents resolve only by their namespaced name, so
+the scripts write `bharats-claude-toolkit:code-reviewer`; if you copy a template
+into a repo that defines these agents under `.claude/agents/`, drop the prefix.
+(Implementation/transform steps use `general-purpose`.)
 
 ## Subagents vs workflow
 

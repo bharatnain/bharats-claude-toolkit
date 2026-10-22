@@ -151,7 +151,7 @@ const BD_PREAMBLE = [
   'Return ONLY the JSON described by the schema — no prose.',
 ].join(' ')
 
-const BD_OPTS = { agentType: 'tech-lead', model: 'haiku', effort: 'low' }
+const BD_OPTS = { agentType: 'bharats-claude-toolkit:tech-lead', model: 'haiku', effort: 'low' }
 
 const TASK_REF = {
   type: 'object', additionalProperties: false, required: ['id', 'title'],

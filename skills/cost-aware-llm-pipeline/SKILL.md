@@ -24,8 +24,8 @@ Patterns for controlling LLM API costs while maintaining quality. Combines model
 Automatically select cheaper models for simple tasks, reserving expensive models for complex ones.
 
 ```python
-MODEL_SONNET = "claude-sonnet-5"
-MODEL_HAIKU = "claude-haiku-4-5"
+MODEL_SONNET = "claude-sonnet-5-5"
+MODEL_HAIKU = "claude-haiku-5-5"
 
 _SONNET_TEXT_THRESHOLD = 10_000  # chars
 _SONNET_ITEM_THRESHOLD = 30     # items
@@ -40,7 +40,7 @@ def select_model(
         return force_model
     if text_length >= _SONNET_TEXT_THRESHOLD or item_count >= _SONNET_ITEM_THRESHOLD:
         return MODEL_SONNET  # Complex task
-    return MODEL_HAIKU  # Simple task (~2x cheaper)
+    return MODEL_HAIKU  # Simple task (~20x cheaper under 100K-token prompts)
 ```
 
 ### 2. Immutable Cost Tracking
@@ -153,15 +153,19 @@ def process(text: str, config: Config, tracker: CostTracker) -> tuple[Result, Co
     return parse_result(response), tracker
 ```
 
-## Pricing Reference (cached Sep 2026)
+## Pricing Reference (cached Oct 2026)
 
 | Model | Input ($/1M tokens) | Output ($/1M tokens) | Relative Cost |
 |-------|---------------------|----------------------|---------------|
-| Haiku 4.5 | $1.00 | $5.00 | 1x |
-| Sonnet 5 | $2.00 | $10.00 | ~2x |
-| Opus 5.5 | $4.00 | $20.00 | ~4x |
-| Opus 5 | $5.00 | $25.00 | ~5x |
-| Fable 5.1 | $10.00 | $50.00 | ~10x |
+| Haiku 5.5 (prompt ≤ 100K tokens) | $0.10 | $0.50 | 1x |
+| Haiku 5.5 (prompt > 100K tokens) | $0.50 | $2.50 | 5x |
+| Haiku 4.5 | $1.00 | $5.00 | 10x |
+| Sonnet 5.5 / Sonnet 5 | $2.00 | $10.00 | 20x |
+| Opus 5.5 | $4.00 | $20.00 | 40x |
+| Opus 5 | $5.00 | $25.00 | 50x |
+| Fable 5.1 | $10.00 | $50.00 | 100x |
+
+Haiku 5.5's price is tiered on prompt size: a request whose prompt exceeds 100K tokens is billed at the higher rate for the whole request. Keep routed-to-Haiku prompts under that line. Sonnet 4.5 retires 2026-11-30; move any pinned `claude-sonnet-4-5` ids to `claude-sonnet-5-5`.
 
 Prices drift — treat this table as a snapshot. Before hardcoding model IDs or prices, verify against [references/claude-api/models.md](references/claude-api/models.md) (current model IDs, aliases, deprecations) or the live pricing docs.
 
@@ -170,7 +174,7 @@ Prices drift — treat this table as a snapshot. Before hardcoding model IDs or 
 - **Start with the cheapest model** and only route to expensive models when complexity thresholds are met
 - **Set explicit budget limits** before processing batches — fail early rather than overspend
 - **Log model selection decisions** so you can tune thresholds based on real data
-- **Use prompt caching** for long shared system prompts — saves both cost and latency. The minimum cacheable prefix is model-dependent (512 tokens on Opus 5.5/Opus 5/Fable 5.1, 1024 on Sonnet 5/4.6, 4096 on Haiku 4.5); shorter prefixes silently won't cache. See [references/claude-api/prompt-caching.md](references/claude-api/prompt-caching.md)
+- **Use prompt caching** for long shared system prompts — saves both cost and latency. The minimum cacheable prefix is model-dependent (for example 512 tokens on Opus 5.5/Opus 5/Fable 5.1, 1024 on Sonnet 5/4.6, 4096 on Haiku 4.5; check the live docs for Sonnet 5.5 and Haiku 5.5); shorter prefixes silently won't cache. See [references/claude-api/prompt-caching.md](references/claude-api/prompt-caching.md)
 - **Never retry on authentication or validation errors** — only transient failures (network, rate limit, server error)
 
 ## Anti-Patterns to Avoid

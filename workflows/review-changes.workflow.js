@@ -80,9 +80,13 @@ const finderResults = await parallel(DIMENSIONS.map((dim) => () =>
   agent(
     `You are reviewing ${TARGET} along ONE dimension: ${dim}. READ-ONLY — do not edit, stage, or switch branches.
 Inspect the diff (\`git diff\`, \`git diff --staged\`, and untracked files as relevant). Surface only REAL, evidence-backed candidate findings for the ${dim} dimension — quote the exact construct in \`summary\` and give \`file\` + \`line\`. Do not invent issues; an empty findings array is a valid answer for a clean dimension.`,
-    { label: `find:${dim}`, phase: 'Find', schema: FINDING_SCHEMA, agentType: 'code-reviewer' },
-  ).then((r) => ({ dim, findings: (r && r.findings) || [] })),
+    { label: `find:${dim}`, phase: 'Find', schema: FINDING_SCHEMA, agentType: 'bharats-claude-toolkit:code-reviewer' },
+  ).then((r) => ({ dim, ok: !!r, findings: (r && r.findings) || [] })),
 ))
+// A finder that errored (null) or returned nothing usable is a dimension NOT
+// reviewed; it must not read as a clean dimension.
+const failedDims = DIMENSIONS.filter((dim, i) => !(finderResults[i] && finderResults[i].ok))
+if (failedDims.length) log(`Find: ${failedDims.length} dimension(s) not reviewed (finder failed): ${failedDims.join(', ')}`)
 
 // Flatten + cap (severity-ranked) so the verify phase can't spawn an unbounded swarm.
 const sevRank = { critical: 0, major: 1, minor: 2 }
@@ -105,7 +109,7 @@ Read the CURRENT code and any tests yourself. Try HARD to show the code is actua
 FINDING [${f.dim}/${f.severity}] ${f.title}
   file: ${f.file}${f.line != null ? `:${f.line}` : ''}
   evidence: ${f.summary}`,
-        { label: `verify:${f.dim}`, phase: 'Verify', schema: VERDICT_SCHEMA, agentType: 'code-reviewer' },
+        { label: `verify:${f.dim}`, phase: 'Verify', schema: VERDICT_SCHEMA, agentType: 'bharats-claude-toolkit:code-reviewer' },
       ).then((v) => ({ finding: f, verdict: v })),
     ))
   : []
@@ -132,7 +136,9 @@ return {
   dimensions: DIMENSIONS,
   findings: survived,
   refuted: refutedCount,
+  failedDimensions: failedDims,
   verdict: survived.some((f) => f.severity === 'critical') ? 'changes-requested'
+    : failedDims.length ? 'incomplete'
     : survived.length ? 'comment'
     : 'approve',
 }

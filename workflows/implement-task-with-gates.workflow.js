@@ -168,7 +168,7 @@ const plan = await agent(
   `Plan the implementation of this task as a SURGICAL change (touch only what the task requires; match existing style). Produce ordered steps and a list of VERIFIABLE success criteria (the checks that will prove it is done).
 
 TASK: ${TASK}`,
-  { label: 'plan', phase: 'Plan', schema: PLAN_SCHEMA, agentType: 'planner' },
+  { label: 'plan', phase: 'Plan', schema: PLAN_SCHEMA, agentType: 'bharats-claude-toolkit:planner' },
 )
 const steps = (plan && plan.steps) || []
 const criteria = (plan && plan.successCriteria) || []
@@ -242,7 +242,7 @@ SUCCESS CRITERIA:
 ${criteria.map((c) => `  - ${c}`).join('\n')}
 
 CHANGED FILES (per implementer): ${((impl && impl.changedFiles) || []).join(', ') || '(unknown — inspect git diff)'}`,
-    { label: 'review', phase: 'Review', schema: REVIEW_SCHEMA, agentType: 'code-reviewer' },
+    { label: 'review', phase: 'Review', schema: REVIEW_SCHEMA, agentType: 'bharats-claude-toolkit:code-reviewer' },
   )
   log(`Review: verdict=${(review && review.verdict) || 'none'} findings=${((review && review.findings) || []).length}`)
 } else {
@@ -259,7 +259,7 @@ if (gateGreen && reviewPassed) {
     `The quality gate is GREEN for this task. Integrate the change: ensure the working tree is coherent, the build is green, and the change is ready to land. Report what you did.
 
 TASK: ${TASK}`,
-    { label: 'integrate', phase: 'Integrate', schema: DONE_SCHEMA, agentType: 'integrator' },
+    { label: 'integrate', phase: 'Integrate', schema: DONE_SCHEMA, agentType: 'bharats-claude-toolkit:integrator' },
   )
   log(`Integrate: ${(integration && integration.summary) || 'done'}`)
 } else {

@@ -94,6 +94,10 @@ From the 30-day audit (outputs in the gitignored `.superpowers/audit-2026-09-30/
   `doctor.py` compares marketplace keys only, so it cannot see a stale GitHub registration; whether Claude
   Code refreshes an already-registered settings marketplace when pins change is unverified; the alirezarezvani
   Colorado AI-hiring citation ("CO SB 26-189") changed upstream and is unchecked.
+- Review minors left open: `beads-task` can report `all-closed` when a pipeline stage threw (null items are
+  dropped); `validate_assets` W3 matches prose like "process." inside prompt strings and misses argless
+  `new Date()`; `check_upstream` compares `git-subdir` pins with the whole repo's HEAD, so monorepo pins
+  always show drift; `bootstrap.sh` writes `$HOME/.claude/settings.json` even when `CLAUDE_CONFIG_DIR` is set.
 
 ## Deferred (with reason)
 

@@ -1,5 +1,6 @@
 ---
 max_turns: 6
+allowed_tools: [Skill]
 timeout_seconds: 300
 tags: [skill-trigger, first-party]
 ---

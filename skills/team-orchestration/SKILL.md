@@ -203,7 +203,7 @@ After each wave, before the next:
   findings must be cross-checked against each other, or when a verdict must be
   machine-checkable (`schema` on the verifier). `review-changes` and
   `implement-task-with-gates` are the templates.
-- **Agent teams** (`TeamCreate`): experimental and off in this toolkit; do not enable.
+- **Agent teams** (`TeamCreate`): removed from Claude Code in v2.1.178; use subagents or a Workflow.
 
 ## Plans from superpowers
 

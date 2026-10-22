@@ -1,12 +1,3 @@
-// workflows/design-panel.workflow.js
-//
-// TEMPLATE — copy this file and parameterize it for your repo. Run via the
-// Workflow tool. See workflows/README.md.
-//
-// Flow: run architect + code-architect + planner in PARALLEL on the same design
-// problem, then synthesize their three perspectives into a single design. No
-// gate stage (this is a design/exploration flow, nothing is built).
-
 export const meta = {
   name: 'design-panel',
   description:
@@ -16,6 +7,15 @@ export const meta = {
     { title: 'Synthesize', detail: 'merge the three perspectives into one design, surfacing disagreements' },
   ],
 }
+
+// workflows/design-panel.workflow.js
+//
+// TEMPLATE — copy this file and parameterize it for your repo. Run via the
+// Workflow tool. See workflows/README.md.
+//
+// Flow: run architect + code-architect + planner in PARALLEL on the same design
+// problem, then synthesize their three perspectives into a single design. No
+// gate stage (this is a design/exploration flow, nothing is built).
 
 // ---- args (defensive: string | object | undefined) -------------------------
 // { target: "..." }       the design problem / feature to design. A bare string

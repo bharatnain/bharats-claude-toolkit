@@ -1,19 +1,7 @@
-// workflows/review-changes.workflow.js
-//
-// TEMPLATE — copy this file and parameterize it for your repo. Run via the
-// Workflow tool. See workflows/README.md.
-//
-// Flow: enumerate review dimensions -> parallel find-findings (one finder per
-// dimension) -> adversarial verify (a code-reviewer agent per finding tries to
-// REFUTE it) -> synthesize a single review. Pure review: runGate is available
-// but not required, so it is not invoked here.
-
-import { runGate } from './lib/runner.js' // available for an optional gate; see note below
-
 export const meta = {
   name: 'review-changes',
   description:
-    'Adversarial review of the working diff. Fan out one finder per review dimension, then have a code-reviewer agent try to refute each finding before it survives, then synthesize a single verdict. Read-only — never edits code. runGate is available but a pure review does not require it.',
+    'Adversarial review of the working diff. Fan out one finder per review dimension, then have a code-reviewer agent try to refute each finding before it survives, then synthesize a single verdict. Read-only — never edits code. A pure review needs no quality gate.',
   phases: [
     { title: 'Dimensions', detail: 'enumerate the review dimensions for this diff' },
     { title: 'Find', detail: 'parallel: one finder per dimension surfaces candidate findings' },
@@ -21,6 +9,15 @@ export const meta = {
     { title: 'Synthesize', detail: 'merge surviving findings into one review verdict' },
   ],
 }
+
+// workflows/review-changes.workflow.js
+//
+// TEMPLATE — copy this file and parameterize it for your repo. Run via the
+// Workflow tool. See workflows/README.md.
+//
+// Flow: enumerate review dimensions -> parallel find-findings (one finder per
+// dimension) -> adversarial verify (a code-reviewer agent per finding tries to
+// REFUTE it) -> synthesize a single review. Pure review: no quality gate stage.
 
 // ---- args (defensive: string | object | undefined) -------------------------
 // { target: "..." }      free-text description of WHAT to review (e.g. "the auth

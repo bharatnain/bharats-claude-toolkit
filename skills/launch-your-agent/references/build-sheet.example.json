@@ -95,7 +95,7 @@
     {
       "what": "Lock networking down to only the competitor sites",
       "why_deferred": "Hardening — unrestricted is fine while the agent is read-only",
-      "how": "Switch the environment to networking: limited with the competitor domains in allowed_hosts"
+      "how": "Set allowed_domains on web_search / web_fetch to the competitor domains; also switch the environment to networking: limited with the same domains in allowed_hosts"
     },
     {
       "what": "Re-run the 3 eval cases before promoting any new agent version",

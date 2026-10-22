@@ -357,8 +357,9 @@ def plan(profile):
     if missing:
         items.append({"path": ".gitignore", "action": "update" if gi else "create", "reason": "ignore machine-local files", "content": gi.rstrip("\n") + ("\n" if gi else "") + "".join(l + "\n" for l in missing)})
     recs = ["Turn on the sandbox (`/sandbox`) so allowlisted commands run inside OS boundaries.",
-            "Project allow rules and hooks apply only after you trust this folder (workspace trust dialog).",
-            "Set `syncClaudeAiSkills: true` in ~/.claude/settings.json if you want claude.ai skills here."]
+            "Project allow rules and hooks apply only after you trust this folder (workspace trust dialog)."]
+    if not (root / ".claude/skills/verify/SKILL.md").exists():
+        recs.append("Run `/verify` once: it records how to build and check this repo in `.claude/skills/verify/SKILL.md`, and Claude then runs it before each commit (Claude Code >= 2.1.286).")
     if cur is not None and "<!-- setup-repo:" not in cur and ex["CLAUDE.md"]["lines"] > 200:
         recs.append(f"CLAUDE.md is {ex['CLAUDE.md']['lines']} lines; the docs recommend under 200 — move reference material into .claude/rules/ or skills.")
     if any(l in ("typescript", "go", "rust") for l in profile["languages"]):

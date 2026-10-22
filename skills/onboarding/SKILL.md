@@ -2,7 +2,7 @@
 name: onboarding
 description: PLG product-UX post-signup activation — designing the in-app, self-serve first-run EXPERIENCE so users reach their "aha moment" and activate (no human CSM, no named account, no contract). Use when optimizing the first-run experience, onboarding flow UX, activation rate, time-to-value, empty states, onboarding checklists, guided tours/tooltips, or stalled-user in-app re-engagement ("users sign up but don't use the product," "low activation rate," "nobody completes setup," "improve our first session experience"). Not for a B2B customer-facing onboarding PLAN document — the multi-milestone timeline, owners, cadence, success criteria for a signed account (use `onboarding-plan`); not for preparing the onboarding KICKOFF MEETING right after a contract is signed — its agenda, first-priorities, or pre-kickoff checklist (use `kickoff-prep`). This skill never touches a named customer, contract, or CSM workflow. For signup/registration optimization see signup; for email sequences see emails.
 metadata:
-  version: 2.0.1
+  version: 2.0.2
 disable-model-invocation: true
 ---
 
@@ -76,9 +76,15 @@ Choose an **activation model** (freemium, free trial, paid trial, money-back, co
 
 ### Find Your Aha Moment
 
-The action that correlates most strongly with retention:
-- What do retained users do that churned users don't?
-- What's the earliest indicator of future engagement?
+Find early value actions associated with later retention, using a defined cohort and timeline:
+
+1. Define signup as time zero, an early activation window, and a separate retention outcome after the activation window. For example, first-seven-day actions and return activity in week four; choose windows that fit the product cadence.
+2. Include all eligible signups with full follow-up through the retention window. Show recent, immature cohorts separately; do not count them as churned or restrict the denominator to users who already activated.
+3. Compare actions recorded within the early window. Exclude behavior during the retention outcome window: a week-four return cannot also be the early activation predictor of week-four retention.
+4. Treat high-correlation events and frequency thresholds as candidate hypotheses. Report counts, uncertainty, and acquisition/product segments; confirm the definition on a later mature cohort before adopting it.
+5. Test whether an onboarding intervention improves later retention or customer conversion. Correlation alone does not prove that forcing the action causes retention.
+
+[Amplitude's Compass setup](https://amplitude.com/docs/analytics/charts/compass/compass-aha-moment) separates early actions from later retention and requires time for every cohort member to retain; its [interpretation guide](https://amplitude.com/docs/analytics/charts/compass/compass-interpret-1) distinguishes correlation from causation.
 
 **Examples by product type:**
 - Project management: Create first project + add team member
@@ -246,7 +252,7 @@ When recommending experiments, consider tests for:
 
 ## Task-Specific Questions
 
-1. What action most correlates with retention?
+1. Which early action predicts later retention, using what activation window and fully observed signup cohort?
 2. What happens immediately after signup?
 3. Where do users currently drop off?
 4. What's your activation rate target?

@@ -6,9 +6,10 @@ description: >
   Use for QBR prep, mid-quarter health reviews, and executive business reviews.
   Produces an internal working document and a customer-facing deliverable separately.
 argument-hint: "[account name] [--draft | --review | --exec-brief]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 # /qbr-builder

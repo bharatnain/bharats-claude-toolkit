@@ -1,6 +1,7 @@
 {
   "name": "bharats-claude-toolkit-dev",
   "owner": { "name": "Bharat" },
+  "description": "Bharat's Claude Code toolkit: vendored skills, role agents, hooks and workflows.",
   "plugins": [
     { "name": "bharats-claude-toolkit", "source": "./", "description": "My personal Claude Code setup" }
   ]

@@ -70,6 +70,7 @@
             "command": "python3",
             "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/secret_scan.py"],
             "timeout": 10,
+            "onFailure": "block",
             "statusMessage": "Scanning for secrets"
           }
         ]

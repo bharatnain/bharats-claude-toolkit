@@ -1,11 +1,12 @@
 ---
 name: commercial-policy
 description: "DESIGN the standing commercial-policy FRAMEWORK that Deal Desk operates under — the multi-dimensional discount matrix (ARR band x term x payment terms x strategic value), the approver-tier thresholds (AE/Manager/Director/VP/CFO), and the exception flow with compensating commitments and audit trail. Builds a data-backed matrix, routes by-band exceptions, and lints the policy for governance defects (approver/band inversion, margin-floor violations, coverage gaps, cliff edges). Use when authoring or revising the firm's first/standing discount-and-exception rulebook, breaking precedent loops, or rebuilding the matrix against a new margin floor. Not for reviewing ONE inbound deal at close, MSA redline, or routing a single over-authority discount (use `deal-desk`); not for front-of-funnel lead lifecycle, scoring/routing, MQL/SQL, or CRM hygiene (use `revops`); not for board-level bookings/ARR/NRR forecasts (use `commercial-forecaster`); not for rep/pipeline weighted forecasts (use `sales-forecast-builder`)."
-version: 2.8.0
-author: claude-code-skills
 license: MIT
-tags: [commercial, discount-policy, discount-matrix, exception-flow, governance, deal-framework, commercial-discipline]
-compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+metadata:
+  version: 2.8.0
+  author: claude-code-skills
+  tags: [commercial, discount-policy, discount-matrix, exception-flow, governance, deal-framework, commercial-discipline]
+  compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
 disable-model-invocation: true
 ---
 

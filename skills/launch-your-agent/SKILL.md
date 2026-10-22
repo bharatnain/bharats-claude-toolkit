@@ -2,9 +2,10 @@
 name: launch-your-agent
 description: "Build and deploy a Claude Managed Agent (CMA) — an agent hosted in the user's own Anthropic account via the CMA API — end to end. Scope a v0 with an interview, create the agent/environment/session, kick it off with an outcome rubric, grade the run, iterate, and (if it should run on a clock) put it on a scheduled deployment, with everything bigger laid out as v1/v2. Use when the user says \"launch my agent\", \"/launch-your-agent\", \"build me a managed agent\", \"deploy an agent on CMA\", or wants an always-on hosted agent running without them. Keywords: Claude Managed Agents, CMA, CMA API, managed agent, hosted agent, agent harness, scheduled deployment, outcome rubric. NOT for marketing — for planning a product launch, feature announcement, or go-to-market, use `launch` instead."
 license: Apache-2.0
-version: 0.3.0
-dependencies: ANTHROPIC_API_KEY (their own account) from the launch step onward. `ant` CLI optional — curl forms included for everything.
 disable-model-invocation: true
+metadata:
+  version: 0.3.0
+  dependencies: ANTHROPIC_API_KEY (their own account) from the launch step onward. `ant` CLI optional — curl forms included for everything.
 ---
 
 <!-- Copyright 2026 Anthropic PBC -->
@@ -94,7 +95,7 @@ The brief, the files, and the overview page tell the same story — same emojis,
 Launch (each call's exact shape: `references/cma-api.md`), sourcing `.env`:
 model pick (`GET /v1/models`, newest Opus-class by default; Sonnet when speed/cost matters more for the use case) → environment → agent → **save AGENT_ID, AGENT_VERSION, ENV_ID to `IDS.env`** → session → kickoff with the **outcome event** (task from `first_prompt.txt`, rubric from `outcome.md`, `max_iterations: 3`).
 
-Mark the launch checkpoint in the standard scannable form, one line per primitive (`✅ 📦 environment env_…` / `✅ 🤖 agent agent_… (v1, model)` / `✅ ▶️ run started sesn_…`), and give them the Console link for their workspace (platform.claude.com → Claude Managed Agents → Sessions) so they can watch it live there too. From the moment the model is picked, use the **full model slug** (e.g. `claude-opus-5-5`) everywhere it appears — checkpoints, the overview page, the recap — never just "Opus-class".
+Mark the launch checkpoint in the standard scannable form, one line per primitive (`✅ 📦 environment env_…` / `✅ 🤖 agent agent_… (v1, model)` / `✅ ▶️ run started sesn_…`), and give them the Console link for their workspace (platform.claude.com → Managed Agents → Sessions) so they can watch it live there too. From the moment the model is picked, use the **full model slug** (e.g. `claude-opus-5-5`) everywhere it appears — checkpoints, the overview page, the recap — never just "Opus-class".
 
 Watch it together: stream or poll, narrating tool calls. Run the first poll iteration in the foreground and confirm it parses before backgrounding the loop — a silently-failing poller wastes ten minutes. On duration, only say what you can stand behind ("usually a few minutes — I'll tell you the moment it finishes") rather than quoting a number you haven't verified. While it cooks: Edit `agent-overview.html` in place — swap the `statepill` to live ("● Launched"), fill the top-bar stat cells (model slug + live IDs as Console deep links), append the new row to the run-log `<tbody>` — flesh out NEXT-DIRECTIONS, seed the memory store if planned.
 

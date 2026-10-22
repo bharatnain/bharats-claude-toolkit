@@ -1,9 +1,9 @@
 name: validate-skills
 on:
   push:
-    paths: ['skills/**', 'agents/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
+    paths: ['skills/**', 'agents/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py', '.claude-plugin/**', 'hooks/**']
   pull_request:
-    paths: ['skills/**', 'agents/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py']
+    paths: ['skills/**', 'agents/**', 'workflows/**', 'SKILLS.md', 'scripts/validate_skills.py', 'scripts/validate_assets.py', '.github/workflows/validate-skills.yml', 'team-profiles/**', 'scripts/quality_gate.py', 'scripts/quality_gate_selftest.py', 'scripts/team_profile_detect.py', '.claude-plugin/**', 'hooks/**']
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -21,3 +21,9 @@ jobs:
         run: python scripts/validate_profiles.py --format=github
       - name: Quality gate selftest
         run: python scripts/quality_gate_selftest.py
+      # Not --strict: it also fails on warnings this repo keeps on purpose (the plugin
+      # name contains "claude"; CLAUDE.md at the root is repo context, not plugin context).
+      - name: Validate plugin and marketplace manifests
+        run: |
+          npm install -g @anthropic-ai/claude-code@2.1.308
+          claude plugin validate .

@@ -11,9 +11,10 @@ description: >
   spotting or qualifying expansion signals in an account (use `expansion-signal`); not for
   building the expansion proposal / CSQL handoff after signals qualify (use `expansion-business-case`).
 argument-hint: "[--full | --cohort 90|60|30 | --segment <name> | --account <name>]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 # renewal-forecast [VALIDATED]

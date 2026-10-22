@@ -11,9 +11,10 @@ description: >
   onboarding accounts, or --patterns to identify common delay patterns across your
   book and recommend proactive interventions.
 argument-hint: "[<account-name-or-ID>] [--account | --portfolio | --patterns]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 <!-- Status: [PROPOSED] -->

@@ -1,19 +1,7 @@
-// workflows/review-changes.workflow.js
-//
-// TEMPLATE — copy this file and parameterize it for your repo. Run via the
-// Workflow tool. See workflows/README.md.
-//
-// Flow: enumerate review dimensions -> parallel find-findings (one finder per
-// dimension) -> adversarial verify (a code-reviewer agent per finding tries to
-// REFUTE it) -> synthesize a single review. Pure review: runGate is available
-// but not required, so it is not invoked here.
-
-import { runGate } from './lib/runner.js' // available for an optional gate; see note below
-
 export const meta = {
   name: 'review-changes',
   description:
-    'Adversarial review of the working diff. Fan out one finder per review dimension, then have a code-reviewer agent try to refute each finding before it survives, then synthesize a single verdict. Read-only — never edits code. runGate is available but a pure review does not require it.',
+    'Adversarial review of the working diff. Fan out one finder per review dimension, then have a code-reviewer agent try to refute each finding before it survives, then synthesize a single verdict. Read-only — never edits code. A pure review needs no quality gate.',
   phases: [
     { title: 'Dimensions', detail: 'enumerate the review dimensions for this diff' },
     { title: 'Find', detail: 'parallel: one finder per dimension surfaces candidate findings' },
@@ -21,6 +9,15 @@ export const meta = {
     { title: 'Synthesize', detail: 'merge surviving findings into one review verdict' },
   ],
 }
+
+// workflows/review-changes.workflow.js
+//
+// TEMPLATE — copy this file and parameterize it for your repo. Run via the
+// Workflow tool. See workflows/README.md.
+//
+// Flow: enumerate review dimensions -> parallel find-findings (one finder per
+// dimension) -> adversarial verify (a code-reviewer agent per finding tries to
+// REFUTE it) -> synthesize a single review. Pure review: no quality gate stage.
 
 // ---- args (defensive: string | object | undefined) -------------------------
 // { target: "..." }      free-text description of WHAT to review (e.g. "the auth
@@ -83,9 +80,13 @@ const finderResults = await parallel(DIMENSIONS.map((dim) => () =>
   agent(
     `You are reviewing ${TARGET} along ONE dimension: ${dim}. READ-ONLY — do not edit, stage, or switch branches.
 Inspect the diff (\`git diff\`, \`git diff --staged\`, and untracked files as relevant). Surface only REAL, evidence-backed candidate findings for the ${dim} dimension — quote the exact construct in \`summary\` and give \`file\` + \`line\`. Do not invent issues; an empty findings array is a valid answer for a clean dimension.`,
-    { label: `find:${dim}`, phase: 'Find', schema: FINDING_SCHEMA, agentType: 'code-reviewer' },
-  ).then((r) => ({ dim, findings: (r && r.findings) || [] })),
+    { label: `find:${dim}`, phase: 'Find', schema: FINDING_SCHEMA, agentType: 'bharats-claude-toolkit:code-reviewer' },
+  ).then((r) => ({ dim, ok: !!r, findings: (r && r.findings) || [] })),
 ))
+// A finder that errored (null) or returned nothing usable is a dimension NOT
+// reviewed; it must not read as a clean dimension.
+const failedDims = DIMENSIONS.filter((dim, i) => !(finderResults[i] && finderResults[i].ok))
+if (failedDims.length) log(`Find: ${failedDims.length} dimension(s) not reviewed (finder failed): ${failedDims.join(', ')}`)
 
 // Flatten + cap (severity-ranked) so the verify phase can't spawn an unbounded swarm.
 const sevRank = { critical: 0, major: 1, minor: 2 }
@@ -108,9 +109,9 @@ Read the CURRENT code and any tests yourself. Try HARD to show the code is actua
 FINDING [${f.dim}/${f.severity}] ${f.title}
   file: ${f.file}${f.line != null ? `:${f.line}` : ''}
   evidence: ${f.summary}`,
-        { label: `verify:${f.dim}`, phase: 'Verify', schema: VERDICT_SCHEMA, agentType: 'code-reviewer' },
+        { label: `verify:${f.dim}`, phase: 'Verify', schema: VERDICT_SCHEMA, agentType: 'bharats-claude-toolkit:code-reviewer' },
       ).then((v) => ({ finding: f, verdict: v })),
-    ))
+    )).then((rs) => rs.map((x, i) => x || { finding: toVerify[i], verdict: null }))
   : []
 
 // Surviving = not REFUTED, decided on the structured `verdict` field only. A
@@ -135,7 +136,9 @@ return {
   dimensions: DIMENSIONS,
   findings: survived,
   refuted: refutedCount,
+  failedDimensions: failedDims,
   verdict: survived.some((f) => f.severity === 'critical') ? 'changes-requested'
+    : failedDims.length ? 'incomplete'
     : survived.length ? 'comment'
     : 'approve',
 }

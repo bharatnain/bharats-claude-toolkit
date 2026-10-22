@@ -12,7 +12,7 @@
       "repo": "https://github.com/affaan-m/ecc",
       "license": "MIT",
       "copyright": "Affaan Mustafa",
-      "upstream_head_at_manifest": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+      "upstream_head_at_manifest": "90606c8315ee09cafc303515c5f33024db6b9882",
       "skills": [
         "agentic-engineering",
         "article-writing",
@@ -52,7 +52,7 @@
       "repo": "https://github.com/coreyhaines31/marketingskills",
       "license": "MIT",
       "copyright": "Corey Haines",
-      "upstream_head_at_manifest": "5b2c0007766c6a1cf1d53fd8fc73e979e0821022",
+      "upstream_head_at_manifest": "e85f3cbc2e4a79bf33b2a12e9bdd9087d414735b",
       "skills": [
         "copywriting",
         "copy-editing",
@@ -113,7 +113,7 @@
       "repo": "https://github.com/alirezarezvani/claude-skills",
       "license": "MIT",
       "copyright": "Alireza Rezvani",
-      "upstream_head_at_manifest": "19392f7a08264ed00486a251f5b2098321771f94",
+      "upstream_head_at_manifest": "27cfcd0fb0a41f60adffcbd5271fdf8839f86ed2",
       "skills": [
         "pricing-strategist",
         "deal-desk",
@@ -143,7 +143,7 @@
       "repo": "https://github.com/OneWave-AI/claude-skills",
       "license": "MIT",
       "copyright": "OneWave AI",
-      "upstream_head_at_manifest": "9d3dd456dc4656ee3065a146f35bf7079e13f91f",
+      "upstream_head_at_manifest": "b2267d9171af4f56848d82992381b20b89b44056",
       "skills": [
         "sales-methodology-implementer",
         "deal-review-framework",
@@ -159,7 +159,7 @@
       "repo": "https://github.com/workos/skills",
       "license": "MIT",
       "copyright": "WorkOS",
-      "upstream_head_at_manifest": "e25141bae047a7c837d93817347f95977598720f",
+      "upstream_head_at_manifest": "41fdb988f8f5e015c1feb90ac74aef50b20c0ecd",
       "skills": [
         "workos-enterprise-auth"
       ]
@@ -177,7 +177,7 @@
       "repo": "https://github.com/intense-visions/harness-engineering",
       "license": "MIT",
       "copyright": "Intense Visions, Inc.",
-      "upstream_head_at_manifest": "3b5f4bf4599e684c81370e8e055d6ef8c78ae61d",
+      "upstream_head_at_manifest": "b691642acbe66968c571c93675318841287b7b9f",
       "skills": [
         "security-rbac-design",
         "api-webhook-design",
@@ -190,7 +190,7 @@
       "repo": "https://github.com/Sushegaad/Claude-Skills-Governance-Risk-and-Compliance",
       "license": "MIT",
       "copyright": "Hemant Naik",
-      "upstream_head_at_manifest": "34832771581acef8751b25f284dcf270dc5e40c0",
+      "upstream_head_at_manifest": "aab13e1eb1dbf3b537b66f98d9b5eb52db0a7c25",
       "skills": [
         "soc2",
         "iso-27001",
@@ -203,7 +203,7 @@
       "repo": "https://github.com/anthropics/skills",
       "license": "Apache-2.0",
       "copyright": "Anthropic",
-      "upstream_head_at_manifest": "34040c9c568585f6929bedeaad110ad08f079624",
+      "upstream_head_at_manifest": "dbd4588f9e1033efb41dad4bef2f7947c8993d44",
       "skills": [
         "theme-factory",
         "brand-guidelines",
@@ -215,13 +215,13 @@
         "skills/cost-aware-llm-pipeline/references/claude-api/prompt-caching.md",
         "skills/cost-aware-llm-pipeline/references/claude-api/LICENSE.txt"
       ],
-      "_comment": "The 'files' above are a partial vendor of the upstream claude-api skill's shared/ reference files, embedded in the (ECC-sourced) cost-aware-llm-pipeline skill and vendored at a LATER SHA than the three full skills: b29e7cf65e5cb78a5ac33d582270551bc74a14eb (2026-07). upstream_head_at_manifest remains accurate for theme-factory/brand-guidelines/mcp-builder."
+      "_comment": "The 'files' above are a partial vendor of the upstream claude-api skill's shared/ reference files, embedded in the (ECC-sourced) cost-aware-llm-pipeline skill and refreshed 2026-10-22 from the claude-api skill bundled with Claude Code 2.1.308 (the shipped bundle is the real source; upstream's shared/ tracks it). upstream_head_at_manifest remains accurate for theme-factory/brand-guidelines/mcp-builder."
     },
     {
       "repo": "https://github.com/t0ddc3by/claude-for-customer-success",
       "license": "Apache-2.0",
       "copyright": "SuccessCOACHING",
-      "upstream_head_at_manifest": "08bbd3bc04574159036e25ef51d18f931860a226",
+      "upstream_head_at_manifest": "7c10e6dbe345dbf33fbe1305362330020cebea26",
       "skills": [
         "qbr-builder",
         "health-score-review",
@@ -306,7 +306,7 @@
       "repo": "https://github.com/anthropics/launch-your-agent",
       "license": "Apache-2.0",
       "copyright": "Anthropic PBC",
-      "upstream_head_at_manifest": "c9e0f1378a252bd42deb7e9eb02ac0cbd07160bc",
+      "upstream_head_at_manifest": "d5d0ffbca3abe857478165a7c48f4cfc39a50920",
       "skills": [
         "launch-your-agent",
         "agent-wrap-up"
@@ -316,7 +316,7 @@
       "repo": "https://github.com/anthropics/knowledge-work-plugins",
       "license": "Apache-2.0",
       "copyright": "Anthropic",
-      "upstream_head_at_manifest": "1bd42820da111e5f0206e570bf5228a1c35839c7",
+      "upstream_head_at_manifest": "33d3dea41a341b341d4f5da2e8801ae0c89be2b8",
       "skills": [
         "plugin-vetting"
       ]
@@ -325,7 +325,7 @@
       "repo": "https://github.com/nizos/probity",
       "license": "MIT",
       "copyright": "Nizar Selander",
-      "upstream_head_at_manifest": "fabb04968f259416645f91f3c62bc12147e714b5",
+      "upstream_head_at_manifest": "f9758ce9f8ea621e7004e92e60e748ee62e5f25c",
       "skills": [
         "tdd-workflow"
       ],

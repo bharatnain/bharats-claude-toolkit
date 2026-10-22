@@ -61,7 +61,7 @@ def bootstrap_path():
 
 def find_repo_root(start):
     """Walk up to the first dir containing a `.git` entry (file OR dir, so
-    worktrees and submodules resolve), mirroring team_sentinel / runner.js."""
+    worktrees and submodules resolve), mirroring team_sentinel."""
     try:
         d = os.path.abspath(start)
     except Exception:

@@ -15,9 +15,10 @@ description: >
   product/PLG post-signup activation, first-run, aha-moment, or activation-rate work
   (use `onboarding`).
 argument-hint: "[<account-name-or-ID>] [--draft | --update | --summary]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 <!-- Status: [PROPOSED] -->

@@ -5,6 +5,44 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Fixed: third-party pins are enforced.** A `github` marketplace source has no `sha` field, so Claude Code
+  ignored the recorded pins and tracked `main`. Each third-party marketplace is now an inline
+  `source: "settings"` catalog whose plugin entries carry `ref` + `sha`; names and `plugin@marketplace` keys
+  are unchanged (memsearch registers as `memsearch-plugins`, its declared name). Only plugins listed in a
+  catalog are installable from it. Bootstrap overwrites these entries whole, keeps other marketplace entries
+  add-only, removes the retired `memsearch` / `trailofbits-skills*` keys, and prints (never runs) the
+  `claude plugin marketplace remove --scope user` steps for names already registered from GitHub; after a
+  pin bump, `claude plugin marketplace update <name>` refreshes a settings registration.
+- **Changed: six plugin pins bumped after re-vetting** (ui-ux-pro-max, pm-skills, claude-code-workflows,
+  trailofbits, probity, memsearch). ecc stays on its September pin; memsearch and probity still fetch
+  unpinned code at runtime and stay disabled.
+- **Fixed: workflows run in the real Workflow runtime.** Module imports and Node APIs are gone, the quality
+  gate is an inlined Haiku `agent()` stage, and plugin agent types are namespaced
+  (`bharats-claude-toolkit:code-reviewer`); a bare name failed with "agent type not found". `review-changes`
+  returns `incomplete`, not `approve`, when a review dimension fails to run.
+- **Fixed: `secret_scan` blocks on hook failure** (`"onFailure": "block"`), and the vendored WorkOS
+  installer runs only after you consent.
+- **Fixed: `eval-harness` frontmatter.** Its `tools:` line was ignored; it is removed rather than turned into
+  `allowed-tools`, which would have pre-approved Bash, Write and Edit.
+- **Changed: `validate_skills.py`** errors on `tools:` and on `description` + `when_to_use` over 1,536 chars,
+  warns on any other unknown frontmatter key, and accepts `paths` as a comma-separated string. Stray keys
+  (`version`, `tags`, `author`, …) in 18 vendored skills moved under `metadata:`.
+- **Changed: current model data.** `cost-aware-llm-pipeline` uses `claude-sonnet-5-5` / `claude-haiku-5-5`
+  with the Oct 2026 price table (Haiku 5.5 two-tier pricing, Sonnet 4.5 retiring 2026-11-30), and its
+  claude-api references are refreshed from the Claude Code 2.1.308 bundle. `mcp-builder`'s evaluation script
+  defaults to `claude-sonnet-5-5`. README gains price tiers and where agent `effort` is set.
+- **Changed: re-vendored** ecc, workos, Governance-Risk-and-Compliance, claude-for-customer-success,
+  launch-your-agent / agent-wrap-up, marketingskills (new partner plugs stripped) and alirezarezvani;
+  harness-engineering, probity, anthropics/skills, knowledge-work-plugins and OneWave had no changes in
+  vendored paths. `context-budget` now points to the native `/context` and `/status` views; `--audit` gives
+  the old report.
+- **Changed:** `/setup-repo` recommends `/verify`; `team-orchestration` says agent teams were removed
+  (v2.1.178); the agents rule notes plugin agents ignore `permissionMode`, `hooks` and `mcpServers`; the
+  docs-trigger eval grants `Skill`; CI runs `claude plugin validate`; the marketplace has a description.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, run any `claude plugin marketplace remove` steps it
+  prints, run bootstrap again, then fully quit and reopen Claude Code and reinstall plugins it removed
+  (for example `claude plugin install codex@openai-codex`).
+
 - **Fixed: Trail of Bits marketplace names.** `settings.json` registered `trailofbits/skills` and
   `trailofbits/skills-curated` as `trailofbits-skills` / `trailofbits-skills-curated`, but Claude Code names a
   marketplace by the `name` in its `marketplace.json` (`trailofbits` / `skills-curated`), so the three plugins

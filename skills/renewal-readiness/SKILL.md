@@ -11,9 +11,10 @@ description: >
   signals in an account (use `expansion-signal`); not for building the expansion
   proposal or CSQL handoff package (use `expansion-business-case`).
 argument-hint: "[account name] [--brief | --timeline | --customer-summary]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 # /renewal-readiness

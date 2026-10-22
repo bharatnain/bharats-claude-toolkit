@@ -13,9 +13,10 @@ description: >
   expansion proposal or CSQL handoff package once signals are qualified (use
   `expansion-business-case`).
 argument-hint: "[<account-name-or-ID>] [--deep | --quick | --catalog]"
-version: "1.0.0"
-deployment_target: plugin
 disable-model-invocation: true
+metadata:
+  version: "1.0.0"
+  deployment_target: plugin
 ---
 
 # expansion-signal [VALIDATED]

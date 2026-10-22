@@ -171,7 +171,7 @@ Responses come back independently (no agent sees another's response before formi
 
 ## Decision Memory (Canonical Layout)
 
-All C-suite skills and `/cs:*` commands read and write decisions in **one** place — the two-layer model owned by `decide` and the decision-logger skill:
+All C-suite skills and `/cs-*` commands read and write decisions in **one** place — the two-layer model owned by `decide` and the decision-logger skill:
 
 ```
 ~/.claude/decisions/

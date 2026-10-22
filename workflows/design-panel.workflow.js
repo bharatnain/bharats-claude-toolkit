@@ -1,12 +1,3 @@
-// workflows/design-panel.workflow.js
-//
-// TEMPLATE — copy this file and parameterize it for your repo. Run via the
-// Workflow tool. See workflows/README.md.
-//
-// Flow: run architect + code-architect + planner in PARALLEL on the same design
-// problem, then synthesize their three perspectives into a single design. No
-// gate stage (this is a design/exploration flow, nothing is built).
-
 export const meta = {
   name: 'design-panel',
   description:
@@ -16,6 +7,15 @@ export const meta = {
     { title: 'Synthesize', detail: 'merge the three perspectives into one design, surfacing disagreements' },
   ],
 }
+
+// workflows/design-panel.workflow.js
+//
+// TEMPLATE — copy this file and parameterize it for your repo. Run via the
+// Workflow tool. See workflows/README.md.
+//
+// Flow: run architect + code-architect + planner in PARALLEL on the same design
+// problem, then synthesize their three perspectives into a single design. No
+// gate stage (this is a design/exploration flow, nothing is built).
 
 // ---- args (defensive: string | object | undefined) -------------------------
 // { target: "..." }       the design problem / feature to design. A bare string
@@ -50,17 +50,17 @@ phase('Panel')
 const seats = [
   {
     label: 'architect',
-    agentType: 'architect',
+    agentType: 'bharats-claude-toolkit:architect',
     brief: `You are the SYSTEM ARCHITECT seat. Design the high-level system: components, boundaries, data flow, scalability and failure modes. Focus on the architecture, not the line-level code.`,
   },
   {
     label: 'code-architect',
-    agentType: 'code-architect',
+    agentType: 'bharats-claude-toolkit:code-architect',
     brief: `You are the CODE ARCHITECT seat. Ground the design in THIS codebase's existing patterns and conventions. Give a concrete implementation blueprint: which files/modules change, the interfaces, and a build order.`,
   },
   {
     label: 'planner',
-    agentType: 'planner',
+    agentType: 'bharats-claude-toolkit:planner',
     brief: `You are the PLANNER seat. Turn the design into a sequenced, dependency-ordered plan with verifiable milestones and the risks that could derail delivery.`,
   },
 ]
@@ -103,7 +103,7 @@ DESIGN PROBLEM: ${TARGET}${constraintLine}
 
 PANEL PERSPECTIVES:
 ${brief}`,
-  { label: 'synthesize', phase: 'Synthesize', schema: DESIGN_SCHEMA, agentType: 'architect' },
+  { label: 'synthesize', phase: 'Synthesize', schema: DESIGN_SCHEMA, agentType: 'bharats-claude-toolkit:architect' },
 )
 
 log(`Synthesize: ${((synthesis && synthesis.disagreements) || []).length} disagreement(s), ${((synthesis && synthesis.openQuestions) || []).length} open question(s)`)

@@ -32,7 +32,7 @@ _Model-invocable: the description loads on every request._
 | `remotion-video-creation` | Best practices for Remotion - Video creation in React. 29 domain-specific rules covering 3D, animati… |
 | `soc2` | SOC 2 compliance help across the five Trust Services Criteria: gap analysis, policy and control docu… |
 | `team-orchestration` | Orchestrate a multi-agent build: detect the codebase maturity profile, staff role agents, activate t… |
-| `workos-enterprise-auth` | Use when the user asks for a WorkOS docs URL, term, or dashboard field (Sign-in endpoint, initiate_l… |
+| `workos-enterprise-auth` | WorkOS integration guide (AuthKit, SSO, Directory Sync, RBAC, FGA and the rest of the platform). Use… |
 
 ## User-invoked skills (`/name`)
 
@@ -63,7 +63,7 @@ _`disable-model-invocation: true` — cost nothing until invoked as `/name`._
 | `churn-rca` | Formal root-cause analysis for churn — a single confirmed cancellation OR a COHORT/batch of them — c… |
 | `cmo-advisor` | Marketing leadership for scaling companies. Brand positioning, growth model design, marketing budget… |
 | `code-migration` | Run a large-scale language migration with the six-step process: create the map and the rules, stress… |
-| `cold-email` | Write B2B cold emails and follow-up sequences that get replies. Use when the user wants to write col… |
+| `cold-email` | Write and run B2B cold outbound that gets replies, from cold emails and follow-ups to sending setup,… |
 | `commercial-forecaster` | Board-level bookings/ARR/NRR forecast built on cohort ARR + per-stage conversion assumptions, decomp… |
 | `commercial-policy` | DESIGN the standing commercial-policy FRAMEWORK that Deal Desk operates under — the multi-dimensiona… |
 | `competitive-intel` | Stands up and runs an ONGOING competitive-intelligence PROGRAM — a recurring tracking system whose o… |
@@ -72,7 +72,7 @@ _`disable-model-invocation: true` — cost nothing until invoked as `/name`._
 | `comps-analysis` | Build institutional-grade comparable company analyses with operating metrics, valuation multiples, a… |
 | `content-engine` | Create platform-native content systems for X, LinkedIn, TikTok, YouTube, newsletters, and repurposed… |
 | `content-strategy` | When the user wants to plan a content strategy, decide what content to create, or figure out what to… |
-| `context-budget` | Audits Claude Code context window consumption across agents, skills, MCP servers, and rules. Identif… |
+| `context-budget` | Routes live context checks to the native Codex or Claude Code meter without scanning files, and perf… |
 | `copy-editing` | When the user wants to edit, review, or improve existing marketing copy, or refresh outdated content… |
 | `copywriting` | When the user wants to write, rewrite, or improve marketing copy for any page — including homepage, … |
 | `cost-aware-llm-pipeline` | Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, re… |
@@ -83,12 +83,12 @@ _`disable-model-invocation: true` — cost nothing until invoked as `/name`._
 | `dcf-model` | Real DCF (Discounted Cash Flow) model creation for equity valuation. Retrieves financial data from S… |
 | `deal-desk` | Per-deal gate at close — scores ONE proposed deal's margin/risk/terms and routes its discount to a n… |
 | `deal-review-framework` | Assess a SINGLE in-flight deal against MEDDIC/BANT — scores deal risk, checks the evidence required … |
-| `design-system` | Use this skill to generate or audit design systems, check visual consistency, and review PRs that to… |
+| `design-system` | Generate a design system from an existing codebase or audit one for visual consistency: extract toke… |
 | `dnr-hunt` | Proactive threat hunt over web/application/access logs — no alert |
 | `dnr-respond` | SECURITY incident-response workup for a lead in hand — a |
 | `doctor` | Health-check the toolkit setup — settings, plugins, tools — and walk through the exact fixes |
 | `emails` | When the user wants to create or optimize an email sequence, drip campaign, automated email flow, or… |
-| `eval-harness` | Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) prin… |
+| `eval-harness` | Eval-driven development (EDD) framework for AI coding sessions — define capability and regression ev… |
 | `executive-mentor` | Adversarial thinking partner for founders and executives. Stress-tests plans, prepares for brutal bo… |
 | `expansion-business-case` | BUILD the expansion deliverable AFTER signals are already qualified: a customer-facing expansion pro… |
 | `expansion-signal` | Detect and qualify expansion signals in a SINGLE account — seat growth, usage approaching limits, ti… |
@@ -118,7 +118,7 @@ _`disable-model-invocation: true` — cost nothing until invoked as `/name`._
 | `procurement-optimizer` | Use when running an annual SaaS audit, doing category-level spend review, or rationalizing the suppl… |
 | `product-marketing` | CREATE and maintain the internal product-marketing CONTEXT document — the canonical positioning/ICP … |
 | `production-audit` | Local-evidence production readiness audit for shipped apps, pre-launch reviews, post-merge checks, a… |
-| `prospecting` | When the user wants to find, qualify, and build a list of prospects to reach out to — across B2B Saa… |
+| `prospecting` | When the user wants to find, qualify, and build a list of prospects to reach out to, across B2B SaaS… |
 | `public-relations` | When the user wants help with public relations, earned media, press coverage, journalist outreach, o… |
 | `qbr-builder` | Build or review a Quarterly Business Review — value delivered against success criteria, metrics summ… |
 | `quota-setting-calculator` | Top-down vs bottom-up quota models. Historical attainment, market growth assumptions, ramp periods, … |
@@ -150,7 +150,7 @@ _`disable-model-invocation: true` — cost nothing until invoked as `/name`._
 | `ttv-analysis` | Time-to-value analysis for onboarding performance — single account or portfolio. Reads TtV targets b… |
 | `ux-writing` | User-centered, accessible interface copy: buttons, labels, error messages, notifications, forms, onb… |
 | `vendor-management` | Use when reviewing, scoring, or auditing third-party SaaS / vendor relationships — running a vendor … |
-| `verification-loop` | A comprehensive verification system for Claude Code sessions. Use when verifying a Claude Code sessi… |
+| `verification-loop` | Run a six-phase verification of a Claude Code session's work — build, type check, lint, tests with c… |
 | `video-editing` | AI-assisted video editing workflows for cutting, structuring, and augmenting real footage. Covers th… |
 | `vuln-patch` | Generate candidate fixes for verified SECURITY findings and write |
 | `vuln-scan` | Static source-code vulnerability scan of a whole target directory. Reads the tree (and THREAT_MODEL.… |

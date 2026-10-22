@@ -14,6 +14,15 @@ COLON_REF_RE = re.compile(r"^/[a-z][a-z0-9-]*:[a-z0-9-]+$")
 COLON_REF_SCAN = re.compile(r"/[a-z][a-z0-9-]*:[a-z0-9-]+")
 MD_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 SINGLE_QUOTE_RE = re.compile(r"'([^']+)'")
+# Frontmatter fields Claude Code reads (code.claude.com/docs/en/skills, "Frontmatter reference").
+# Claude Code silently ignores any other top-level key.
+KNOWN_KEYS = {
+    "name", "description", "when_to_use", "argument-hint", "arguments",
+    "disable-model-invocation", "user-invocable", "allowed-tools", "disallowed-tools",
+    "model", "effort", "context", "agent", "background", "hooks", "paths", "shell",
+    "metadata", "license", "compatibility",
+}
+LISTING_CAP = 1536  # description + when_to_use are truncated past this in the skill listing
 
 
 class Finding:
@@ -332,6 +341,19 @@ def main(argv):
                 findings.append(Finding(dir_name, path, "warn", "F5",
                                         f"description length {len(desc)} out of [40,1024]"))
             descriptions[dir_name] = quoted_phrases(desc)
+            wtu = keys.get("when_to_use", "")
+            listing = len(desc) + len(wtu.strip() if isinstance(wtu, str) else " ".join(map(str, wtu)))
+            if listing > LISTING_CAP:
+                findings.append(Finding(dir_name, path, "error", "F5",
+                                        f"description + when_to_use is {listing} chars; listing truncates at {LISTING_CAP}"))
+
+        # F7 unknown keys: Claude Code ignores them silently
+        if "tools" in keys:
+            findings.append(Finding(dir_name, path, "error", "F7",
+                                    "'tools' is not a skill field; use 'allowed-tools'"))
+        for k in sorted(set(keys) - KNOWN_KEYS - {"tools"}):
+            findings.append(Finding(dir_name, path, "warn", "F7",
+                                    f"unknown frontmatter key '{k}' is ignored; move it under 'metadata:'"))
 
         # F6 tiering / scoping keys
         dmi = keys.get("disable-model-invocation")
@@ -339,10 +361,12 @@ def main(argv):
             findings.append(Finding(dir_name, path, "error", "F6",
                                     f"'disable-model-invocation' must be true or false, got '{dmi}'"))
         paths = keys.get("paths")
-        if paths is not None and (not isinstance(paths, list) or not paths
+        if isinstance(paths, str):  # comma-separated string form
+            paths = [p.strip() for p in paths.split(",") if p.strip()]
+        if paths is not None and (not paths
                                   or not all(isinstance(x, str) and x for x in paths)):
             findings.append(Finding(dir_name, path, "error", "F6",
-                                    "'paths' must be a non-empty YAML list of strings"))
+                                    "'paths' must be a non-empty list or comma-separated string of globs"))
         ctx = keys.get("context")
         if ctx is not None and ctx != "fork":
             findings.append(Finding(dir_name, path, "error", "F6",

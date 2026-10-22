@@ -282,7 +282,12 @@ def test_recommendations_long_claude_md_and_sync_skills(tmp_path):
     root = make_repo(tmp_path, dict(PY_UV, **{"CLAUDE.md": "line\n" * 250}))
     recs = rs.plan(rs.detect(root))["recommendations"]
     assert any("CLAUDE.md is 250 lines" in r and "under 200" in r for r in recs)
-    assert any("syncClaudeAiSkills" in r for r in recs)
+    assert any("`/verify`" in r for r in recs)
+
+def test_verify_recommendation_skipped_when_recorded(tmp_path):
+    root = make_repo(tmp_path, dict(PY_UV, **{".claude/skills/verify/SKILL.md": "---\nname: verify\n---\n"}))
+    recs = rs.plan(rs.detect(root))["recommendations"]
+    assert not any("`/verify`" in r for r in recs)
 
 def test_etiquette_uses_most_common_branch_prefix(tmp_path):
     root = make_repo(tmp_path, PY_UV)

@@ -1,11 +1,12 @@
 ---
 name: commercial-forecaster
 description: "Board-level bookings/ARR/NRR forecast built on cohort ARR + per-stage conversion assumptions, decomposed into commit / best-case / pipe-only tiers with a disclosed assumption block (conversion rate, data window, weighting). Use when the CRO or Head of Commercial needs the consolidated board/QBR number defended by funnel math, cohort-level NRR/GRR (to surface leaky cohorts before the topline does), and per-stage CoV confidence bands. Not for front-of-funnel lead lifecycle, lead scoring/routing, MQL/SQL, CRM hygiene, or marketing-to-sales handoff (use `revops`). Not for rep/pipeline deal-probability-weighted forecasts, historical rep accuracy, or slippage patterns (use `sales-forecast-builder`). Not for per-deal review at close — discount above AE authority, MSA redline, margin/terms, approval routing (use `deal-desk`). Not for designing the discount/approver policy framework: discount matrix, approver thresholds, exception flows (use `commercial-policy`)."
-version: 2.8.0
-author: claude-code-skills
 license: MIT
-tags: [commercial, forecasting, bookings, arr, nrr, grr, cohort, funnel, pipeline-math]
-compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
+metadata:
+  version: 2.8.0
+  author: claude-code-skills
+  tags: [commercial, forecasting, bookings, arr, nrr, grr, cohort, funnel, pipeline-math]
+  compatible_tools: [claude-code, codex-cli, cursor, antigravity, opencode, gemini-cli]
 disable-model-invocation: true
 ---
 

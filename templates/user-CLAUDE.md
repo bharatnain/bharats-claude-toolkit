@@ -1,5 +1,11 @@
 # CLAUDE.md
 
+## Pace
+Applies to all work, not just code.
+- Do only the step I asked for, then stop and wait for me.
+- Never produce a deliverable, file, or plan I didn't ask for.
+- When I give you new information, reflect it back. Don't build on it until I say so.
+
 Behavioral guidelines to reduce common LLM coding mistakes.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.

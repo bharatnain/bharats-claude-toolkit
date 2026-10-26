@@ -5,6 +5,9 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+- **Added: Pace rules** at the top of `templates/user-CLAUDE.md`: do only the step asked for, produce
+  no unrequested deliverables, and reflect new information back before building on it.
+
 ## [0.13.0] - 2026-10-22
 
 - **Fixed: third-party pins are enforced.** A `github` marketplace source has no `sha` field, so Claude Code

@@ -5,8 +5,15 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-10-26
+
 - **Added: Pace rules** at the top of `templates/user-CLAUDE.md`: do only the step asked for, produce
   no unrequested deliverables, and reflect new information back before building on it.
+- **Re-sync:** `git pull && bash scripts/bootstrap.sh`, then fully quit and reopen Claude Code and start a new chat.
+
+### Commits
+
+- feat: add Pace section to user CLAUDE.md template
 
 ## [0.13.0] - 2026-10-22
 
